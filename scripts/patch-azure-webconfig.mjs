@@ -12,12 +12,12 @@ let webConfig = fs.readFileSync(deployWebConfig, 'utf8');
 
 webConfig = webConfig.replace(
   /processPath="[^"]*"/,
-  'processPath="%windir%\\system32\\cmd.exe"'
+  'processPath="cmd.exe"'
 );
 webConfig = webConfig.replace(
   /arguments="[^"]*"/,
-  'arguments="/c %HOME%\\site\\wwwroot\\start-azure.cmd"'
+  'arguments="/c run.cmd"'
 );
 
 fs.writeFileSync(deployWebConfig, webConfig, 'utf8');
-console.log('Patched deploy_pkg/web.config to launch via start-azure.cmd');
+console.log('Patched deploy_pkg/web.config to launch via cmd.exe /c run.cmd');

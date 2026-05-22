@@ -34,10 +34,6 @@ No VPN or client setup required. Your PC does not need to stay on.
 - `http://192.168.1.68:3000/...` — local network only
 - `http://localhost:3000/...` — this PC only
 
-## Stable link for 5–6 days (no PC required)
+## Temporary tunnel (if Azure is down)
 
-Azure is configured but currently returns 502. After redeploying `main` with the updated `web.config`, use:
-
-https://gather-nexus-new-refreshment-site-gea5ddfae7gwhtbv.uksouth-01.azurewebsites.net/?review=ade20793493210f2321bfbf8cc64278a
-
-Push to `main` and confirm GitHub Actions **Verify live site health** passes before sharing the Azure link.
+Run `npm run share` or double-click `Share-Client-Now.bat` for an instant public link. Keep the window open; the URL changes if you restart the tunnel.

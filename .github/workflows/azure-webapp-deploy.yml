@@ -74,21 +74,22 @@ jobs:
 
       - name: Verify live site health
         shell: pwsh
-        continue-on-error: true
         run: |
           $healthUrl = 'https://gather-nexus-new-refreshment-site-gea5ddfae7gwhtbv.uksouth-01.azurewebsites.net/api/health'
-          foreach ($attempt in 1..4) {
+          Start-Sleep -Seconds 15
+          foreach ($attempt in 1..6) {
             try {
-              $health = Invoke-WebRequest -Uri $healthUrl -UseBasicParsing -TimeoutSec 30
-              if ($health.StatusCode -eq 200) {
+              $health = Invoke-WebRequest -Uri $healthUrl -UseBasicParsing -TimeoutSec 45
+              if ($health.StatusCode -eq 200 -and $health.Content -match '"ok"\s*:\s*true') {
                 Write-Host $health.Content
                 Write-Host "Azure health OK on attempt $attempt."
                 exit 0
               }
+              Write-Host "Attempt $attempt: unexpected response ($($health.StatusCode)): $($health.Content)"
             } catch {
               Write-Host "Attempt $attempt: $($_.Exception.Message)"
             }
-            Start-Sleep -Seconds 10
+            Start-Sleep -Seconds 15
           }
-          Write-Host "Azure health check failed. Use Share-Client-Now.bat for an immediate client link."
-          exit 0
+          Write-Host "Azure health check failed after deploy."
+          exit 1
