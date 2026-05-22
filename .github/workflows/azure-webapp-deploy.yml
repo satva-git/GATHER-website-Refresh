@@ -37,6 +37,12 @@ jobs:
       - name: Build deploy package with node_modules
         shell: pwsh
         run: |
+          foreach ($cmdFile in @('start-azure.cmd', 'run.cmd', 'deploy.cmd')) {
+            if (Test-Path $cmdFile) {
+              $text = [IO.File]::ReadAllText($cmdFile).Replace("`n", "`r`n").Replace("`r`r`n", "`r`n")
+              [IO.File]::WriteAllText($cmdFile, $text)
+            }
+          }
           if (Test-Path deploy_pkg) { Remove-Item deploy_pkg -Recurse -Force }
           New-Item -ItemType Directory -Path deploy_pkg | Out-Null
           robocopy . deploy_pkg /E /XD .git deploy_pkg /XF deploy.zip | Out-Null
