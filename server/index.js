@@ -19,7 +19,9 @@ function getListenTarget() {
 }
 
 const PORT = getListenTarget();
-const HOST = process.env.HOST || '0.0.0.0';
+const HOST = process.env.WEBSITE_SITE_NAME
+  ? '127.0.0.1'
+  : (process.env.HOST || '0.0.0.0');
 
 if (typeof PORT === 'number' && (!Number.isFinite(PORT) || PORT < 0)) {
   console.error('[startup] Invalid PORT:', process.env.PORT, process.env.HTTP_PLATFORM_PORT);
