@@ -11,6 +11,7 @@
     "embed": "node scripts/embed-images.js",
     "start": "node server.js",
     "preview": "npm run sync && node server/index.js",
+    "share": "node scripts/share-public-link.mjs",
     "preview:static": "npm run sync && npx --yes serve . -l 3000",
     "figma:export": "node scripts/export-figma.js",
     "test": "node --test server/test/review-api.test.js"
