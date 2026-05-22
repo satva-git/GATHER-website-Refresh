@@ -3,26 +3,27 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { normalizePagePath } = require('./path-utils');
+const { getDataDir, ensureDataDir } = require('./data-dir');
 
-const DATA_DIR = path.dirname(process.env.REVIEW_DB_PATH || path.join(__dirname, 'data', 'review.db.json'));
-const DB_PATH = process.env.REVIEW_DB_PATH || path.join(__dirname, 'data', 'review.db.json');
+const DB_PATH = process.env.REVIEW_DB_PATH || path.join(getDataDir(), 'review.db.json');
+const DATA_DIR = path.dirname(DB_PATH);
 
 const DEFAULT_DATA = {
   sessions: [],
-  comments: []
+  comments: [],
+  replies: []
 };
 
 let data = null;
 let writeQueue = Promise.resolve();
 
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
+function ensureDbDir() {
+  ensureDataDir();
 }
 
 function load() {
-  ensureDataDir();
+  ensureDbDir();
   if (!fs.existsSync(DB_PATH)) {
     data = structuredClone(DEFAULT_DATA);
     persistSync();
@@ -34,6 +35,7 @@ function load() {
     data = JSON.parse(raw);
     if (!Array.isArray(data.sessions)) data.sessions = [];
     if (!Array.isArray(data.comments)) data.comments = [];
+    if (!Array.isArray(data.replies)) data.replies = [];
   } catch (err) {
     const backup = DB_PATH + '.corrupt-' + Date.now();
     fs.copyFileSync(DB_PATH, backup);
@@ -43,7 +45,7 @@ function load() {
 }
 
 function persistSync() {
-  ensureDataDir();
+  ensureDbDir();
   const tmp = DB_PATH + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
   fs.renameSync(tmp, DB_PATH);
@@ -83,7 +85,7 @@ function createSession({ title, pagePath }) {
     id: id(),
     token: token(),
     title: title || 'Homepage review',
-    pagePath: pagePath || '/',
+    pagePath: normalizePagePath(pagePath),
     createdAt: now(),
     updatedAt: now()
   };
@@ -92,16 +94,33 @@ function createSession({ title, pagePath }) {
   return session;
 }
 
+function resolveSessionForPage(pagePath) {
+  const normalized = normalizePagePath(pagePath);
+  return listSessions().find(session => normalizePagePath(session.pagePath) === normalized) || null;
+}
+
+function attachReplies(comments) {
+  return comments.map(comment => ({
+    ...comment,
+    replies: data.replies
+      .filter(r => r.commentId === comment.id)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+  }));
+}
+
 function listComments(sessionToken) {
   const session = getSessionByToken(sessionToken);
   if (!session) return null;
-  return data.comments
+  const comments = data.comments
     .filter(c => c.sessionId === session.id)
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  return attachReplies(comments);
 }
 
 function getComment(commentId) {
-  return data.comments.find(c => c.id === commentId) || null;
+  const comment = data.comments.find(c => c.id === commentId) || null;
+  if (!comment) return null;
+  return attachReplies([comment])[0];
 }
 
 function createComment(sessionToken, payload) {
@@ -132,12 +151,13 @@ function createComment(sessionToken, payload) {
   data.comments.push(comment);
   session.updatedAt = now();
   persist();
-  return comment;
+  return getComment(comment.id);
 }
 
 function updateComment(commentId, updates) {
-  const comment = getComment(commentId);
-  if (!comment) return null;
+  const index = data.comments.findIndex(c => c.id === commentId);
+  if (index === -1) return null;
+  const comment = data.comments[index];
 
   if (updates.status === 'open' || updates.status === 'resolved') {
     comment.status = updates.status;
@@ -152,7 +172,7 @@ function updateComment(commentId, updates) {
   if (session) session.updatedAt = now();
 
   persist();
-  return comment;
+  return getComment(comment.id);
 }
 
 function deleteComment(commentId) {
@@ -160,6 +180,7 @@ function deleteComment(commentId) {
   if (index === -1) return false;
   const comment = data.comments[index];
   data.comments.splice(index, 1);
+  data.replies = data.replies.filter(r => r.commentId !== commentId);
 
   const session = data.sessions.find(s => s.id === comment.sessionId);
   if (session) session.updatedAt = now();
@@ -168,15 +189,44 @@ function deleteComment(commentId) {
   return true;
 }
 
+function createReply(commentId, payload) {
+  const comment = data.comments.find(c => c.id === commentId);
+  if (!comment) return null;
+
+  const authorName = String(payload.authorName || 'Guest').trim() || 'Guest';
+  const body = String(payload.body || '').trim();
+  if (!body) return { error: 'body is required' };
+
+  const reply = {
+    id: id(),
+    commentId,
+    sessionId: comment.sessionId,
+    authorName,
+    body,
+    createdAt: now()
+  };
+
+  data.replies.push(reply);
+  comment.updatedAt = now();
+
+  const session = data.sessions.find(s => s.id === comment.sessionId);
+  if (session) session.updatedAt = now();
+
+  persist();
+  return reply;
+}
+
 load();
 
 module.exports = {
   getSessionByToken,
   listSessions,
   createSession,
+  resolveSessionForPage,
   listComments,
   getComment,
   createComment,
   updateComment,
-  deleteComment
+  deleteComment,
+  createReply
 };

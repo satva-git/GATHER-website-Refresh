@@ -2,6 +2,9 @@
   "name": "gather-nexus-preview",
   "private": true,
   "description": "Static HTML preview with client review comments",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "sync": "node -e \"require('fs').copyFileSync('HomePage.html','index.html')\"",
     "enhance": "node scripts/enhance-homepage.js && npm run sync",

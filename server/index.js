@@ -2,19 +2,37 @@
 
 const express = require('express');
 const path = require('path');
+const os = require('os');
 const db = require('./db');
+const pageCommentsDb = require('./page-comments-db');
+const { getDataDir } = require('./data-dir');
 
 const ROOT = path.join(__dirname, '..');
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '64kb' }));
+
+app.use('/api', (_req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('Surrogate-Control', 'no-store');
+  next();
+});
 
 /** @type {Map<string, Set<import('http').ServerResponse>>} */
 const sseClients = new Map();
 
+/** @type {Set<import('http').ServerResponse>} */
+const pageCommentSseClients = new Set();
+
 function getBaseUrl(req) {
+  if (process.env.PUBLIC_BASE_URL) {
+    return process.env.PUBLIC_BASE_URL.replace(/\/$/, '');
+  }
   const proto = req.get('x-forwarded-proto') || req.protocol;
   const host = req.get('x-forwarded-host') || req.get('host');
   return `${proto}://${host}`;
@@ -25,7 +43,11 @@ function broadcast(sessionToken, event, payload) {
   if (!clients || clients.size === 0) return;
   const message = `event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`;
   for (const res of clients) {
-    res.write(message);
+    try {
+      res.write(message);
+    } catch (err) {
+      clients.delete(res);
+    }
   }
 }
 
@@ -38,8 +60,42 @@ function broadcastAll(event, payload) {
   }
 }
 
+function prepareEventStream(res) {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.flushHeaders?.();
+}
+
+function broadcastPageComment(event, payload) {
+  const message = `event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`;
+  for (const res of pageCommentSseClients) {
+    res.write(message);
+  }
+}
+
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, time: new Date().toISOString() });
+  const lan = getLanAddress();
+  res.json({
+    ok: true,
+    time: new Date().toISOString(),
+    networkUrl: lan ? `http://${lan}:${PORT}` : null
+  });
+});
+
+app.get('/api/sessions/resolve', (req, res) => {
+  const { normalizePagePath } = require('./path-utils');
+  const pagePath = normalizePagePath(req.query.path || '/');
+  const session = db.resolveSessionForPage(pagePath);
+  if (!session) {
+    return res.status(404).json({
+      error: 'No review session for this page yet. Create a share link in Admin first.',
+      pagePath
+    });
+  }
+  const shareUrl = `${getBaseUrl(req)}${session.pagePath}?review=${session.token}`;
+  res.json({ session, shareUrl, pagePath });
 });
 
 app.get('/api/sessions', (_req, res) => {
@@ -78,9 +134,23 @@ app.post('/api/sessions/:token/comments', (req, res) => {
   if (!result) return res.status(404).json({ error: 'Session not found' });
   if (result.error) return res.status(400).json({ error: result.error });
 
-  broadcast(req.params.token, 'comment_created', { comment: result });
-  broadcastAll('comment_created', { comment: result, sessionToken: req.params.token });
-  res.status(201).json({ comment: result });
+  const comment = db.getComment(result.id) || result;
+  broadcast(req.params.token, 'comment_created', { comment });
+  broadcastAll('comment_created', { comment, sessionToken: req.params.token });
+  res.status(201).json({ comment });
+});
+
+app.post('/api/comments/:id/replies', (req, res) => {
+  const result = db.createReply(req.params.id, req.body || {});
+  if (!result) return res.status(404).json({ error: 'Comment not found' });
+  if (result.error) return res.status(400).json({ error: result.error });
+
+  const session = db.listSessions().find(s => s.id === result.sessionId);
+  if (session) {
+    broadcast(session.token, 'reply_created', { reply: result, commentId: req.params.id });
+    broadcastAll('reply_created', { reply: result, commentId: req.params.id, sessionToken: session.token });
+  }
+  res.status(201).json({ reply: result });
 });
 
 app.patch('/api/comments/:id', (req, res) => {
@@ -113,10 +183,7 @@ app.get('/api/sessions/:token/events', (req, res) => {
   const session = db.getSessionByToken(req.params.token);
   if (!session) return res.status(404).json({ error: 'Session not found' });
 
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache, no-transform');
-  res.setHeader('Connection', 'keep-alive');
-  res.flushHeaders?.();
+  prepareEventStream(res);
 
   const token = req.params.token;
   if (!sseClients.has(token)) sseClients.set(token, new Set());
@@ -138,11 +205,66 @@ app.get('/api/sessions/:token/events', (req, res) => {
   });
 });
 
+app.get('/api/page-comments', (req, res) => {
+  const pagePath = pageCommentsDb.normalizePagePath(req.query.path || '/');
+  res.json({ pagePath, comments: pageCommentsDb.listComments(pagePath) });
+});
+
+app.get('/api/page-comments/all', (_req, res) => {
+  const comments = pageCommentsDb.listAllComments();
+  const pages = {};
+
+  comments.forEach(comment => {
+    if (!pages[comment.pagePath]) {
+      pages[comment.pagePath] = { pagePath: comment.pagePath, count: 0 };
+    }
+    pages[comment.pagePath].count += 1;
+  });
+
+  res.json({
+    comments,
+    pages: Object.values(pages).sort((a, b) => a.pagePath.localeCompare(b.pagePath))
+  });
+});
+
+app.post('/api/page-comments', (req, res) => {
+  const result = pageCommentsDb.createComment(req.body || {});
+  if (result?.error) return res.status(400).json({ error: result.error });
+
+  broadcastPageComment('comment_created', { comment: result });
+  res.status(201).json({ comment: result });
+});
+
+app.delete('/api/page-comments/:id', (req, res) => {
+  const existing = pageCommentsDb.getComment(req.params.id);
+  if (!existing) return res.status(404).json({ error: 'Comment not found' });
+
+  pageCommentsDb.deleteComment(req.params.id);
+  broadcastPageComment('comment_deleted', {
+    commentId: req.params.id,
+    pagePath: existing.pagePath
+  });
+  res.json({ ok: true });
+});
+
+app.get('/api/page-comments/events', (req, res) => {
+  prepareEventStream(res);
+
+  pageCommentSseClients.add(res);
+  res.write(`event: connected\ndata: ${JSON.stringify({ ok: true })}\n\n`);
+
+  const heartbeat = setInterval(() => {
+    res.write(': heartbeat\n\n');
+  }, 25000);
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    pageCommentSseClients.delete(res);
+  });
+});
+
 app.get('/api/admin/events', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache, no-transform');
-  res.setHeader('Connection', 'keep-alive');
-  res.flushHeaders?.();
+  prepareEventStream(res);
 
   const adminToken = '__admin__';
   if (!sseClients.has(adminToken)) sseClients.set(adminToken, new Set());
@@ -200,12 +322,30 @@ app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
+function getLanAddress() {
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name] || []) {
+      if (net.family === 'IPv4' && !net.internal) return net.address;
+    }
+  }
+  return null;
+}
+
 const server = app.listen(PORT, HOST, () => {
   console.log('');
   console.log('  GATHER.nexus preview + review server');
   console.log('  ------------------------------------');
   console.log(`  Homepage:  http://localhost:${PORT}/`);
   console.log(`  Admin:     http://localhost:${PORT}/admin/`);
+  const lan = getLanAddress();
+  if (lan) {
+    console.log(`  Network:   http://${lan}:${PORT}/  (share this with clients on your Wi-Fi)`);
+  }
+  if (process.env.PUBLIC_BASE_URL) {
+    console.log(`  Public:    ${process.env.PUBLIC_BASE_URL}`);
+  }
+  console.log(`  Comments:  server/data/review.db.json`);
   console.log('');
   console.log('  Create a share link from Admin, then send the client URL with ?review=TOKEN');
   console.log('');
