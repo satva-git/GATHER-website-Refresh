@@ -378,7 +378,7 @@ function getLanAddress() {
   return null;
 }
 
-const server = app.listen(PORT, HOST, () => {
+function onServerReady() {
   const portLabel = typeof PORT === 'number' ? PORT : 'pipe';
   console.log('');
   console.log('  GATHER.nexus preview + review server');
@@ -386,7 +386,7 @@ const server = app.listen(PORT, HOST, () => {
   console.log(`  Homepage:  http://localhost:${portLabel}/`);
   console.log(`  Admin:     http://localhost:${portLabel}/admin/`);
   const lan = getLanAddress();
-  if (lan) {
+  if (lan && typeof PORT === 'number') {
     console.log(`  Network:   http://${lan}:${PORT}/  (share this with clients on your Wi-Fi)`);
   }
   if (process.env.PUBLIC_BASE_URL) {
@@ -400,8 +400,7 @@ const server = app.listen(PORT, HOST, () => {
     if (session) {
       console.log('  Primary review link (saved for ongoing work):');
       console.log(`  http://localhost:${portLabel}${session.pagePath}?review=${session.token}`);
-      const lan = getLanAddress();
-      if (lan) {
+      if (lan && typeof PORT === 'number') {
         console.log(`  http://${lan}:${PORT}${session.pagePath}?review=${session.token}`);
       }
       console.log('');
@@ -409,6 +408,10 @@ const server = app.listen(PORT, HOST, () => {
   }
   console.log('  Create a share link from Admin, then send the client URL with ?review=TOKEN');
   console.log('');
-});
+}
+
+const server = typeof PORT === 'number'
+  ? app.listen(PORT, HOST, onServerReady)
+  : app.listen(PORT, onServerReady);
 
 module.exports = { app, server, broadcast, broadcastAll };
