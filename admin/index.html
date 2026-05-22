@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Review Admin — GATHER.nexus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/admin/admin.css"/>
+</head>
+<body>
+  <div class="admin-app">
+    <header class="admin-header">
+      <div>
+        <p class="admin-kicker">GATHER.nexus preview</p>
+        <h1>Client review dashboard</h1>
+        <p class="admin-lead">Create share links, monitor feedback in real time, and manage comment status.</p>
+      </div>
+      <div class="admin-header-actions">
+        <span class="live-pill" id="live-status"><span class="live-dot"></span> Live</span>
+        <button type="button" class="btn btn-primary" id="create-session-btn">New share link</button>
+      </div>
+    </header>
+
+    <main class="admin-grid">
+      <section class="panel sessions-panel">
+        <div class="panel-head">
+          <h2>Share links</h2>
+          <p>Send a link to your client. They can comment directly on the homepage.</p>
+        </div>
+        <div id="sessions-list" class="sessions-list"></div>
+      </section>
+
+      <section class="panel comments-panel">
+        <div class="panel-head">
+          <div class="panel-head-row">
+            <div>
+              <h2 id="comments-title">Comments</h2>
+              <p id="comments-subtitle">Select a share link to view feedback.</p>
+            </div>
+            <div class="filter-tabs" id="filter-tabs">
+              <button type="button" class="filter-tab active" data-filter="all">All</button>
+              <button type="button" class="filter-tab" data-filter="open">Open</button>
+              <button type="button" class="filter-tab" data-filter="resolved">Resolved</button>
+            </div>
+          </div>
+        </div>
+        <div id="comments-list" class="comments-list">
+          <div class="empty-state">Select a share link on the left to view client comments.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="create-dialog" class="dialog">
+    <form method="dialog" id="create-form">
+      <h3>Create share link</h3>
+      <p>Your client will open this link and leave comments on the live preview page.</p>
+      <label class="field">
+        <span>Review title</span>
+        <input type="text" name="title" maxlength="120" placeholder="Homepage review — May 2026" required/>
+      </label>
+      <label class="field">
+        <span>Page path</span>
+        <input type="text" name="pagePath" value="/" maxlength="200" required/>
+      </label>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="cancel-create">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create link</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
