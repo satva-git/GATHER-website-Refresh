@@ -8,10 +8,6 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT || 3000);
 const DEFAULT_TOKEN = 'ade20793493210f2321bfbf8cc64278a';
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function copyHomepage() {
   const homepage = path.join(ROOT, 'HomePage.html');
   const index = path.join(ROOT, 'index.html');
@@ -44,6 +40,10 @@ function waitForHealth(timeoutMs = 30000) {
   });
 }
 
+function isServerRunning() {
+  return waitForHealth(2000).then(() => true).catch(() => false);
+}
+
 function startServer() {
   copyHomepage();
   const child = spawn(process.execPath, ['server/index.js'], {
@@ -57,32 +57,69 @@ function startServer() {
   return child;
 }
 
-function startTunnel() {
+function spawnTunnel(command, args, label, urlPattern, timeoutMs = 90000) {
   return new Promise((resolve, reject) => {
     const child = spawn(
       process.platform === 'win32' ? 'npx.cmd' : 'npx',
-      ['--yes', 'localtunnel', '--port', String(PORT)],
+      ['--yes', ...command, ...args],
       { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'], shell: true }
     );
 
     let output = '';
+    let settled = false;
+
+    const finish = (err, result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      if (err) reject(err);
+      else resolve(result);
+    };
+
     const onData = chunk => {
       output += chunk.toString();
-      const match = output.match(/https?:\/\/[^\s]+/);
-      if (match) resolve({ child, url: match[0].replace(/[^\w:/.?=&%-]+$/, '') });
+      process.stderr.write(chunk);
+      const match = output.match(urlPattern);
+      if (match) finish(null, { child, url: match[0].replace(/[^\w:/.?=&%-]+$/, ''), label });
     };
 
     child.stdout.on('data', onData);
     child.stderr.on('data', onData);
-    child.on('error', reject);
+    child.on('error', err => finish(err));
     child.on('exit', code => {
-      if (!output.includes('http')) {
-        reject(new Error(`Tunnel exited (${code}). Output: ${output}`));
+      if (!settled) {
+        finish(new Error(`${label} exited (${code}). Output: ${output}`));
       }
     });
 
-    setTimeout(() => reject(new Error('Tunnel timed out')), 90000);
+    const timer = setTimeout(() => {
+      finish(new Error(`${label} timed out`));
+    }, timeoutMs);
   });
+}
+
+async function startTunnel() {
+  const tunnelUrl = `http://127.0.0.1:${PORT}`;
+
+  try {
+    return await spawnTunnel(
+      ['cloudflared', 'tunnel'],
+      ['--url', tunnelUrl],
+      'Cloudflare Tunnel',
+      /https:\/\/[a-z0-9-]+\.trycloudflare\.com/
+    );
+  } catch (cloudflareErr) {
+    console.log('');
+    console.log(`  Cloudflare tunnel unavailable (${cloudflareErr.message}).`);
+    console.log('  Trying localtunnel fallback...');
+    console.log('');
+    return spawnTunnel(
+      ['localtunnel'],
+      ['--port', String(PORT)],
+      'localtunnel',
+      /https?:\/\/[^\s]+/
+    );
+  }
 }
 
 function request(method, urlPath, body) {
@@ -122,19 +159,29 @@ async function main() {
   console.log('  =================================');
   console.log('');
 
-  const server = startServer();
+  let server = null;
   let tunnel = null;
+  let ownsServer = false;
 
   const shutdown = () => {
     if (tunnel?.child) tunnel.child.kill();
-    server.kill();
+    if (ownsServer && server) server.kill();
     process.exit(0);
   };
   process.on('SIGINT', shutdown);
   process.on('SIGTERM', shutdown);
 
   try {
-    await waitForHealth();
+    const alreadyRunning = await isServerRunning();
+    if (alreadyRunning) {
+      console.log(`  Reusing preview server already running on port ${PORT}.`);
+      console.log('');
+    } else {
+      server = startServer();
+      ownsServer = true;
+      await waitForHealth();
+    }
+
     const localReview = `http://localhost:${PORT}/?review=${DEFAULT_TOKEN}`;
     const localAdmin = `http://localhost:${PORT}/admin/`;
 
@@ -143,10 +190,9 @@ async function main() {
     console.log(`  ${localAdmin}`);
     console.log('');
 
-    console.log('  Creating public internet link (localtunnel)...');
+    console.log('  Creating public internet link (Cloudflare Tunnel)...');
     tunnel = await startTunnel();
     const publicBase = tunnel.url.replace(/\/$/, '');
-    process.env.PUBLIC_BASE_URL = publicBase;
 
     const sessionRes = await request('GET', `/api/sessions/${DEFAULT_TOKEN}`);
     let reviewUrl = `${publicBase}/?review=${DEFAULT_TOKEN}`;
@@ -159,7 +205,7 @@ async function main() {
       if (createRes.status === 201 && createRes.json?.session?.token) {
         reviewUrl = `${publicBase}${createRes.json.session.pagePath}?review=${createRes.json.session.token}`;
         console.log('');
-        console.log('  New review session created (Azure token was missing locally).');
+        console.log('  New review session created (default token was missing locally).');
       }
     }
 
@@ -170,6 +216,7 @@ async function main() {
     console.log(`  Admin: ${publicBase}/admin/`);
     console.log('');
     console.log('  Keep this window open while the client reviews.');
+    console.log('  Do not close it for 5–6 days if they need ongoing access.');
     console.log('  Press Ctrl+C to stop.');
     console.log('');
 
@@ -178,7 +225,7 @@ async function main() {
     console.error('');
     console.error('  Could not create public link:', err.message);
     console.error('');
-    console.error('  Fallback — use on same Wi-Fi:');
+    console.error('  Fallback — same Wi-Fi only:');
     console.error(`  http://localhost:${PORT}/?review=${DEFAULT_TOKEN}`);
     console.error('  Run "ipconfig" and replace localhost with your IPv4 address.');
     console.error('');

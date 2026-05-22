@@ -1,37 +1,43 @@
-# Client link — use this now (Azure is not required)
+# Client link — use this now
 
-Azure deploy has been unreliable. Use this **2-minute** method instead — full homepage + review comments + admin.
+Local IP links (e.g. `192.168.1.68`) only work on your Wi-Fi. Clients on the internet need a **public tunnel** or **Azure**.
 
-## Fastest way (double-click)
+## Stable public link (Azure — use for 30-day client review)
 
-1. Double-click **`Share-Client-Now.bat`** in this folder.
+**Send this to your client:**
+
+https://gather-nexus-new-refreshment-site-gea5ddfae7gwhtbv.uksouth-01.azurewebsites.net/?review=ade20793493210f2321bfbf8cc64278a
+
+| Purpose | URL |
+|--------|-----|
+| Client review | https://gather-nexus-new-refreshment-site-gea5ddfae7gwhtbv.uksouth-01.azurewebsites.net/?review=ade20793493210f2321bfbf8cc64278a |
+| Admin | https://gather-nexus-new-refreshment-site-gea5ddfae7gwhtbv.uksouth-01.azurewebsites.net/admin/ |
+
+No VPN or client setup required. Your PC does not need to stay on.
+
+## Fastest way to create a new public link
+
+1. Double-click **`Share-Client-Now.bat`** in this folder (or run `npm run share`).
 2. Wait ~30 seconds until you see: **`>>> SEND THIS LINK TO YOUR CLIENT <<<`**
-3. Copy that `https://....loca.lt` link and send it to your client.
-4. **Leave the black window open** while they review.
+3. Copy the `https://....trycloudflare.com` link and send it to your client.
+4. **Leave the window open** for the full review period (5–6 days).
 
-## Or run from terminal
-
-```bash
-cd e:\Satva-Work\Howard\New-Website
-npm install
-npm run share
-```
-
-## Links that always work on your PC
+## Links that always work on your PC only
 
 | Purpose | URL |
 |--------|-----|
 | Homepage + review | http://localhost:3000/?review=ade20793493210f2321bfbf8cc64278a |
 | Admin | http://localhost:3000/admin/ |
 
-## Same Wi-Fi (no tunnel)
+## Do not share these with external clients
 
-1. Run `npm run preview`
-2. Run `ipconfig` → note your **IPv4** (e.g. `192.168.1.68`)
-3. Share: `http://192.168.1.68:3000/?review=ade20793493210f2321bfbf8cc64278a`
+- `http://192.168.1.68:3000/...` — local network only
+- `http://localhost:3000/...` — this PC only
 
-## Azure link (when fixed)
+## Stable link for 5–6 days (no PC required)
+
+Azure is configured but currently returns 502. After redeploying `main` with the updated `web.config`, use:
 
 https://gather-nexus-new-refreshment-site-gea5ddfae7gwhtbv.uksouth-01.azurewebsites.net/?review=ade20793493210f2321bfbf8cc64278a
 
-Check GitHub Actions — deploy must pass **Verify live site health** before using Azure.
+Push to `main` and confirm GitHub Actions **Verify live site health** passes before sharing the Azure link.
