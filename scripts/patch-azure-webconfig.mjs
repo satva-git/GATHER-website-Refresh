@@ -22,8 +22,7 @@ function writeConfig(webConfig) {
 let webConfig = fs.readFileSync(deployWebConfig, 'utf8');
 
 if (!publishProfileXml) {
-  writeConfig(applyLauncher(webConfig, 'cmd.exe', '/c run.cmd'));
-  console.log('AZURE_WEBAPP_PUBLISH_PROFILE not set; using cmd.exe /c run.cmd');
+  console.log('AZURE_WEBAPP_PUBLISH_PROFILE not set; keeping repo web.config (node.exe + server.js).');
   process.exit(0);
 }
 
@@ -32,8 +31,7 @@ const profileMatch = publishProfileXml.match(
 );
 
 if (!profileMatch) {
-  writeConfig(applyLauncher(webConfig, 'cmd.exe', '/c run.cmd'));
-  console.log('Zip Deploy profile not found; using cmd.exe /c run.cmd');
+  console.log('Zip Deploy profile not found; keeping repo web.config (node.exe + server.js).');
   process.exit(0);
 }
 
@@ -128,12 +126,11 @@ if (!nodePath) {
 }
 
 if (!nodePath) {
-  writeConfig(applyLauncher(webConfig, 'cmd.exe', '/c run.cmd'));
-  console.log('Node path not resolved; using cmd.exe /c run.cmd');
+  console.log('Node path not resolved via Kudu; keeping repo web.config defaults.');
   process.exit(0);
 }
 
 const xmlNodePath = nodePath.replace(/&/g, '&amp;');
-const serverEntry = 'D:\\home\\site\\wwwroot\\server.js';
-writeConfig(applyLauncher(webConfig, xmlNodePath, serverEntry));
-console.log('Patched deploy_pkg/web.config to launch Node at', nodePath);
+// httpPlatform starts in site\wwwroot — use a relative entry (full paths break startup).
+writeConfig(applyLauncher(webConfig, xmlNodePath, 'server.js'));
+console.log('Patched deploy_pkg/web.config:', xmlNodePath, 'server.js');
