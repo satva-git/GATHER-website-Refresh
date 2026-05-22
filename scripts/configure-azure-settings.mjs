@@ -20,6 +20,7 @@ const auth = Buffer.from(`${userName}:${userPwd}`).toString('base64');
 const settings = [
   { name: 'WEBSITE_NODE_DEFAULT_VERSION', value: '~20' },
   { name: 'WEBSITE_RUN_FROM_PACKAGE', value: '0' },
+  { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'true' },
   { name: 'REVIEW_DATA_DIR', value: 'D:\\home\\site\\data' }
 ];
 
