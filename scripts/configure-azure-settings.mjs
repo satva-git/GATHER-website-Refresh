@@ -48,3 +48,13 @@ if (!res.ok) {
 }
 
 console.log('Azure runtime settings updated.');
+
+const restart = await fetch(`https://${scmHost}/api/restart`, {
+  method: 'POST',
+  headers: { Authorization: `Basic ${auth}` }
+});
+if (restart.ok) {
+  console.log('Azure app restart requested.');
+} else {
+  console.log(`Azure app restart skipped (${restart.status}).`);
+}

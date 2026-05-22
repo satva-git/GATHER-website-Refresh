@@ -2,11 +2,11 @@
 setlocal EnableExtensions
 cd /d "%~dp0"
 
-echo [run] cwd=%CD% 1>&2
-echo [run] PORT=%PORT% HTTP_PLATFORM_PORT=%HTTP_PLATFORM_PORT% 1>&2
+echo [run] cwd=%CD%
+echo [run] PORT=%PORT% HTTP_PLATFORM_PORT=%HTTP_PLATFORM_PORT%
 
 if not exist "node_modules\express\package.json" (
-  echo [run] ERROR express is missing from node_modules 1>&2
+  echo [run] ERROR express is missing from node_modules
   exit /b 1
 )
 
@@ -22,11 +22,11 @@ if not defined NODE_EXE (
 if not defined NODE_EXE where node >nul 2>&1 && set "NODE_EXE=node"
 
 if not defined NODE_EXE (
-  echo [run] ERROR Node.js executable not found 1>&2
+  echo [run] ERROR Node.js executable not found
   exit /b 1
 )
 
-echo [run] node=%NODE_EXE% 1>&2
-"%NODE_EXE%" --version 1>&2
+echo [run] node=%NODE_EXE%
+"%NODE_EXE%" --version
 "%NODE_EXE%" server.js
 exit /b %ERRORLEVEL%
