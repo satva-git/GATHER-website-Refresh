@@ -164,7 +164,8 @@ function updateComment(commentId, updates) {
   }
   if (typeof updates.body === 'string') {
     const body = updates.body.trim();
-    if (body) comment.body = body;
+    if (!body) return { error: 'Comment cannot be empty' };
+    comment.body = body;
   }
   comment.updatedAt = now();
 

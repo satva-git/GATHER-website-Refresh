@@ -67,12 +67,12 @@ const THREE_PILLARS = `
               <div class="pillars-panel-head">
                 <div class="pillars-panel-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Pillar 01</div>
                 <h3 class="h3">Automated Group Financial Reporting</h3>
-                <p class="body">One consolidated, audit-ready group view — built automatically.</p>
+                <p class="body">Five connected steps — from Group Reporting Template setup to consolidated report generation.</p>
               </div>
               <div class="pillars-cap-list">
-                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>US Industry Ready</h4><p>Access pre-designed industry-specific reporting templates (e.g., SaaS, Manufacturing, Healthcare).</p></div></div>
-                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>GATHER AI Mapping</h4><p>Streamline your workflow with AI-augmented mapping that recommends ledger connections with a confidence score and clear logic.</p></div></div>
-                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Multi-Currency Mastery</h4><p>Painlessly automate multi-currency P&amp;L and Balance Sheet reports while identifying and correcting FX discrepancies.</p></div></div>
+                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Create GRT</h4><p>Define your Group Reporting Template once — the consolidated chart of accounts every entity rolls up into.</p></div></div>
+                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Map GRT with AI Assistant</h4><p>Connect entity GL accounts from Xero and QuickBooks with GATHER AI recommendations and confidence scoring.</p></div></div>
+                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Autojournals to Reports</h4><p>Automated consolidation journals, audit-ready working papers with three-level drill-down, and industry-specific reports.</p></div></div>
               </div>
             </div>
             <div class="pillars-panel-content" data-pillar-panel="1">
@@ -93,12 +93,12 @@ const THREE_PILLARS = `
               <div class="pillars-panel-head">
                 <div class="pillars-panel-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19h16M6 15l4-8 4 6 4-10"/></svg> Pillar 03</div>
                 <h3 class="h3">Unified Group Planning</h3>
-                <p class="body">Collaborative budgeting and actual vs budget analysis — connected to live group actuals.</p>
+                <p class="body">Three connected steps — from divisional budgets through Group roll-up to actuals vs budget analysis.</p>
               </div>
               <div class="pillars-cap-list">
-                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Delegated Budgeting</h4><p>Structured planning workflow that rolls up automatically to the consolidated Group view.</p></div></div>
-                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Actuals vs Budget</h4><p>Three-level variance drill-down connected to intercompany and reporting modules.</p></div></div>
-                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Connected Performance View</h4><p>Single unified view of Group financial performance across all entities and currencies.</p></div></div>
+                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Divisional Budgets</h4><p>Create and delegate budgets at division, department, or functional level across entities.</p></div></div>
+                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Group Budget Roll-Up</h4><p>Roll up divisional and entity budgets automatically into a consolidated Group budget.</p></div></div>
+                <div class="pillars-cap"><div class="pillars-cap-ic">${checkSvg}</div><div class="pillars-cap-body"><h4>Actuals vs Budget</h4><p>Compare budgets to live actuals with three-level variance drill-down across the Group.</p></div></div>
               </div>
             </div>
           </div>
@@ -189,20 +189,20 @@ const PLATFORM_FEATURES = `
       <div class="sec-head sr">
         <div class="eyebrow">Platform Capabilities</div>
         <h2 class="h2">See How GATHER.nexus Works in Practice</h2>
-        <p class="lead">Structured workflows with platform screenshots at every step — built for finance teams who need clarity, not complexity.</p>
+        <p class="lead">Structured five-step Group Financial Reporting workflows with platform screenshots at every step — built for finance teams who need clarity, not complexity.</p>
       </div>
 
       <div class="feature-row sr">
         <div class="feature-row__media">
-          ${screenshotFrame('Consolidation Working Papers', 'Replace with GATHER consolidation working papers screenshot', 'screenshot-frame--tall')}
+          ${screenshotFrame('Create Group Reporting Template', 'Replace with GATHER GRT creation screenshot', 'screenshot-frame--tall')}
         </div>
         <div class="feature-row__content">
           <div class="feature-row__pill">Group Financial Reporting</div>
-          <h3 class="h3">Central Working Papers Hub</h3>
-          <p class="body">Every elimination, adjustment, and consolidation entry lives in one structured hub — connected to source entity data and audit-ready by design.</p>
+          <h3 class="h3">Build Your Group Reporting Template</h3>
+          <p class="body">Define the consolidated chart of accounts that every entity rolls up into — starting from industry templates or a custom structure ready to map entity ledgers from Xero and QuickBooks.</p>
           <div class="feature-cards">
-            <div class="feature-card"><div class="feature-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div><h5>Audit-ready tracking</h5><p>Full trail from group result to source transaction.</p></div></div>
-            <div class="feature-card"><div class="feature-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M2 12h20"/></svg></div><div><h5>FX reserves automation</h5><p>FX differences in reserves calculated automatically.</p></div></div>
+            <div class="feature-card"><div class="feature-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div><h5>Industry templates</h5><p>Pre-designed structures for SaaS, Manufacturing, Healthcare, and more.</p></div></div>
+            <div class="feature-card"><div class="feature-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M2 12h20"/></svg></div><div><h5>Reusable GRT structure</h5><p>Set up once and reuse across every consolidation period.</p></div></div>
           </div>
         </div>
       </div>
@@ -212,12 +212,12 @@ const PLATFORM_FEATURES = `
           ${screenshotFrame('AI-Assisted GL Mapping', 'Replace with GATHER AI mapping interface screenshot', 'screenshot-frame--tall')}
         </div>
         <div class="feature-row__content">
-          <div class="feature-row__pill">GATHER AI</div>
-          <h3 class="h3">AI-Augmented Ledger Mapping</h3>
-          <p class="body">Drag-and-drop GL mapping assisted by GATHER AI — with confidence scores and clear logic for every recommended connection.</p>
+          <div class="feature-row__pill">Group Financial Reporting</div>
+          <h3 class="h3">Map GRT with AI Assistant</h3>
+          <p class="body">Connect each entity&rsquo;s General Ledger to your GRT with drag-and-drop mapping assisted by GATHER AI — with confidence scores and clear logic for every recommended connection.</p>
           <div class="feature-cards">
             <div class="feature-card"><div class="feature-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/></svg></div><div><h5>Smart recommendations</h5><p>AI suggests ledger connections with confidence scoring.</p></div></div>
-            <div class="feature-card"><div class="feature-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg></div><div><h5>Industry templates</h5><p>Pre-designed templates for SaaS, Manufacturing, Healthcare.</p></div></div>
+            <div class="feature-card"><div class="feature-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg></div><div><h5>Privacy-safe AI</h5><p>Only account name, ID, and type shared with the AI engine.</p></div></div>
           </div>
         </div>
       </div>
@@ -335,19 +335,6 @@ function patch() {
     html = html.replace(
       '<script src="/review/review.js" defer></script>',
       '<script src="/assets/page-extensions.js" defer></script>\n<script src="/review/review.js" defer></script>'
-    );
-  }
-
-  if (!html.includes('page-comments.css')) {
-    html = html.replace(
-      '<link rel="stylesheet" href="/review/review.css"/>',
-      '<link rel="stylesheet" href="/review/review.css"/>\n<link rel="stylesheet" href="/comments/page-comments.css"/>'
-    );
-  }
-  if (!html.includes('page-comments.js')) {
-    html = html.replace(
-      '<script src="/review/review.js" defer></script>',
-      '<script src="/review/review.js" defer></script>\n<script src="/comments/page-comments.js" defer></script>'
     );
   }
 

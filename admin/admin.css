@@ -185,6 +185,24 @@ html, body {
   border-color: var(--teal);
 }
 
+.session-card-default {
+  border-color: #c5ddd6;
+  background: #f9fcfb;
+}
+
+.session-default-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--teal);
+  background: var(--teal-tint);
+  padding: 4px 8px;
+  border-radius: 100px;
+  margin-bottom: 8px;
+}
+
 .session-title {
   font-size: 15px;
   font-weight: 700;
@@ -269,6 +287,33 @@ html, body {
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.comment-replies {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--paper-2);
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+
+.comment-reply {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.comment-reply:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.comment-reply div {
+  margin-top: 4px;
+  color: #334155;
+  white-space: pre-wrap;
 }
 
 .comment-meta {

@@ -6,6 +6,7 @@ const os = require('os');
 const db = require('./db');
 const pageCommentsDb = require('./page-comments-db');
 const { getDataDir } = require('./data-dir');
+const { loadReviewDefaults, getDefaultReviewToken } = require('./review-defaults');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 3000;
@@ -84,6 +85,35 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
+app.get('/api/review-default', (req, res) => {
+  const defaults = loadReviewDefaults();
+  if (!defaults) {
+    return res.status(404).json({ error: 'No default review link configured' });
+  }
+  const session = db.getSessionByToken(defaults.defaultReviewToken);
+  if (!session) {
+    return res.status(404).json({ error: 'Default review session not found' });
+  }
+  const shareUrl = `${getBaseUrl(req)}${session.pagePath}?review=${session.token}`;
+  res.json({
+    label: defaults.label,
+    session,
+    shareUrl
+  });
+});
+
+function redirectToDefaultReview(req, res, next) {
+  if (req.query.review) return next();
+  const token = getDefaultReviewToken();
+  if (!token) return next();
+  const session = db.getSessionByToken(token);
+  if (!session) return next();
+  const query = new URLSearchParams(req.query);
+  query.set('review', session.token);
+  const qs = query.toString();
+  return res.redirect(302, req.path + (qs ? '?' + qs : ''));
+}
+
 app.get('/api/sessions/resolve', (req, res) => {
   const { normalizePagePath } = require('./path-utils');
   const pagePath = normalizePagePath(req.query.path || '/');
@@ -154,9 +184,11 @@ app.post('/api/comments/:id/replies', (req, res) => {
 });
 
 app.patch('/api/comments/:id', (req, res) => {
-  const comment = db.updateComment(req.params.id, req.body || {});
-  if (!comment) return res.status(404).json({ error: 'Comment not found' });
+  const result = db.updateComment(req.params.id, req.body || {});
+  if (!result) return res.status(404).json({ error: 'Comment not found' });
+  if (result.error) return res.status(400).json({ error: result.error });
 
+  const comment = result;
   const session = db.listSessions().find(s => s.id === comment.sessionId);
   if (session) {
     broadcast(session.token, 'comment_updated', { comment });
@@ -289,12 +321,12 @@ app.get('/api/admin/events', (req, res) => {
 app.use('/review', express.static(path.join(ROOT, 'review')));
 app.use('/admin', express.static(path.join(ROOT, 'admin')));
 
-app.get('/', (_req, res) => {
+app.get('/', redirectToDefaultReview, (_req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.sendFile(path.join(ROOT, 'HomePage.html'));
 });
 
-app.get(['/HomePage.html', '/index.html'], (_req, res) => {
+app.get(['/HomePage.html', '/index.html'], redirectToDefaultReview, (_req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.sendFile(path.join(ROOT, 'HomePage.html'));
 });
@@ -345,8 +377,21 @@ const server = app.listen(PORT, HOST, () => {
   if (process.env.PUBLIC_BASE_URL) {
     console.log(`  Public:    ${process.env.PUBLIC_BASE_URL}`);
   }
-  console.log(`  Comments:  server/data/review.db.json`);
+  console.log(`  Comments:  ${path.join(getDataDir(), 'review.db.json')}`);
   console.log('');
+  const defaults = loadReviewDefaults();
+  if (defaults) {
+    const session = db.getSessionByToken(defaults.defaultReviewToken);
+    if (session) {
+      console.log('  Primary review link (saved for ongoing work):');
+      console.log(`  http://localhost:${PORT}${session.pagePath}?review=${session.token}`);
+      const lan = getLanAddress();
+      if (lan) {
+        console.log(`  http://${lan}:${PORT}${session.pagePath}?review=${session.token}`);
+      }
+      console.log('');
+    }
+  }
   console.log('  Create a share link from Admin, then send the client URL with ?review=TOKEN');
   console.log('');
 });

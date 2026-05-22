@@ -20,7 +20,11 @@
     draft: null,
     activeId: null,
     contextMenu: null,
-    tooltipCommentId: null
+    tooltipCommentId: null,
+    useApi: false,
+    connected: false,
+    submitting: false,
+    eventSource: null
   };
 
   var root = document.createElement('div');
@@ -45,8 +49,12 @@
 
   var toastTimer = null;
 
+  function pagePath() {
+    return window.location.pathname || '/';
+  }
+
   function storageKey() {
-    return STORAGE_PREFIX + window.location.pathname;
+    return STORAGE_PREFIX + pagePath();
   }
 
   function escapeHtml(str) {
@@ -68,8 +76,9 @@
     }
   }
 
-  function showToast(message) {
+  function showToast(message, isError) {
     toastEl.textContent = message;
+    toastEl.classList.toggle('error', !!isError);
     toastEl.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () {
@@ -86,26 +95,126 @@
     return Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
   }
 
-  function loadComments() {
+  function loadLocalComments() {
     try {
       var raw = localStorage.getItem(storageKey());
-      state.comments = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(state.comments)) state.comments = [];
+      var comments = raw ? JSON.parse(raw) : [];
+      return Array.isArray(comments) ? comments : [];
     } catch (e) {
-      state.comments = [];
+      return [];
     }
   }
 
-  function saveComments() {
+  function clearLocalComments() {
+    try {
+      localStorage.removeItem(storageKey());
+    } catch (e) {}
+  }
+
+  function saveLocalComments() {
     try {
       localStorage.setItem(storageKey(), JSON.stringify(state.comments));
     } catch (e) {
-      showToast('Could not save comments to local storage.');
+      showToast('Could not save comments locally.', true);
     }
   }
 
-  function generateId() {
-    return 'pc-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  function upsertComment(comment) {
+    var index = state.comments.findIndex(function (c) { return c.id === comment.id; });
+    if (index === -1) state.comments.push(comment);
+    else state.comments[index] = comment;
+    state.comments.sort(function (a, b) {
+      return a.createdAt.localeCompare(b.createdAt);
+    });
+  }
+
+  function removeCommentById(commentId) {
+    state.comments = state.comments.filter(function (c) { return c.id !== commentId; });
+    if (state.activeId === commentId) state.activeId = null;
+  }
+
+  function apiFetch(url, options) {
+    return fetch(url, options).then(function (res) {
+      return res.json().then(function (data) {
+        if (!res.ok) throw new Error(data.error || 'Request failed');
+        return data;
+      });
+    });
+  }
+
+  function loadCommentsFromApi() {
+    return apiFetch('/api/page-comments?path=' + encodeURIComponent(pagePath()))
+      .then(function (data) {
+        state.comments = data.comments || [];
+        state.useApi = true;
+      });
+  }
+
+  function migrateLocalToApi() {
+    var local = loadLocalComments();
+    if (!local.length) return Promise.resolve();
+
+    return local.reduce(function (chain, comment) {
+      return chain.then(function () {
+        return apiFetch('/api/page-comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pagePath: pagePath(),
+            body: comment.body,
+            pinX: comment.pinX,
+            pinY: comment.pinY
+          })
+        });
+      });
+    }, Promise.resolve()).then(function () {
+      clearLocalComments();
+      return loadCommentsFromApi();
+    });
+  }
+
+  function loadComments() {
+    return loadCommentsFromApi()
+      .then(function () {
+        return migrateLocalToApi();
+      })
+      .catch(function () {
+        state.useApi = false;
+        state.comments = loadLocalComments();
+      });
+  }
+
+  function connectEvents() {
+    if (!state.useApi || state.eventSource) return;
+
+    var es = new EventSource('/api/page-comments/events');
+    state.eventSource = es;
+
+    es.addEventListener('connected', function () {
+      state.connected = true;
+    });
+
+    es.addEventListener('comment_created', function (event) {
+      var data = JSON.parse(event.data);
+      if (!data.comment || data.comment.pagePath !== pagePath()) return;
+      upsertComment(data.comment);
+      renderAll();
+    });
+
+    es.addEventListener('comment_deleted', function (event) {
+      var data = JSON.parse(event.data);
+      if (data.pagePath !== pagePath()) return;
+      removeCommentById(data.commentId);
+      renderAll();
+    });
+
+    es.onerror = function () {
+      state.connected = false;
+    };
+  }
+
+  function saveHintText() {
+    return state.useApi ? 'Synced across devices' : 'Saved locally on this device';
   }
 
   function clampPopoverPosition(clientX, clientY, heightEstimate) {
@@ -178,7 +287,9 @@
     badge.innerHTML =
       '<span class="pc-badge-count">' + state.comments.length + '</span>' +
       '<span>Page comment' + (state.comments.length === 1 ? '' : 's') + '</span>';
-    badge.title = 'Right-click anywhere to add a comment';
+    badge.title = state.useApi
+      ? 'Comments sync via server/data/page-comments.json'
+      : 'Right-click anywhere to add a comment';
     root.appendChild(badge);
   }
 
@@ -291,7 +402,7 @@
 
     popover.innerHTML =
       '<div class="pc-popover-head">' +
-        '<div><strong>Add comment</strong><span>Right-click saved locally</span></div>' +
+        '<div><strong>Add comment</strong><span>' + escapeHtml(saveHintText()) + '</span></div>' +
         '<button type="button" class="pc-popover-close" aria-label="Close">&times;</button>' +
       '</div>' +
       '<form class="pc-popover-body">' +
@@ -301,7 +412,7 @@
         '</label>' +
         '<div class="pc-popover-actions">' +
           '<button type="button" class="pc-btn pc-btn-ghost pc-cancel">Cancel</button>' +
-          '<button type="submit" class="pc-btn pc-btn-primary">Save</button>' +
+          '<button type="submit" class="pc-btn pc-btn-primary"' + (state.submitting ? ' disabled' : '') + '>Save</button>' +
         '</div>' +
       '</form>';
 
@@ -330,14 +441,14 @@
 
     popover.innerHTML =
       '<div class="pc-popover-head">' +
-        '<div><strong>Comment</strong><span>Saved on this page</span></div>' +
+        '<div><strong>Comment</strong><span>' + escapeHtml(saveHintText()) + '</span></div>' +
         '<button type="button" class="pc-popover-close" aria-label="Close">&times;</button>' +
       '</div>' +
       '<div class="pc-popover-body">' +
         '<div class="pc-view-body">' + escapeHtml(comment.body) + '</div>' +
         '<div class="pc-view-time">' + escapeHtml(formatTime(comment.createdAt)) + '</div>' +
         '<div class="pc-popover-actions">' +
-          '<button type="button" class="pc-btn pc-btn-danger pc-delete">Delete</button>' +
+          '<button type="button" class="pc-btn pc-btn-danger pc-delete"' + (state.submitting ? ' disabled' : '') + '>Delete</button>' +
           '<button type="button" class="pc-btn pc-btn-ghost pc-close">Close</button>' +
         '</div>' +
       '</div>';
@@ -361,45 +472,94 @@
 
   function onSubmitDraft(e) {
     e.preventDefault();
-    if (!state.draft) return;
+    if (!state.draft || state.submitting) return;
 
     var body = e.target.body.value.trim();
     if (!body) {
-      showToast('Please enter a comment.');
+      showToast('Please enter a comment.', true);
+      return;
+    }
+
+    state.submitting = true;
+
+    if (state.useApi) {
+      apiFetch('/api/page-comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pagePath: pagePath(),
+          body: body,
+          pinX: state.draft.pinX,
+          pinY: state.draft.pinY
+        })
+      })
+        .then(function (data) {
+          upsertComment(data.comment);
+          state.activeId = data.comment.id;
+          state.draft = null;
+          closePopover();
+          renderAll();
+          showToast('Comment saved.');
+        })
+        .catch(function (err) {
+          showToast(err.message || 'Could not save comment.', true);
+        })
+        .finally(function () {
+          state.submitting = false;
+        });
       return;
     }
 
     var comment = {
-      id: generateId(),
+      id: 'pc-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8),
       body: body,
       pinX: state.draft.pinX,
       pinY: state.draft.pinY,
       createdAt: new Date().toISOString()
     };
 
-    state.comments.push(comment);
-    state.comments.sort(function (a, b) {
-      return a.createdAt.localeCompare(b.createdAt);
-    });
-
-    saveComments();
+    upsertComment(comment);
+    saveLocalComments();
     state.activeId = comment.id;
+    state.submitting = false;
     closePopover();
     renderAll();
-    showToast('Comment saved.');
+    showToast('Comment saved locally.');
   }
 
   function deleteComment(commentId) {
+    if (state.submitting) return;
+
     var marker = markerLayer.querySelector('.pc-marker.active');
     if (marker) marker.classList.add('removing');
 
-    setTimeout(function () {
-      state.comments = state.comments.filter(function (c) { return c.id !== commentId; });
-      if (state.activeId === commentId) state.activeId = null;
-      saveComments();
+    function finishDelete() {
+      removeCommentById(commentId);
       closePopover();
       renderAll();
       showToast('Comment deleted.');
+    }
+
+    if (state.useApi) {
+      state.submitting = true;
+      setTimeout(function () {
+        apiFetch('/api/page-comments/' + encodeURIComponent(commentId), { method: 'DELETE' })
+          .then(function () {
+            finishDelete();
+          })
+          .catch(function (err) {
+            showToast(err.message || 'Could not delete comment.', true);
+          })
+          .finally(function () {
+            state.submitting = false;
+          });
+      }, marker ? 180 : 0);
+      return;
+    }
+
+    setTimeout(function () {
+      finishDelete();
+      saveLocalComments();
     }, marker ? 180 : 0);
   }
 
@@ -450,6 +610,8 @@
     hideTooltip();
   }, { passive: true });
 
-  loadComments();
-  renderAll();
+  loadComments().then(function () {
+    renderAll();
+    connectEvents();
+  });
 })();

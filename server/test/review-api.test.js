@@ -65,6 +65,7 @@ describe('Review API integration', () => {
     process.env.PORT = '0';
 
     delete require.cache[require.resolve('../db.js')];
+    delete require.cache[require.resolve('../page-comments-db.js')];
     delete require.cache[require.resolve('../index.js')];
 
     const { server: startedServer } = require('../index.js');
@@ -164,5 +165,50 @@ describe('Review API integration', () => {
   it('returns 404 for invalid session token', async () => {
     const res = await request(baseUrl, 'GET', '/api/sessions/not-a-real-token/comments');
     assert.equal(res.status, 404);
+  });
+
+  it('updates comment body and rejects empty text', async () => {
+    const createRes = await request(baseUrl, 'POST', `/api/sessions/${sessionToken}/comments`, {
+      authorName: 'Editor',
+      body: 'Original text',
+      pinX: 0.3,
+      pinY: 0.3
+    });
+    assert.equal(createRes.status, 201);
+    const commentId = createRes.json.comment.id;
+
+    const patchRes = await request(baseUrl, 'PATCH', `/api/comments/${commentId}`, {
+      body: 'Updated text'
+    });
+    assert.equal(patchRes.status, 200);
+    assert.equal(patchRes.json.comment.body, 'Updated text');
+
+    const emptyRes = await request(baseUrl, 'PATCH', `/api/comments/${commentId}`, {
+      body: '   '
+    });
+    assert.equal(emptyRes.status, 400);
+  });
+
+  it('creates and lists thread replies', async () => {
+    const createRes = await request(baseUrl, 'POST', `/api/sessions/${sessionToken}/comments`, {
+      authorName: 'Client',
+      body: 'Needs a reply',
+      pinX: 0.2,
+      pinY: 0.2
+    });
+    assert.equal(createRes.status, 201);
+    const commentId = createRes.json.comment.id;
+
+    const replyRes = await request(baseUrl, 'POST', `/api/comments/${commentId}/replies`, {
+      authorName: 'Designer',
+      body: 'Will fix this today'
+    });
+    assert.equal(replyRes.status, 201);
+    assert.equal(replyRes.json.reply.body, 'Will fix this today');
+
+    const listRes = await request(baseUrl, 'GET', `/api/sessions/${sessionToken}/comments`);
+    const saved = listRes.json.comments.find(c => c.id === commentId);
+    assert.ok(saved);
+    assert.equal(saved.replies.length, 1);
   });
 });

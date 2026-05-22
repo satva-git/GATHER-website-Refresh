@@ -4,6 +4,7 @@
   var state = {
     sessions: [],
     selectedToken: null,
+    defaultToken: null,
     comments: [],
     filter: 'all',
     connected: false,
@@ -53,6 +54,12 @@
     return window.location.origin + session.pagePath + '?review=' + session.token;
   }
 
+  function apiFetch(url, options) {
+    options = options || {};
+    options.cache = 'no-store';
+    return fetch(url, options);
+  }
+
   function filteredComments() {
     if (state.filter === 'open') {
       return state.comments.filter(function (c) { return c.status === 'open'; });
@@ -73,8 +80,10 @@
     sessionsList.innerHTML = state.sessions.map(function (session) {
       var active = session.token === state.selectedToken ? ' active' : '';
       var url = shareUrl(session);
+      var isDefault = state.defaultToken && session.token === state.defaultToken;
       return (
-        '<article class="session-card' + active + '" data-token="' + session.token + '">' +
+        '<article class="session-card' + active + (isDefault ? ' session-card-default' : '') + '" data-token="' + session.token + '">' +
+          (isDefault ? '<div class="session-default-badge">Primary link</div>' : '') +
           '<div class="session-title">' + escapeHtml(session.title) + '</div>' +
           '<div class="session-meta">Created ' + escapeHtml(formatTime(session.createdAt)) + '</div>' +
           '<div class="share-row">' +
@@ -128,6 +137,7 @@
     commentsList.innerHTML = comments.slice().reverse().map(function (comment) {
       var resolved = comment.status === 'resolved';
       var previewUrl = shareUrl(session) + '#comment-' + comment.id;
+      var replies = comment.replies || [];
       return (
         '<article class="comment-item' + (resolved ? ' resolved' : '') + '">' +
           '<div class="comment-top">' +
@@ -139,8 +149,19 @@
           (comment.sectionLabel || comment.sectionId ?
             '<div class="comment-section">' + escapeHtml(comment.sectionLabel || comment.sectionId) + '</div>' : '') +
           '<div class="comment-body">' + escapeHtml(comment.body) + '</div>' +
+          (replies.length ?
+            '<div class="comment-replies">' + replies.map(function (reply) {
+              return (
+                '<div class="comment-reply">' +
+                  '<strong>' + escapeHtml(reply.authorName) + '</strong> · ' +
+                  escapeHtml(formatTime(reply.createdAt)) +
+                  '<div>' + escapeHtml(reply.body) + '</div>' +
+                '</div>'
+              );
+            }).join('') + '</div>' : '') +
           '<div class="comment-meta">' + escapeHtml(formatTime(comment.createdAt)) +
             (comment.pinX != null ? ' · pinned on page' : '') +
+            (replies.length ? ' · ' + replies.length + ' repl' + (replies.length === 1 ? 'y' : 'ies') : '') +
           '</div>' +
           '<div class="comment-actions">' +
             '<button type="button" class="btn btn-ghost toggle-btn" data-id="' + comment.id + '" data-status="' +
@@ -204,7 +225,7 @@
   }
 
   function loadSessions() {
-    return fetch('/api/sessions')
+    return apiFetch('/api/sessions')
       .then(function (res) { return res.json(); })
       .then(function (data) {
         state.sessions = data.sessions || [];
@@ -212,7 +233,7 @@
   }
 
   function loadComments(token) {
-    return fetch('/api/sessions/' + encodeURIComponent(token) + '/comments')
+    return apiFetch('/api/sessions/' + encodeURIComponent(token) + '/comments?_=' + Date.now())
       .then(function (res) { return res.json(); })
       .then(function (data) {
         state.comments = data.comments || [];
@@ -312,6 +333,10 @@
       refreshSessionCounts().then(renderAll);
     });
 
+    es.addEventListener('reply_created', function () {
+      refreshSessionCounts().then(renderAll);
+    });
+
     es.onerror = function () {
       state.connected = false;
       renderAll();
@@ -353,8 +378,18 @@
 
   loadSessions()
     .then(function () {
-      if (state.sessions.length) {
+      return fetch('/api/review-default')
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .catch(function () { return null; });
+    })
+    .then(function (defaultReview) {
+      if (defaultReview && defaultReview.session) {
+        state.defaultToken = defaultReview.session.token;
+        state.selectedToken = defaultReview.session.token;
+      } else if (state.sessions.length) {
         state.selectedToken = state.sessions[0].token;
+      }
+      if (state.selectedToken) {
         return loadComments(state.selectedToken);
       }
     })
