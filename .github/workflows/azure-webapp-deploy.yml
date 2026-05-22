@@ -13,6 +13,7 @@ env:
 jobs:
   build-and-deploy:
     runs-on: windows-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
@@ -33,8 +34,17 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Verify production dependencies
-        run: node -e "require('express'); console.log('express ok')"
+      - name: Build deploy package with node_modules
+        shell: pwsh
+        run: |
+          if (Test-Path deploy_pkg) { Remove-Item deploy_pkg -Recurse -Force }
+          New-Item -ItemType Directory -Path deploy_pkg | Out-Null
+          robocopy . deploy_pkg /E /XD .git deploy_pkg /XF deploy.zip | Out-Null
+          if ($LASTEXITCODE -ge 8) { throw "robocopy failed with exit code $LASTEXITCODE" }
+          if (!(Test-Path deploy_pkg/node_modules/express/package.json)) {
+            throw "express is missing from deploy_pkg/node_modules"
+          }
+          Write-Host "Deploy package ready."
 
       - name: Configure Azure Node.js runtime
         env:
@@ -46,4 +56,4 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
+          package: deploy_pkg
