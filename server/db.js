@@ -25,7 +25,7 @@ function ensureDbDir() {
 function load() {
   ensureDbDir();
   if (!fs.existsSync(DB_PATH)) {
-    data = structuredClone(DEFAULT_DATA);
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
     persistSync();
     return;
   }
@@ -39,7 +39,7 @@ function load() {
   } catch (err) {
     const backup = DB_PATH + '.corrupt-' + Date.now();
     fs.copyFileSync(DB_PATH, backup);
-    data = structuredClone(DEFAULT_DATA);
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
     persistSync();
   }
 }

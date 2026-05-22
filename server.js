@@ -1,5 +1,7 @@
 'use strict';
 
+console.log('[startup] Node', process.version);
+
 const fs = require('fs');
 const path = require('path');
 
