@@ -9,8 +9,13 @@ const { getDataDir } = require('./data-dir');
 const { loadReviewDefaults, getDefaultReviewToken } = require('./review-defaults');
 
 const ROOT = path.join(__dirname, '..');
-const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 3000;
+const PORT = Number(process.env.PORT || process.env.HTTP_PLATFORM_PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
+
+if (!Number.isFinite(PORT) || PORT < 0) {
+  console.error('[startup] Invalid PORT:', process.env.PORT, process.env.HTTP_PLATFORM_PORT);
+  process.exit(1);
+}
 
 const app = express();
 app.set('trust proxy', 1);

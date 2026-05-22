@@ -9,7 +9,7 @@
     "sync": "node -e \"require('fs').copyFileSync('HomePage.html','index.html')\"",
     "enhance": "node scripts/enhance-homepage.js && npm run sync",
     "embed": "node scripts/embed-images.js",
-    "start": "npm run sync && node server/index.js",
+    "start": "node server.js",
     "preview": "npm run sync && node server/index.js",
     "preview:static": "npm run sync && npx --yes serve . -l 3000",
     "figma:export": "node scripts/export-figma.js",
