@@ -1,6 +1,10 @@
 'use strict';
 
 console.log('[startup] Node', process.version);
+console.log('[startup] cwd', process.cwd());
+console.log('[startup] PORT', process.env.PORT);
+console.log('[startup] HTTP_PLATFORM_PORT', process.env.HTTP_PLATFORM_PORT);
+console.log('[startup] REVIEW_DATA_DIR', process.env.REVIEW_DATA_DIR);
 
 const fs = require('fs');
 const path = require('path');

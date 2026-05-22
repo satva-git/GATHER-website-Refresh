@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
+const publishProfileXml = process.env.AZURE_WEBAPP_PUBLISH_PROFILE;
 const deployWebConfig = path.join('deploy_pkg', 'web.config');
 
 if (!fs.existsSync(deployWebConfig)) {
@@ -8,16 +9,131 @@ if (!fs.existsSync(deployWebConfig)) {
   process.exit(0);
 }
 
+function applyLauncher(webConfig, processPath, argumentsValue) {
+  return webConfig
+    .replace(/processPath="[^"]*"/, `processPath="${processPath}"`)
+    .replace(/arguments="[^"]*"/, `arguments="${argumentsValue}"`);
+}
+
+function writeConfig(webConfig) {
+  fs.writeFileSync(deployWebConfig, webConfig, 'utf8');
+}
+
 let webConfig = fs.readFileSync(deployWebConfig, 'utf8');
 
-webConfig = webConfig.replace(
-  /processPath="[^"]*"/,
-  'processPath="cmd.exe"'
-);
-webConfig = webConfig.replace(
-  /arguments="[^"]*"/,
-  'arguments="/c run.cmd"'
+if (!publishProfileXml) {
+  writeConfig(applyLauncher(webConfig, 'cmd.exe', '/c run.cmd'));
+  console.log('AZURE_WEBAPP_PUBLISH_PROFILE not set; using cmd.exe /c run.cmd');
+  process.exit(0);
+}
+
+const profileMatch = publishProfileXml.match(
+  /publishMethod="ZipDeploy"[^>]*publishUrl="([^"]+)"[^>]*userName="([^"]+)"[^>]*userPWD="([^"]+)"/
 );
 
-fs.writeFileSync(deployWebConfig, webConfig, 'utf8');
-console.log('Patched deploy_pkg/web.config to launch via cmd.exe /c run.cmd');
+if (!profileMatch) {
+  writeConfig(applyLauncher(webConfig, 'cmd.exe', '/c run.cmd'));
+  console.log('Zip Deploy profile not found; using cmd.exe /c run.cmd');
+  process.exit(0);
+}
+
+const [, publishUrl, userName, userPwd] = profileMatch;
+const scmHost = publishUrl.replace(/:443$/, '');
+const auth = Buffer.from(`${userName}:${userPwd}`).toString('base64');
+
+async function kuduCommand(command) {
+  const res = await fetch(`https://${scmHost}/api/command`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${auth}`,
+      'Content-Type': 'application/json',
+      'If-Match': '*'
+    },
+    body: JSON.stringify({ command, dir: 'site\\wwwroot' })
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Kudu command failed (${res.status}): ${text}`);
+  }
+
+  const data = await res.json();
+  return String(data.Output || data.output || '');
+}
+
+function pickNodePath(output) {
+  const lines = output
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  for (const line of lines) {
+    if (/\\node\.exe$/i.test(line)) return line;
+  }
+
+  for (const line of lines) {
+    const versionDir = line.replace(/[\\/]+$/, '');
+    if (/\\nodejs\\/i.test(versionDir)) {
+      return path.win32.join(versionDir, 'node.exe');
+    }
+    if (/^\d+\.\d+\.\d+/.test(line)) {
+      return `D:\\Program Files (x86)\\nodejs\\${line}\\node.exe`;
+    }
+  }
+
+  return null;
+}
+
+const fallbackPaths = [
+  'D:\\Program Files (x86)\\nodejs\\node.exe',
+  'C:\\Program Files (x86)\\nodejs\\node.exe',
+  'D:\\Program Files (x86)\\nodejs\\20.20.2\\node.exe',
+  'C:\\Program Files (x86)\\nodejs\\20.20.2\\node.exe'
+];
+
+let nodePath = null;
+
+try {
+  const whereOutput = await kuduCommand('where node');
+  nodePath = pickNodePath(whereOutput);
+  if (nodePath) console.log('Resolved Node from Kudu where:', nodePath);
+} catch (err) {
+  console.log('Could not resolve Node via where:', err.message);
+}
+
+if (!nodePath) {
+  try {
+    const dirOutput = await kuduCommand('cmd /c dir /b "D:\\Program Files (x86)\\nodejs"');
+    nodePath = pickNodePath(dirOutput);
+    if (nodePath) console.log('Resolved Node from Kudu dir:', nodePath);
+  } catch (err) {
+    console.log('Could not resolve Node via dir:', err.message);
+  }
+}
+
+if (!nodePath) {
+  for (const candidate of fallbackPaths) {
+    try {
+      const probe = await kuduCommand(`cmd /c if exist "${candidate}" echo ${candidate}`);
+      const resolved = pickNodePath(probe);
+      if (resolved) {
+        nodePath = resolved;
+        console.log('Resolved Node via probe:', nodePath);
+        break;
+      }
+    } catch (err) {
+      // try next fallback
+    }
+  }
+}
+
+if (!nodePath) {
+  writeConfig(applyLauncher(webConfig, 'cmd.exe', '/c run.cmd'));
+  console.log('Node path not resolved; using cmd.exe /c run.cmd');
+  process.exit(0);
+}
+
+const xmlNodePath = nodePath.replace(/&/g, '&amp;');
+const serverEntry = 'D:\\home\\site\\wwwroot\\server.js';
+writeConfig(applyLauncher(webConfig, xmlNodePath, serverEntry));
+console.log('Patched deploy_pkg/web.config to launch Node at', nodePath);

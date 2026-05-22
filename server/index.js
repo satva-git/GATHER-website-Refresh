@@ -19,9 +19,12 @@ function getListenTarget() {
 }
 
 const PORT = getListenTarget();
-const HOST = (process.env.WEBSITE_SITE_NAME || process.env.WEBSITE_INSTANCE_ID)
-  ? '127.0.0.1'
-  : (process.env.HOST || '0.0.0.0');
+const useNamedPipe = typeof PORT !== 'number';
+const HOST = useNamedPipe ? undefined : (process.env.HOST || '0.0.0.0');
+
+console.log('[startup] listen target:', typeof PORT === 'number' ? `tcp:${PORT}` : PORT);
+console.log('[startup] azure:', Boolean(process.env.WEBSITE_SITE_NAME || process.env.WEBSITE_INSTANCE_ID));
+console.log('[startup] data dir:', getDataDir());
 
 if (typeof PORT === 'number' && (!Number.isFinite(PORT) || PORT < 0)) {
   console.error('[startup] Invalid PORT:', process.env.PORT, process.env.HTTP_PLATFORM_PORT);
