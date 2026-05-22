@@ -20,9 +20,14 @@ const auth = Buffer.from(`${userName}:${userPwd}`).toString('base64');
 const settings = [
   { name: 'WEBSITE_NODE_DEFAULT_VERSION', value: '~20' },
   { name: 'WEBSITE_RUN_FROM_PACKAGE', value: '0' },
-  { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'true' },
+  // Dependencies are bundled in CI; skip Kudu npm install on deploy.
+  { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'false' },
   { name: 'WEBSITES_CONTAINER_START_TIME_LIMIT', value: '600' },
-  { name: 'REVIEW_DATA_DIR', value: 'D:\\home\\site\\data' }
+  { name: 'REVIEW_DATA_DIR', value: 'D:\\home\\site\\data' },
+  {
+    name: 'PUBLIC_BASE_URL',
+    value: 'https://gather-nexus-new-refreshment-site-gea5ddfae7gwhtbv.uksouth-01.azurewebsites.net'
+  }
 ];
 
 const res = await fetch(`https://${scmHost}/api/settings`, {

@@ -22,8 +22,34 @@ function ensureDbDir() {
   ensureDataDir();
 }
 
+const SEED_DB_PATH = path.join(__dirname, 'seed', 'review.db.json');
+
+function seedFromTemplateIfNeeded() {
+  if (!fs.existsSync(SEED_DB_PATH)) return;
+
+  let needsSeed = !fs.existsSync(DB_PATH);
+  if (!needsSeed) {
+    try {
+      const parsed = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+      needsSeed = !Array.isArray(parsed.sessions) || parsed.sessions.length === 0;
+    } catch (err) {
+      needsSeed = true;
+    }
+  }
+
+  if (!needsSeed) return;
+
+  try {
+    fs.copyFileSync(SEED_DB_PATH, DB_PATH);
+    console.log('[db] Seeded review database from', SEED_DB_PATH);
+  } catch (err) {
+    console.warn('[db] Could not seed review database:', err.message);
+  }
+}
+
 function load() {
   ensureDbDir();
+  seedFromTemplateIfNeeded();
   if (!fs.existsSync(DB_PATH)) {
     data = JSON.parse(JSON.stringify(DEFAULT_DATA));
     persistSync();
