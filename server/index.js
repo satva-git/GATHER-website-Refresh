@@ -19,7 +19,7 @@ function getListenTarget() {
 }
 
 const PORT = getListenTarget();
-const HOST = process.env.WEBSITE_SITE_NAME
+const HOST = (process.env.WEBSITE_SITE_NAME || process.env.WEBSITE_INSTANCE_ID)
   ? '127.0.0.1'
   : (process.env.HOST || '0.0.0.0');
 
@@ -415,5 +415,10 @@ function onServerReady() {
 const server = typeof PORT === 'number'
   ? app.listen(PORT, HOST, onServerReady)
   : app.listen(PORT, onServerReady);
+
+server.on('error', err => {
+  console.error('[startup] listen failed on', HOST, PORT, err && err.stack ? err.stack : err);
+  process.exit(1);
+});
 
 module.exports = { app, server, broadcast, broadcastAll };

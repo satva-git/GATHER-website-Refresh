@@ -31,7 +31,18 @@ function seedFromTemplateIfNeeded() {
   if (!needsSeed) {
     try {
       const parsed = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
-      needsSeed = !Array.isArray(parsed.sessions) || parsed.sessions.length === 0;
+      const sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
+      needsSeed = sessions.length === 0;
+      if (!needsSeed) {
+        const defaultsPath = path.join(__dirname, 'review-defaults.json');
+        if (fs.existsSync(defaultsPath)) {
+          const defaults = JSON.parse(fs.readFileSync(defaultsPath, 'utf8'));
+          const token = defaults && defaults.defaultReviewToken;
+          if (token && !sessions.some(s => s.token === token)) {
+            needsSeed = true;
+          }
+        }
+      }
     } catch (err) {
       needsSeed = true;
     }
