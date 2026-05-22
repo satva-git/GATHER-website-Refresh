@@ -9,10 +9,19 @@ const { getDataDir } = require('./data-dir');
 const { loadReviewDefaults, getDefaultReviewToken } = require('./review-defaults');
 
 const ROOT = path.join(__dirname, '..');
-const PORT = Number(process.env.PORT || process.env.HTTP_PLATFORM_PORT || 3000);
+
+function getListenTarget() {
+  const raw = process.env.PORT || process.env.HTTP_PLATFORM_PORT || '3000';
+  if (/^\d+$/.test(String(raw))) {
+    return Number(raw);
+  }
+  return raw;
+}
+
+const PORT = getListenTarget();
 const HOST = process.env.HOST || '0.0.0.0';
 
-if (!Number.isFinite(PORT) || PORT < 0) {
+if (typeof PORT === 'number' && (!Number.isFinite(PORT) || PORT < 0)) {
   console.error('[startup] Invalid PORT:', process.env.PORT, process.env.HTTP_PLATFORM_PORT);
   process.exit(1);
 }
@@ -370,11 +379,12 @@ function getLanAddress() {
 }
 
 const server = app.listen(PORT, HOST, () => {
+  const portLabel = typeof PORT === 'number' ? PORT : 'pipe';
   console.log('');
   console.log('  GATHER.nexus preview + review server');
   console.log('  ------------------------------------');
-  console.log(`  Homepage:  http://localhost:${PORT}/`);
-  console.log(`  Admin:     http://localhost:${PORT}/admin/`);
+  console.log(`  Homepage:  http://localhost:${portLabel}/`);
+  console.log(`  Admin:     http://localhost:${portLabel}/admin/`);
   const lan = getLanAddress();
   if (lan) {
     console.log(`  Network:   http://${lan}:${PORT}/  (share this with clients on your Wi-Fi)`);
@@ -389,7 +399,7 @@ const server = app.listen(PORT, HOST, () => {
     const session = db.getSessionByToken(defaults.defaultReviewToken);
     if (session) {
       console.log('  Primary review link (saved for ongoing work):');
-      console.log(`  http://localhost:${PORT}${session.pagePath}?review=${session.token}`);
+      console.log(`  http://localhost:${portLabel}${session.pagePath}?review=${session.token}`);
       const lan = getLanAddress();
       if (lan) {
         console.log(`  http://${lan}:${PORT}${session.pagePath}?review=${session.token}`);
