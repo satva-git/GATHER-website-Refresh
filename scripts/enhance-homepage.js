@@ -338,6 +338,19 @@ function patch() {
     );
   }
 
+  if (!html.includes('page-comments.css')) {
+    html = html.replace(
+      '<link rel="stylesheet" href="/review/review.css"/>',
+      '<link rel="stylesheet" href="/review/review.css"/>\n<link rel="stylesheet" href="/comments/page-comments.css"/>'
+    );
+  }
+  if (!html.includes('page-comments.js')) {
+    html = html.replace(
+      '<script src="/review/review.js" defer></script>',
+      '<script src="/review/review.js" defer></script>\n<script src="/comments/page-comments.js" defer></script>'
+    );
+  }
+
   fs.writeFileSync(HOME, html, 'utf8');
   console.log('HomePage.html enhanced successfully.');
 }
