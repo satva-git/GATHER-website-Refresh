@@ -1,0 +1,16 @@
+{
+  "name": "GATHER.nexus",
+  "short_name": "GATHER",
+  "description": "Group finance platform for Xero and QuickBooks multi-entity groups.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#2d7261",
+  "icons": [
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/03/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ]
+}

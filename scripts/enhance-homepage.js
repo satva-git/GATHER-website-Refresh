@@ -283,15 +283,15 @@ function patch() {
   /* Module CTAs */
   html = html.replace(
     /(<div class="wf-section" id="intercompany-control">[\s\S]*?<\/ul>)(\s*\n\s*<\/div>\s*\n\s*<div class="wf-vis)/,
-    '$1' + moduleCta('/modules/intercompany-control.html') + '$2'
+    '$1' + moduleCta('modules/intercompany-control.html') + '$2'
   );
   html = html.replace(
     /(<div class="wf-section wf-section--alt" id="group-reporting">[\s\S]*?<\/ul>)(\s*\n\s*<\/div>\s*\n\s*<div class="wf-vis)/,
-    '$1' + moduleCta('/modules/group-reporting.html') + '$2'
+    '$1' + moduleCta('modules/group-reporting.html') + '$2'
   );
   html = html.replace(
     /(<div class="wf-section" id="group-planning">[\s\S]*?<\/ul>)(\s*\n\s*<\/div>\s*\n\s*<div class="wf-vis)/,
-    '$1' + moduleCta('/modules/group-planning.html') + '$2'
+    '$1' + moduleCta('modules/group-planning.html') + '$2'
   );
 
   /* Nav dropdown updates */
@@ -301,15 +301,15 @@ function patch() {
   );
   html = html.replace(
     '<li><a href="#intercompany-control">Intercompany Control</a></li>',
-    '<li><a href="/modules/intercompany-control.html">Intercompany Control</a></li>'
+    '<li><a href="modules/intercompany-control.html">Intercompany Control</a></li>'
   );
   html = html.replace(
     '<li><a href="#group-reporting">Group Financial Reporting</a></li>',
-    '<li><a href="/modules/group-reporting.html">Group Financial Reporting</a></li>'
+    '<li><a href="modules/group-reporting.html">Group Financial Reporting</a></li>'
   );
   html = html.replace(
     '<li><a href="#group-planning">Group Financial Planning</a></li>',
-    '<li><a href="/modules/group-planning.html">Group Financial Planning</a></li>'
+    '<li><a href="modules/group-planning.html">Group Financial Planning</a></li>'
   );
   html = html.replace(
     '<li><a href="#gather-difference">The GATHER Difference</a></li>',
@@ -319,15 +319,15 @@ function patch() {
   /* Footer product links */
   html = html.replace(
     '<li><a href="#">Group Financial Reporting</a></li>',
-    '<li><a href="/modules/group-reporting.html">Group Financial Reporting</a></li>'
+    '<li><a href="modules/group-reporting.html">Group Financial Reporting</a></li>'
   );
   html = html.replace(
     '<li><a href="#">Intercompany Control</a></li>',
-    '<li><a href="/modules/intercompany-control.html">Intercompany Control</a></li>'
+    '<li><a href="modules/intercompany-control.html">Intercompany Control</a></li>'
   );
   html = html.replace(
     '<li><a href="#">Group Financial Planning</a></li>',
-    '<li><a href="/modules/group-planning.html">Group Financial Planning</a></li>'
+    '<li><a href="modules/group-planning.html">Group Financial Planning</a></li>'
   );
 
   /* Page extensions JS */
