@@ -17,7 +17,7 @@ Write-Host "Syncing HomePage.html -> index.html..."
 npm run sync
 
 Write-Host "Creating repo if needed..."
-$repo = "dixit270592/GATHER-website-Refresh"
+$repo = "satva-git/GATHER-website-Refresh"
 gh repo view $repo 2>$null
 if ($LASTEXITCODE -ne 0) {
   gh repo create GATHER-website-Refresh --public --description "GATHER.nexus website refresh"
@@ -46,7 +46,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host ""
 Write-Host "Done. Site will be live at:" -ForegroundColor Green
-Write-Host "  https://dixit270592.github.io/GATHER-website-Refresh/"
+Write-Host "  https://satva-git.github.io/GATHER-website-Refresh/"
 Write-Host ""
 Write-Host "Check deploy status:" -ForegroundColor Cyan
 Write-Host "  gh run list --workflow=pages.yml"

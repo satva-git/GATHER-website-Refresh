@@ -4,11 +4,11 @@ Static marketing site for **GATHER.nexus**, hosted on GitHub Pages.
 
 ## Live site
 
-**https://dixit270592.github.io/GATHER-website-Refresh/**
+**https://satva-git.github.io/GATHER-website-Refresh/**
 
 ## GitHub repository
 
-**https://github.com/dixit270592/GATHER-website-Refresh**
+**https://github.com/satva-git/GATHER-website-Refresh**
 
 ## Project structure
 
