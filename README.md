@@ -4,9 +4,11 @@ Static marketing site for **GATHER.nexus**, hosted on GitHub Pages.
 
 ## Live site
 
-After GitHub Pages is enabled, the site will be available at:
-
 **https://dixit270592.github.io/GATHER-website-Refresh/**
+
+## GitHub repository
+
+**https://github.com/dixit270592/GATHER-website-Refresh**
 
 ## Project structure
 
@@ -32,8 +34,19 @@ Then visit http://localhost:3000
 
 ## GitHub Pages setup
 
-1. Push this repository to GitHub.
-2. Open **Settings → Pages** in the repository on GitHub.
-3. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
-4. Choose branch **main**, folder **/ (root)**, then click **Save**.
-5. Wait 1–3 minutes for the first deploy. The live URL appears at the top of the Pages settings page.
+This repo deploys automatically via GitHub Actions (`.github/workflows/pages.yml`) whenever you push to `main`.
+
+To publish updates after editing `HomePage.html`:
+
+```powershell
+npm run sync
+git add HomePage.html index.html
+git commit -m "Update homepage"
+git push
+```
+
+Or run the helper script:
+
+```powershell
+.\scripts\publish-github.ps1
+```
