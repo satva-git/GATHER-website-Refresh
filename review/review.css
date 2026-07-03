@@ -21,19 +21,6 @@ body.review-mode #nav {
   top: 52px;
 }
 
-html.vswitch-active body.review-mode {
-  scroll-padding-top: 164px;
-  padding-top: 96px;
-}
-
-html.vswitch-active body.review-mode #nav {
-  top: 96px;
-}
-
-html.vswitch-active #rv-root .rv-bar {
-  top: 44px;
-}
-
 #rv-root {
   position: fixed;
   inset: 0;

@@ -249,6 +249,11 @@ function moduleCta(href) {
 function patch() {
   let html = fs.readFileSync(HOME, 'utf8');
 
+  if (html.includes('id="product-journey"')) {
+    console.log('HomePage.html already uses V1 product journey — skipping legacy enhance-homepage.js patches.');
+    return;
+  }
+
   if (html.includes(MARKER)) {
     console.log('HomePage.html already enhanced — skipping HTML insertions.');
     return;

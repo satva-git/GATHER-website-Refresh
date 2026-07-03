@@ -3,38 +3,19 @@
 
   var SECTIONS_V1 = [
     { id: 'top', label: 'Hero / Top' },
-    { id: 'the-problem', label: 'The Problem' },
+    { id: 'product-journey', label: 'Product Journey' },
+    { id: 'the-problem', label: 'Platform Overview' },
     { id: 'the-solution', label: 'The Solution' },
-    { id: 'three-pillars', label: 'Three Pillars' },
-    { id: 'data-integrity', label: '4 Levels / Data Integrity' },
     { id: 'intercompany-control', label: 'Intercompany Control' },
     { id: 'group-reporting', label: 'Group Reporting' },
     { id: 'group-planning', label: 'Group Planning' },
-    { id: 'platform-features', label: 'Platform Features' },
-    { id: 'gather-difference', label: 'GATHER Difference' },
+    { id: 'gather-difference', label: 'Connected Workflow' },
     { id: 'integrations', label: 'Integrations' },
     { id: 'pricing', label: 'Pricing' },
-    { id: 'faq', label: 'FAQ' }
-  ];
-
-  var SECTIONS_V2 = [
-    { id: 'top', label: 'Hero / Top' },
-    { id: 'problem', label: 'The Challenge' },
-    { id: 'solution', label: 'Platform' },
-    { id: 'benefits', label: 'Benefits' },
-    { id: 'features', label: 'Three Applications' },
-    { id: 'how-it-works', label: 'How It Works' },
-    { id: 'proof', label: 'Data Integrity' },
-    { id: 'integrations', label: 'Integrations' },
-    { id: 'pricing', label: 'Pricing' },
-    { id: 'cta', label: 'Final CTA' },
     { id: 'faq', label: 'FAQ' }
   ];
 
   function detectSections() {
-    if (document.getElementById('problem') && !document.getElementById('the-problem')) {
-      return SECTIONS_V2;
-    }
     return SECTIONS_V1;
   }
 
