@@ -536,16 +536,6 @@ function patchHtml() {
     throw new Error(`Expected 5 workflow images, found ${images.length}`);
   }
 
-  // Inter font
-  html = html.replace(
-    /family=Instrument\+Sans[^"']+/,
-    'family=Inter:wght@400;500;600;700'
-  );
-  html = html.replace(
-    /--font:\s*'Instrument Sans'[^;]+;/,
-    "--font:          'Inter', ui-sans-serif, system-ui, sans-serif;"
-  );
-
   // Scroll anchors
   html = html.replace(
     /#platform,\[id\^="the-"\],#three-pillars,#data-integrity,#platform-features,#intercompany-control,#group-reporting,#group-planning,#gather-difference,#modules\{scroll-margin-top:88px\}/,

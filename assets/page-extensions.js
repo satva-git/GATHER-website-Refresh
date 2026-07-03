@@ -1,6 +1,35 @@
 (function () {
   'use strict';
 
+  var pillarsRoot = document.getElementById('three-pillars');
+  if (pillarsRoot) {
+    var navItems = pillarsRoot.querySelectorAll('.pillars-nav-item');
+    var panels = pillarsRoot.querySelectorAll('.pillars-panel-content');
+    var dots = pillarsRoot.querySelectorAll('.pillars-dot');
+    var prevBtn = pillarsRoot.querySelector('.pillars-arrow--prev');
+    var nextBtn = pillarsRoot.querySelector('.pillars-arrow--next');
+    var index = 0;
+
+    function goTo(i) {
+      index = Math.max(0, Math.min(panels.length - 1, i));
+      navItems.forEach(function (el, j) { el.classList.toggle('is-active', j === index); });
+      panels.forEach(function (el, j) { el.classList.toggle('is-active', j === index); });
+      dots.forEach(function (el, j) { el.classList.toggle('is-active', j === index); });
+      if (prevBtn) prevBtn.disabled = index === 0;
+      if (nextBtn) nextBtn.disabled = index === panels.length - 1;
+    }
+
+    navItems.forEach(function (btn, i) {
+      btn.addEventListener('click', function () { goTo(i); });
+    });
+    dots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () { goTo(i); });
+    });
+    if (prevBtn) prevBtn.addEventListener('click', function () { goTo(index - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { goTo(index + 1); });
+    goTo(0);
+  }
+
   var journeyRoot = document.getElementById('product-journey');
   if (journeyRoot) {
     var steps = Array.prototype.slice.call(
@@ -31,6 +60,7 @@
       if (progressFill.classList.contains('journey-tabs-track-fill') ||
           progressFill.closest('.journey-tabs-track')) {
         progressFill.style.width = segment + '%';
+        progressFill.style.height = '100%';
         progressFill.style.transform = 'translateX(' + (index * 100) + '%)';
       } else {
         var pct = steps.length <= 1 ? 100 : (index / (steps.length - 1)) * 100;
@@ -108,7 +138,7 @@
         }
       });
     }, { threshold: 0.08, rootMargin: '-30px 0px' });
-    document.querySelectorAll('.journey-section .sr, .connected-workflow.sr').forEach(function (el) {
+    document.querySelectorAll('.pillars-section .sr, .levels-section .sr, .journey-section .sr, .connected-workflow.sr, .cta .sr').forEach(function (el) {
       io.observe(el);
     });
   }

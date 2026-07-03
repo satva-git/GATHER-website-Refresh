@@ -58,6 +58,26 @@
     confirmOpen: false
   };
 
+  var isOfflineMode = false;
+  var LS_KEY = 'rv-offline-' + reviewToken;
+
+  function lsLoad() {
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      return raw ? JSON.parse(raw) : { comments: [] };
+    } catch (e) { return { comments: [] }; }
+  }
+
+  function lsSave() {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify({ comments: state.comments }));
+    } catch (e) {}
+  }
+
+  function genId() {
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  }
+
   var root = document.createElement('div');
   root.id = 'rv-root';
   document.body.appendChild(root);
@@ -252,23 +272,31 @@
 
   function renderBar() {
     var title = state.session ? state.session.title : 'Review mode';
-    var statusClass = state.connected ? '' : ' offline';
+    var statusClass = isOfflineMode ? ' offline' : (state.connected ? '' : ' offline');
+    var statusLabel = isOfflineMode ? 'Offline' : (state.connected ? 'Live' : 'Syncing');
+    var subLabel = isMobileView()
+      ? 'Tap + Add, then tap the page · Pin = view comment'
+      : (isOfflineMode
+          ? 'Right-click to add · Comments saved in this browser'
+          : 'Right-click to add · Click a pin to view or edit');
+
     root.innerHTML =
       '<div class="rv-bar rv-interactive">' +
         '<div class="rv-bar-brand">' +
           '<span class="rv-bar-dot"></span>' +
           '<div>' +
             '<div class="rv-bar-title">' + escapeHtml(title) + '</div>' +
-            '<div class="rv-bar-sub">' +
-              (isMobileView() ?
-                'Tap + Add, then tap the page · Pin = view comment' :
-                'Right-click to add · Click a pin to view or edit') +
-            '</div>' +
+            '<div class="rv-bar-sub">' + subLabel + '</div>' +
           '</div>' +
         '</div>' +
         '<div class="rv-bar-actions">' +
           '<span class="rv-status rv-status--desktop"><span class="rv-status-dot' + statusClass + '"></span>' +
-            (state.connected ? 'Live' : 'Syncing') + '</span>' +
+            statusLabel + '</span>' +
+          (isOfflineMode && state.comments.length
+            ? '<button type="button" class="rv-btn rv-btn-ghost" id="rv-export-btn">' +
+                '<span class="rv-btn-long">Copy Feedback</span><span class="rv-btn-short">Copy</span>' +
+              '</button>'
+            : '') +
           '<button type="button" class="rv-btn rv-btn-primary' + (state.tapMode ? ' active' : '') + '" id="rv-add-btn">' +
             '<span class="rv-btn-long">Tap to comment</span><span class="rv-btn-short">+ Add</span>' +
           '</button>' +
@@ -284,6 +312,8 @@
     root.appendChild(tooltip);
     root.querySelector('#rv-add-btn').addEventListener('click', toggleTapMode);
     root.querySelector('#rv-panel-btn').addEventListener('click', togglePanel);
+    var exportBtn = root.querySelector('#rv-export-btn');
+    if (exportBtn) exportBtn.addEventListener('click', exportFeedback);
     document.body.classList.toggle('rv-add-mode', state.tapMode);
   }
 
@@ -861,6 +891,27 @@
   function toggleCommentStatus(commentId, status) {
     if (state.submitting) return;
     state.submitting = true;
+
+    if (isOfflineMode) {
+      var c = getComment(commentId);
+      if (c) {
+        c.status = status;
+        c.updatedAt = new Date().toISOString();
+        upsertComment(c);
+        lsSave();
+      }
+      state.editingCommentId = null;
+      state.submitting = false;
+      closeThreadPopover();
+      renderAll();
+      if (state.activeCommentId === commentId) {
+        var updated = getComment(commentId);
+        if (updated) openThreadPopover(updated, window.innerWidth / 2, window.innerHeight / 3);
+      }
+      showToast(status === 'resolved' ? 'Comment resolved.' : 'Comment reopened.');
+      return;
+    }
+
     apiJson('/api/comments/' + encodeURIComponent(commentId), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -896,6 +947,24 @@
     }
 
     state.submitting = true;
+
+    if (isOfflineMode) {
+      var c = getComment(commentId);
+      if (c) {
+        c.body = body;
+        c.updatedAt = new Date().toISOString();
+        upsertComment(c);
+        lsSave();
+      }
+      state.editingCommentId = null;
+      state.submitting = false;
+      renderAll();
+      var updated = getComment(commentId);
+      if (updated) openThreadPopover(updated, clientX, clientY);
+      showToast('Comment updated.');
+      return;
+    }
+
     apiJson('/api/comments/' + encodeURIComponent(commentId), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -926,11 +995,24 @@
       title: 'Delete this comment?',
       message: 'This permanently removes the comment' +
         ((comment.replies || []).length ? ' and all replies' : '') +
-        ' for everyone on this link.',
+        (isOfflineMode ? ' from this browser.' : ' for everyone on this link.'),
       confirmLabel: 'Yes, delete',
       loadingLabel: 'Deleting…'
     }, function (closeConfirm, restoreConfirm) {
       state.submitting = true;
+
+      if (isOfflineMode) {
+        closeConfirm();
+        removeComment(commentId);
+        lsSave();
+        state.editingCommentId = null;
+        state.submitting = false;
+        closeThreadPopover();
+        renderAll();
+        showToast('Comment deleted.');
+        return;
+      }
+
       apiJson('/api/comments/' + encodeURIComponent(commentId), { method: 'DELETE' })
         .then(function () {
           closeConfirm();
@@ -950,7 +1032,43 @@
     });
   }
 
+  function exportFeedback() {
+    if (!state.comments.length) {
+      showToast('No comments to export yet.', true);
+      return;
+    }
+    var lines = ['=== Design Feedback ===', ''];
+    state.comments.forEach(function (c, i) {
+      lines.push((i + 1) + '. ' + c.authorName + ' — ' + (c.sectionLabel || 'General'));
+      lines.push('   ' + c.body);
+      if (c.status === 'resolved') lines.push('   [Resolved]');
+      (c.replies || []).forEach(function (r) {
+        lines.push('   \u21b3 ' + r.authorName + ': ' + r.body);
+      });
+      lines.push('');
+    });
+    var text = lines.join('\n');
+    function fallbackCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('Feedback copied to clipboard!'); }
+      catch (e) { showToast('Select all and copy from the Comments panel.', true); }
+      ta.remove();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showToast('Feedback copied to clipboard!');
+      }).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+  }
+
   function connectEvents() {
+    if (isOfflineMode) return;
     if (state.eventSource) {
       state.eventSource.close();
       state.eventSource = null;
@@ -1014,7 +1132,7 @@
   }
 
   function syncComments(silent) {
-    if (state.confirmOpen) return Promise.resolve();
+    if (isOfflineMode || state.confirmOpen) return Promise.resolve();
     return loadComments().then(function () {
       var fp = commentsFingerprint(state.comments);
       if (fp !== lastSyncFingerprint) {
@@ -1031,6 +1149,7 @@
   }
 
   function startSyncLoop() {
+    if (isOfflineMode) return;
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(function () {
       syncComments(true);
@@ -1038,6 +1157,12 @@
   }
 
   function loadComments() {
+    if (isOfflineMode) {
+      var stored = lsLoad();
+      state.comments = stored.comments || [];
+      lastSyncFingerprint = commentsFingerprint(state.comments);
+      return Promise.resolve();
+    }
     var url = '/api/sessions/' + encodeURIComponent(state.token) +
       '/comments?_=' + Date.now();
     return apiFetch(url)
@@ -1048,17 +1173,27 @@
       .then(function (data) {
         state.comments = data.comments || [];
         lastSyncFingerprint = commentsFingerprint(state.comments);
+      })
+      .catch(function () {
+        isOfflineMode = true;
+        var stored = lsLoad();
+        state.comments = stored.comments || [];
+        lastSyncFingerprint = commentsFingerprint(state.comments);
       });
   }
 
   function loadSession() {
     return apiFetch('/api/sessions/' + encodeURIComponent(state.token))
       .then(function (res) {
-        if (!res.ok) throw new Error('Invalid or expired review link');
+        if (!res.ok) throw new Error('no-backend');
         return res.json();
       })
       .then(function (data) {
         state.session = data.session;
+      })
+      .catch(function () {
+        isOfflineMode = true;
+        state.session = { title: 'Design Review', token: state.token };
       });
   }
 
@@ -1078,6 +1213,34 @@
     setStoredName(authorName);
     state.submitting = true;
     renderDraftPopover();
+
+    if (isOfflineMode) {
+      var now = new Date().toISOString();
+      var newComment = {
+        id: genId(),
+        authorName: authorName,
+        body: body,
+        sectionId: state.draft.sectionId,
+        sectionLabel: state.draft.sectionLabel,
+        scrollY: state.draft.scrollY,
+        pinX: state.draft.pinX,
+        pinY: state.draft.pinY,
+        status: 'open',
+        createdAt: now,
+        updatedAt: now,
+        replies: []
+      };
+      upsertComment(newComment);
+      lsSave();
+      state.draft = null;
+      state.activeCommentId = newComment.id;
+      state.panelOpen = true;
+      state.submitting = false;
+      renderAll();
+      showToast('Comment saved — visible only in this browser.');
+      renderDraftPopover();
+      return;
+    }
 
     apiJson('/api/sessions/' + encodeURIComponent(state.token) + '/comments', {
       method: 'POST',
@@ -1130,6 +1293,24 @@
     setStoredName(authorName);
     state.submitting = true;
 
+    if (isOfflineMode) {
+      var now = new Date().toISOString();
+      var reply = {
+        id: genId(),
+        authorName: authorName,
+        body: body,
+        createdAt: now
+      };
+      addReplyToComment(commentId, reply);
+      lsSave();
+      form.body.value = '';
+      state.submitting = false;
+      renderAll();
+      refreshOpenThread();
+      showToast('Reply added.');
+      return;
+    }
+
     apiJson('/api/comments/' + encodeURIComponent(commentId) + '/replies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1180,7 +1361,8 @@
     }
   });
 
-  Promise.all([loadSession(), loadComments()])
+  loadSession()
+    .then(function () { return loadComments(); })
     .then(function () {
       if (isMobileView()) state.tapMode = true;
       renderAll();
@@ -1199,16 +1381,23 @@
     });
 
   function showWelcomeTip() {
+    var seenKey = 'rv-welcome-seen' + (isOfflineMode ? '-offline' : '');
     try {
-      if (localStorage.getItem('rv-welcome-seen')) return;
-      localStorage.setItem('rv-welcome-seen', '1');
+      if (localStorage.getItem(seenKey)) return;
+      localStorage.setItem(seenKey, '1');
     } catch (e) {
       return;
     }
     setTimeout(function () {
-      showToast(isMobileView() ?
-        'Tap + Add, then tap the page to leave a comment.' :
-        'Right-click anywhere on the page to leave a comment.');
+      if (isOfflineMode) {
+        showToast(isMobileView()
+          ? 'Tap + Add to leave feedback. Comments are saved in this browser.'
+          : 'Right-click anywhere to leave feedback. Use \u201cCopy Feedback\u201d to share your notes.');
+      } else {
+        showToast(isMobileView()
+          ? 'Tap + Add, then tap the page to leave a comment.'
+          : 'Right-click anywhere on the page to leave a comment.');
+      }
     }, 600);
   }
 
