@@ -37,7 +37,7 @@ if (heroMatch) writeDataUri(heroMatch[1], 'hero-dashboard.png');
 extractWfImg('the-problem', 'the-problem.jpg');
 extractWfImg('the-solution', 'the-solution.png');
 extractWfImg('intercompany-control', 'intercompany-control-workflow.jpg');
-extractWfImg('group-reporting', 'group-reporting-workflow.png');
+extractWfImg('group-reporting', 'group-reporting-workflow.jpg');
 extractWfImg('group-planning', 'group-planning-workflow.png');
 
 const featuredBlock = html.match(/<div class="featured-logos">[\s\S]*?<\/div>/)?.[0] || '';

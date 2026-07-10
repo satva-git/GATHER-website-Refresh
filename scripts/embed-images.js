@@ -11,7 +11,7 @@ const images = [
   'assets/images/gather-nexus-logo.png',
   'assets/images/the-problem.jpg',
   'assets/images/intercompany-control-workflow.jpg',
-  'assets/images/group-reporting-workflow.png',
+  'assets/images/group-reporting-workflow.jpg',
   'assets/images/group-planning-workflow.png',
   'assets/images/the-solution-workflow.jpg',
   'assets/images/featured-biweekly.webp',
