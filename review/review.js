@@ -9,7 +9,7 @@
     { id: 'intercompany-control', label: 'Intercompany Control' },
     { id: 'group-reporting', label: 'Group Reporting' },
     { id: 'group-planning', label: 'Group Planning' },
-    { id: 'gather-difference', label: 'Connected Workflow' },
+    { id: 'gather-difference', label: 'The GATHER Difference' },
     { id: 'integrations', label: 'Integrations' },
     { id: 'pricing', label: 'Pricing' },
     { id: 'faq', label: 'FAQ' }
@@ -1039,7 +1039,7 @@
     }
     var lines = ['=== Design Feedback ===', ''];
     state.comments.forEach(function (c, i) {
-      lines.push((i + 1) + '. ' + c.authorName + ' — ' + (c.sectionLabel || 'General'));
+      lines.push((i + 1) + '. ' + c.authorName + ', ' + (c.sectionLabel || 'General'));
       lines.push('   ' + c.body);
       if (c.status === 'resolved') lines.push('   [Resolved]');
       (c.replies || []).forEach(function (r) {
@@ -1237,7 +1237,7 @@
       state.panelOpen = true;
       state.submitting = false;
       renderAll();
-      showToast('Comment saved — visible only in this browser.');
+      showToast('Comment saved, visible only in this browser.');
       renderDraftPopover();
       return;
     }
@@ -1262,7 +1262,7 @@
         state.activeCommentId = data.comment.id;
         state.panelOpen = true;
         renderAll();
-        showToast('Comment saved — visible to everyone on this link.');
+        showToast('Comment saved, visible to everyone on this link.');
       })
       .catch(function (err) {
         showToast(err.message || 'Could not submit comment.', true);

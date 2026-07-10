@@ -22,6 +22,7 @@ function resolve(from, href) {
 
 const pages = [
   path.join(ROOT, 'index.html'),
+  path.join(ROOT, 'HomePage.html'),
   ...fs.readdirSync(path.join(ROOT, 'modules')).map((f) => path.join(ROOT, 'modules', f))
 ];
 

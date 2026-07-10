@@ -121,65 +121,173 @@ const THREE_PILLARS = `
 
 const FOUR_LEVELS = `
   <!-- 4 LEVELS — DATA INTEGRITY -->
-  <div class="levels-section" id="data-integrity">
+  <div class="unrivaled-data-integrity-main-box top-space bottom-space" id="data-integrity">
     <div class="wrap">
       <div class="sec-head sr">
         <div class="eyebrow">Data Integrity</div>
-        <h2 class="h2">Unrivaled Data Integrity: From Group Results to Individual Transactions</h2>
-        <p class="lead">Don&rsquo;t settle for &ldquo;black box&rdquo; reports. GATHER.nexus features a unique rapid drill-down functionality that ensures total validation.</p>
+        <h2 class="h2">
+          <span class="h2-title-line">Unrivaled Data Integrity: From Group</span>
+          <span class="h2-title-line">Results to Individual Transactions</span>
+        </h2>
+        <p class="lead">Don't settle for "black box" reports. GATHER.nexus features a unique rapid drill-down functionality that ensures total validation.</p>
       </div>
-      <div class="levels-flow sr sr-d1" aria-label="Drill-down levels">
-        <span class="levels-flow-item">Group level</span>
-        <span class="levels-flow-arrow" aria-hidden="true">→</span>
-        <span class="levels-flow-item">Entity level</span>
-        <span class="levels-flow-arrow" aria-hidden="true">→</span>
-        <span class="levels-flow-item">Ledger level</span>
-        <span class="levels-flow-arrow" aria-hidden="true">→</span>
-        <span class="levels-flow-item is-active">Transaction level</span>
-      </div>
-      <div class="levels-stack">
-        <div class="levels-card sr sr-d1">
-          <div class="levels-card-left">
-            <span class="levels-card-num">01</span>
-            <div class="levels-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19h16M6 15l4-8 4 6 4-10"/></svg></div>
+
+      <div class="unrivaled-data-integrity-box">
+        <div class="drill-section">
+
+          <!-- Progress Stepper -->
+          <div class="progress-stepper">
+            <div class="step-item">
+              <span class="step-dot"></span>
+              <span>Group level</span>
+            </div>
+            <span class="step-arrow">→</span>
+            <div class="step-item">
+              <span class="step-dot"></span>
+              <span>Entity level</span>
+            </div>
+            <span class="step-arrow">→</span>
+            <div class="step-item">
+              <span class="step-dot"></span>
+              <span>Ledger level</span>
+            </div>
+            <span class="step-arrow">→</span>
+            <div class="step-item step-active">
+              <span class="step-dot"></span>
+              <span>Transaction level</span>
+            </div>
           </div>
-          <div class="levels-card-body"><h4>Consolidated Group Result</h4><p>Review your Consolidated Group Result.</p></div>
-          <span class="levels-card-tag">Group level</span>
-        </div>
-        <div class="levels-bridge sr"><svg viewBox="0 0 16 16" fill="none"><path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Drill into entity level</div>
-        <div class="levels-card sr sr-d2">
-          <div class="levels-card-left">
-            <span class="levels-card-num">02</span>
-            <div class="levels-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></div>
+
+          <!-- LEVEL 01 — GROUP -->
+          <div class="level-block level-1">
+            <div class="level-card">
+              <div class="card-left">
+                <span class="card-number">01</span>
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="13" width="4" height="8" rx="1"></rect>
+                    <rect x="9.5" y="8" width="4" height="13" rx="1"></rect>
+                    <rect x="17" y="4" width="4" height="17" rx="1"></rect>
+                    <line x1="1" y1="22" x2="23" y2="22"></line>
+                  </svg>
+                </span>
+                <div class="card-content">
+                  <p class="card-title">Consolidated Group Result</p>
+                  <p class="card-desc">Review your Consolidated Group Result.</p>
+                </div>
+              </div>
+              <span class="level-badge">GROUP LEVEL</span>
+            </div>
           </div>
-          <div class="levels-card-body"><h4>Legal Entity Level</h4><p>Drill down into the Legal Entity level.</p></div>
-          <span class="levels-card-tag">Entity level</span>
-        </div>
-        <div class="levels-bridge sr"><svg viewBox="0 0 16 16" fill="none"><path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Drill into ledger code</div>
-        <div class="levels-card sr sr-d3">
-          <div class="levels-card-left">
-            <span class="levels-card-num">03</span>
-            <div class="levels-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+
+          <!-- Drill → Entity -->
+          <div class="drill-label-row indent-2">
+            <div class="drill-label">
+              <span class="label-arrow">&gt;</span>
+              <span class="label-text">Drill into Entity Level</span>
+            </div>
           </div>
-          <div class="levels-card-body"><h4>QuickBooks / Xero Ledger Code</h4><p>Drill down into the QuickBooks / Xero Ledger Code.</p></div>
-          <span class="levels-card-tag">Ledger level</span>
-        </div>
-        <div class="levels-bridge sr"><svg viewBox="0 0 16 16" fill="none"><path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Drill into transaction data</div>
-        <div class="levels-card is-highlight sr">
-          <div class="levels-card-left">
-            <span class="levels-card-num">04</span>
-            <div class="levels-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
+
+          <!-- LEVEL 02 — ENTITY -->
+          <div class="level-block level-2">
+            <div class="level-card">
+              <div class="card-left">
+                <span class="card-number">02</span>
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="22" x2="21" y2="22"></line>
+                    <path d="M5 22V8l7-5 7 5v14"></path>
+                    <rect x="9" y="13" width="6" height="9" rx="1"></rect>
+                  </svg>
+                </span>
+                <div class="card-content">
+                  <p class="card-title">Legal Entity Level</p>
+                  <p class="card-desc">Drill down into the Legal Entity level.</p>
+                </div>
+              </div>
+              <span class="level-badge">ENTITY LEVEL</span>
+            </div>
           </div>
-          <div class="levels-card-body"><h4>Individual Transaction-Level Data</h4><p>See the Individual Transaction-Level Data in seconds.</p></div>
-          <span class="levels-card-tag">Transaction level</span>
+
+          <!-- Drill → Ledger -->
+          <div class="drill-label-row indent-3">
+            <div class="drill-label">
+              <span class="label-arrow">&gt;</span>
+              <span class="label-text">Drill into Ledger Code</span>
+            </div>
+          </div>
+
+          <!-- LEVEL 03 — LEDGER -->
+          <div class="level-block level-3">
+            <div class="level-card">
+              <div class="card-left">
+                <span class="card-number">03</span>
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                </span>
+                <div class="card-content">
+                  <p class="card-title">QuickBooks / Xero Ledger Code</p>
+                  <p class="card-desc">Drill down into the QuickBooks / Xero Ledger Code.</p>
+                </div>
+              </div>
+              <span class="level-badge">LEDGER LEVEL</span>
+            </div>
+          </div>
+
+          <!-- Drill → Transaction -->
+          <div class="drill-label-row indent-4">
+            <div class="drill-label">
+              <span class="label-arrow">&gt;</span>
+              <span class="label-text">Drill into Transaction Data</span>
+            </div>
+          </div>
+
+          <!-- LEVEL 04 — TRANSACTION -->
+          <div class="level-block level-4">
+            <div class="level-card">
+              <div class="card-left">
+                <span class="card-number number-dark">04</span>
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="7" y1="12" x2="17" y2="12"></line>
+                    <line x1="7" y1="15.5" x2="17" y2="15.5"></line>
+                    <line x1="7" y1="19" x2="13" y2="19"></line>
+                  </svg>
+                </span>
+                <div class="card-content">
+                  <p class="card-title">Individual Transaction-Level Data</p>
+                  <p class="card-desc">See the Individual Transaction-Level Data in seconds.</p>
+                </div>
+              </div>
+              <span class="level-badge badge-filled">TRANSACTION LEVEL</span>
+            </div>
+          </div>
+
+          <!-- Summary Box -->
+          <div class="summary-box">
+            <div class="summary-stat">
+              <span class="stat-number">4 levels</span>
+              <span class="stat-sub">in seconds</span>
+            </div>
+            <div class="summary-text">
+              <p class="summary-para">
+                <strong>Don't settle for "black box" reports.</strong>
+                GATHER.nexus features a unique rapid drill-down functionality — from your
+                Consolidated Group Result all the way to Individual Transaction-Level Data
+                in seconds — ensuring total validation at every level.
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="levels-summary sr sr-d2">
-        <div class="levels-summary-stat"><strong>4 levels</strong><span>In seconds</span></div>
-        <p>Don&rsquo;t settle for &ldquo;black box&rdquo; reports. GATHER.nexus features a unique rapid drill-down functionality — from your Consolidated Group Result all the way to Individual Transaction-Level Data in seconds — ensuring total validation at every level.</p>
       </div>
     </div>
   </div>
+
 `;
 
 const PLATFORM_FEATURES = `

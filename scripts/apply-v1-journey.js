@@ -288,7 +288,7 @@ const PRICING_SECTION = `<!-- ═════ PRICING ═════ -->
       <div class="pri-head-l">
         <div class="eyebrow">Pricing</div>
         <h2 class="h2" style="margin-top:10px">Pay for the modules and groups you manage</h2>
-        <p class="lead" style="margin-top:6px">Monthly subscription per module bundle. Unlimited companies within each group. All plans include a 30-day free trial.</p>
+        <p class="lead" style="margin-top:6px">Monthly per-module subscription, unlimited companies per group.<br>All plans include a 30-day free trial.</p>
       </div>
       <div class="pri-cta-row">
         <a href="https://app.gather.nexus/auth/user/signup" class="btn btn--primary">Start free trial</a>

@@ -32,6 +32,7 @@
 
   var journeyRoot = document.getElementById('product-journey');
   if (journeyRoot) {
+    var tablist = journeyRoot.querySelector('.journey-tabs');
     var steps = Array.prototype.slice.call(
       journeyRoot.querySelectorAll('.journey-tab, .journey-step')
     );
@@ -81,11 +82,12 @@
         el.classList.toggle('is-active', active);
         el.classList.toggle('is-complete', j < index);
         el.setAttribute('aria-selected', active ? 'true' : 'false');
+        el.setAttribute('tabindex', active ? '0' : '-1');
       });
       panels.forEach(function (el, j) {
         var active = j === index;
         el.classList.toggle('is-active', active);
-        el.hidden = !active;
+        el.setAttribute('aria-hidden', active ? 'false' : 'true');
       });
       dots.forEach(function (el, j) { el.classList.toggle('is-active', j === index); });
       if (prevBtn) prevBtn.disabled = index === 0;
@@ -96,37 +98,33 @@
 
     steps.forEach(function (btn, i) {
       btn.addEventListener('click', function () { goTo(i); });
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          goTo(i);
+        }
+      });
     });
+
+    if (tablist) {
+      tablist.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          goTo(index + 1);
+          if (steps[index]) steps[index].focus();
+        }
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          goTo(index - 1);
+          if (steps[index]) steps[index].focus();
+        }
+      });
+    }
+
     if (prevBtn) prevBtn.addEventListener('click', function () { goTo(index - 1); });
     if (nextBtn) nextBtn.addEventListener('click', function () { goTo(index + 1); });
 
-    journeyRoot.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); goTo(index + 1); }
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(index - 1); }
-    });
-
     goTo(0);
-  }
-
-  var connectedRoot = document.querySelector('.connected-workflow');
-  if (connectedRoot) {
-    var nodes = connectedRoot.querySelectorAll('.connected-node');
-    var connectedPanels = connectedRoot.querySelectorAll('.connected-panel');
-    nodes.forEach(function (node) {
-      node.addEventListener('click', function () {
-        var id = node.getAttribute('data-connected');
-        nodes.forEach(function (n) {
-          var on = n === node;
-          n.classList.toggle('is-active', on);
-          n.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-        connectedPanels.forEach(function (p) {
-          var on = p.getAttribute('data-connected-panel') === id;
-          p.classList.toggle('is-active', on);
-          p.hidden = !on;
-        });
-      });
-    });
   }
 
   if (typeof IntersectionObserver !== 'undefined') {
@@ -138,7 +136,7 @@
         }
       });
     }, { threshold: 0.08, rootMargin: '-30px 0px' });
-    document.querySelectorAll('.pillars-section .sr, .levels-section .sr, .journey-section .sr, .connected-workflow.sr, .cta .sr').forEach(function (el) {
+    document.querySelectorAll('.pillars-section .sr, .unrivaled-data-integrity-main-box .sr, .levels-section .sr, .journey-section .sr, #gather-difference .sr, .cta .sr').forEach(function (el) {
       io.observe(el);
     });
   }

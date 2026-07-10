@@ -34,9 +34,9 @@ const heroMatch = html.match(
 );
 if (heroMatch) writeDataUri(heroMatch[1], 'hero-dashboard.png');
 
-extractWfImg('the-problem', 'the-problem.png');
+extractWfImg('the-problem', 'the-problem.jpg');
 extractWfImg('the-solution', 'the-solution.png');
-extractWfImg('intercompany-control', 'intercompany-control-workflow.png');
+extractWfImg('intercompany-control', 'intercompany-control-workflow.jpg');
 extractWfImg('group-reporting', 'group-reporting-workflow.png');
 extractWfImg('group-planning', 'group-planning-workflow.png');
 
