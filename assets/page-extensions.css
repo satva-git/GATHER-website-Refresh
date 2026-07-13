@@ -8,6 +8,7 @@
   --paper: #ffffff;
   --paper-2: #f6f8fb;
   --teal: #2d7261;
+  --teal-2: #3a8572;
   --teal-deep: #245a4e;
   --teal-tint: #e9f2ef;
   --teal-line: #c5ddd6;
@@ -304,14 +305,14 @@ ul { list-style: none; }
   font-weight: 700;
 }
 
-/* Level cards: cascading indent with colour-coded drill-down borders */
+/* Level cards: cascading indent with brand teal drill-down borders */
 .level-block { margin: 0; }
 .level-1, .level-2, .level-3, .level-4 { margin-left: 0; }
 
-.level-1 .level-card { margin-left: 0; border-left: 3px solid #10B981; }
-.level-2 .level-card { margin-left: 20px; border-left: 3px solid #3B82F6; }
-.level-3 .level-card { margin-left: 40px; border-left: 3px solid #8B5CF6; }
-.level-4 .level-card { margin-left: 60px; border-left: 3px solid #EF4444; }
+.level-1 .level-card { margin-left: 0; border-left: 3px solid var(--teal-line); }
+.level-2 .level-card { margin-left: 20px; border-left: 3px solid var(--teal-2); }
+.level-3 .level-card { margin-left: 40px; border-left: 3px solid var(--teal); }
+.level-4 .level-card { margin-left: 60px; border-left: 3px solid var(--teal-deep); }
 
 @media (max-width: 767px) {
   .level-2 .level-card { margin-left: 10px; }
@@ -331,7 +332,8 @@ ul { list-style: none; }
   box-shadow: 0 4px 16px rgba(10, 27, 48, 0.04);
 }
 .level-4 .level-card {
-  border-color: var(--teal-line);
+  border: 1px solid var(--teal-line);
+  border-left: 3px solid var(--teal-deep);
   box-shadow: 0 8px 28px rgba(var(--teal-rgb), 0.12);
 }
 
