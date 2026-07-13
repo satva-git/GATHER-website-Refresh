@@ -34,8 +34,26 @@
     '#rv-thread-backdrop'
   ].join(',');
 
+  var DEFAULT_STATIC_TOKEN = 'gather-static-review';
+
+  function isStaticHost() {
+    var host = window.location.hostname;
+    return host.endsWith('github.io') ||
+      window.location.protocol === 'file:';
+  }
+
   var params = new URLSearchParams(window.location.search);
   var reviewToken = params.get('review');
+
+  // GitHub Pages (and any other static host without the review backend) has
+  // no server to mint tokens via the Admin UI, so fall back to a fixed
+  // offline token. This keeps "right-click to add a comment" working on the
+  // live site the same way it works locally, without requiring visitors to
+  // know/append a `?review=TOKEN` query string.
+  if (!reviewToken && isStaticHost()) {
+    reviewToken = DEFAULT_STATIC_TOKEN;
+  }
+
   if (!reviewToken) return;
 
   initReviewMode(reviewToken);
