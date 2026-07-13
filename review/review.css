@@ -444,13 +444,31 @@ body.rv-add-mode select {
 .rv-popover {
   position: fixed;
   width: min(360px, calc(100vw - 24px));
+  max-height: calc(100vh - 16px);
   background: var(--rv-paper);
   border: 1px solid var(--rv-line);
   border-radius: 14px;
   box-shadow: var(--rv-shadow);
   z-index: 100001;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   animation: rv-pop-in 0.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.rv-popover.rv-dragging {
+  animation: none;
+  box-shadow: 0 16px 48px rgba(10, 27, 48, 0.28);
+  transition: none;
+  user-select: none;
+}
+
+.rv-popover .rv-popover-head {
+  cursor: grab;
+}
+
+.rv-popover.rv-dragging .rv-popover-head {
+  cursor: grabbing;
 }
 
 @keyframes rv-pop-in {
@@ -527,7 +545,8 @@ body.rv-add-mode select {
 
 .rv-thread-body {
   padding: 12px 14px 14px;
-  max-height: min(70vh, 520px);
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
 }
 
@@ -717,6 +736,7 @@ body.rv-add-mode select {
   padding: 14px 14px 10px;
   border-bottom: 1px solid var(--rv-line);
   background: #f9fafb;
+  flex: 0 0 auto;
 }
 
 .rv-popover-head strong {
@@ -745,6 +765,9 @@ body.rv-add-mode select {
 
 .rv-popover form {
   padding: 12px 14px 14px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
 }
 
 .rv-popover .rv-field {

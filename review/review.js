@@ -121,6 +121,8 @@
   var pollTimer = null;
   var sseRetryTimer = null;
   var lastSyncFingerprint = '';
+  var draftPopoverPos = null;
+  var threadPopoverPos = null;
 
   function apiFetch(url, options) {
     options = options || {};
@@ -546,6 +548,83 @@
     return { left: left, top: top };
   }
 
+  function clampToViewport(left, top, width, height) {
+    var margin = 8;
+    var maxLeft = Math.max(margin, window.innerWidth - width - margin);
+    var maxTop = Math.max(margin, window.innerHeight - height - margin);
+    return {
+      left: Math.min(Math.max(left, margin), maxLeft),
+      top: Math.min(Math.max(top, margin), maxTop)
+    };
+  }
+
+  // Positions (and re-positions) a popover using its *actual* rendered size
+  // rather than a guessed height estimate, so tall comment threads can never
+  // end up straddling the edge of the viewport. If the user has already
+  // dragged the popover this session, that saved position wins instead.
+  function positionPopover(popover, savedPos, clientX, clientY, heightEstimate) {
+    if (isMobileView()) return null;
+    var rect = popover.getBoundingClientRect();
+    var width = rect.width || Math.min(360, window.innerWidth - 24);
+    var height = rect.height || heightEstimate || 300;
+    var pos;
+    if (savedPos) {
+      pos = clampToViewport(savedPos.left, savedPos.top, width, height);
+    } else {
+      var base = clampPopoverPosition(clientX, clientY, heightEstimate);
+      pos = clampToViewport(base.left, base.top, width, height);
+    }
+    popover.style.left = pos.left + 'px';
+    popover.style.top = pos.top + 'px';
+    return pos;
+  }
+
+  // Lets a user grab a popover by its header and drag it anywhere on screen,
+  // so a comment thread never has to stay hidden behind other content or off
+  // the edge of the viewport. Ignores drags started on a button (close, etc.)
+  function makeDraggable(popover, handle, onChange) {
+    if (isMobileView()) return;
+    var dragging = false;
+    var startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+    function onPointerMove(e) {
+      if (!dragging) return;
+      var rect = popover.getBoundingClientRect();
+      var pos = clampToViewport(
+        startLeft + (e.clientX - startX),
+        startTop + (e.clientY - startY),
+        rect.width,
+        rect.height
+      );
+      popover.style.left = pos.left + 'px';
+      popover.style.top = pos.top + 'px';
+    }
+
+    function onPointerUp() {
+      if (!dragging) return;
+      dragging = false;
+      popover.classList.remove('rv-dragging');
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
+      var rect = popover.getBoundingClientRect();
+      if (onChange) onChange({ left: rect.left, top: rect.top });
+    }
+
+    handle.addEventListener('pointerdown', function (e) {
+      if (e.target.closest('button')) return;
+      dragging = true;
+      popover.classList.add('rv-dragging');
+      var rect = popover.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+      startX = e.clientX;
+      startY = e.clientY;
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+      e.preventDefault();
+    });
+  }
+
   function closeContextMenu() {
     if (state.contextMenu) {
       state.contextMenu.remove();
@@ -553,18 +632,28 @@
     }
   }
 
-  function closeDraftPopover() {
+  function removeDraftPopoverEl() {
     var existing = document.getElementById('rv-popover');
     if (existing) existing.remove();
+  }
+
+  function closeDraftPopover() {
+    removeDraftPopoverEl();
     state.draft = null;
+    draftPopoverPos = null;
     renderPendingPin();
     renderAddHint();
   }
 
-  function closeThreadPopover() {
+  function removeThreadPopoverEl() {
     var existing = document.getElementById('rv-thread-popover');
     if (existing) existing.remove();
+  }
+
+  function closeThreadPopover() {
+    removeThreadPopoverEl();
     closeThreadBackdrop();
+    threadPopoverPos = null;
   }
 
   function openContextMenu(clientX, clientY) {
@@ -615,21 +704,17 @@
   }
 
   function renderDraftPopover() {
-    var existing = document.getElementById('rv-popover');
-    if (existing) existing.remove();
+    removeDraftPopoverEl();
     if (!state.draft) return;
 
-    var pos = clampPopoverPosition(state.draft.clientX, state.draft.clientY);
     var popover = document.createElement('div');
     popover.id = 'rv-popover';
     popover.className = 'rv-popover rv-interactive';
-    popover.style.left = pos.left + 'px';
-    popover.style.top = pos.top + 'px';
     popover.setAttribute('role', 'dialog');
     popover.setAttribute('aria-label', 'Add comment');
 
     popover.innerHTML =
-      '<div class="rv-popover-head">' +
+      '<div class="rv-popover-head" title="Drag to move">' +
         '<div><strong>Add comment</strong><span>' + escapeHtml(state.draft.sectionLabel) + '</span></div>' +
         '<button type="button" class="rv-popover-close" id="rv-popover-close" aria-label="Cancel">&times;</button>' +
       '</div>' +
@@ -651,6 +736,10 @@
       '</form>';
 
     document.body.appendChild(popover);
+    positionPopover(popover, draftPopoverPos, state.draft.clientX, state.draft.clientY, 300);
+    makeDraggable(popover, popover.querySelector('.rv-popover-head'), function (pos) {
+      draftPopoverPos = pos;
+    });
     popover.querySelector('#rv-popover-close').addEventListener('click', closeDraftPopover);
     popover.querySelector('#rv-popover-cancel').addEventListener('click', closeDraftPopover);
     popover.querySelector('#rv-popover-form').addEventListener('submit', onSubmitComment);
@@ -681,7 +770,7 @@
   function openThreadPopover(comment, clientX, clientY) {
     closeDraftPopover();
     closeContextMenu();
-    closeThreadPopover();
+    removeThreadPopoverEl();
     hideTooltip();
 
     state.activeCommentId = comment.id;
@@ -693,17 +782,15 @@
 
     var resolved = comment.status === 'resolved';
     var editing = state.editingCommentId === comment.id;
-    var pos = clampPopoverPosition(clientX, clientY, editing ? 360 : 420);
+    var heightEstimate = editing ? 360 : 420;
     var popover = document.createElement('div');
     popover.id = 'rv-thread-popover';
     popover.className = 'rv-popover rv-thread rv-interactive' + (isMobileView() ? ' rv-popover--sheet' : '');
-    popover.style.left = pos.left + 'px';
-    popover.style.top = pos.top + 'px';
     popover.setAttribute('role', 'dialog');
     popover.setAttribute('aria-label', 'Comment thread');
 
     popover.innerHTML =
-      '<div class="rv-popover-head">' +
+      '<div class="rv-popover-head" title="Drag to move">' +
         '<div>' +
           '<strong>' + escapeHtml(comment.authorName) + '</strong>' +
           '<span class="rv-badge rv-badge-' + (resolved ? 'resolved' : 'open') + '">' +
@@ -755,6 +842,10 @@
       '</div>';
 
     document.body.appendChild(popover);
+    positionPopover(popover, threadPopoverPos, clientX, clientY, heightEstimate);
+    makeDraggable(popover, popover.querySelector('.rv-popover-head'), function (pos) {
+      threadPopoverPos = pos;
+    });
 
     popover.querySelector('.rv-popover-close').addEventListener('click', function () {
       state.activeCommentId = null;
@@ -1423,6 +1514,10 @@
     renderPins();
     renderPendingPin();
     if (state.draft) renderDraftPopover();
+    var openThread = document.getElementById('rv-thread-popover');
+    if (openThread && threadPopoverPos) {
+      threadPopoverPos = positionPopover(openThread, threadPopoverPos, 0, 0, 420) || threadPopoverPos;
+    }
   });
 
   window.addEventListener('scroll', function () {
