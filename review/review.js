@@ -15,7 +15,41 @@
     { id: 'faq', label: 'FAQ' }
   ];
 
+  function humanizeSectionId(id) {
+    return String(id || '')
+      .replace(/^step-/, '')
+      .replace(/^mod-/, '')
+      .replace(/[-_]+/g, ' ')
+      .replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })
+      .trim() || 'General';
+  }
+
+  function normalizeClientPagePath(pathname) {
+    var value = String(pathname || '/').split('?')[0].split('#')[0];
+    if (!value.startsWith('/')) value = '/' + value;
+    if (value === '/index.html' || value === '/HomePage.html') return '/';
+    var moduleMatch = value.match(/^\/modules\/([^/]+?)(?:\.html)?\/?$/);
+    if (moduleMatch) return '/modules/' + moduleMatch[1];
+    return value.replace(/\/$/, '') || '/';
+  }
+
+  function getCurrentPagePath() {
+    return normalizeClientPagePath(window.location.pathname);
+  }
+
   function detectSections() {
+    var found = [];
+    var seen = {};
+    document.querySelectorAll('section[id]').forEach(function (el) {
+      if (!el.id || seen[el.id]) return;
+      seen[el.id] = true;
+      var heading = el.querySelector('h1, h2, .h1, .h2');
+      var label = heading
+        ? heading.textContent.replace(/\s+/g, ' ').trim().slice(0, 80)
+        : humanizeSectionId(el.id);
+      found.push({ id: el.id, label: label || humanizeSectionId(el.id) });
+    });
+    if (found.length) return found;
     return SECTIONS_V1;
   }
 
@@ -42,24 +76,100 @@
       window.location.protocol === 'file:';
   }
 
-  var params = new URLSearchParams(window.location.search);
-  var reviewToken = params.get('review');
-
-  // GitHub Pages (and any other static host without the review backend) has
-  // no server to mint tokens via the Admin UI, so fall back to a fixed
-  // offline token. This keeps "right-click to add a comment" working on the
-  // live site the same way it works locally, without requiring visitors to
-  // know/append a `?review=TOKEN` query string.
-  if (!reviewToken && isStaticHost()) {
-    reviewToken = DEFAULT_STATIC_TOKEN;
+  function ensureReviewQuery(token) {
+    try {
+      var url = new URL(window.location.href);
+      if (url.searchParams.get('review') === token) return;
+      url.searchParams.set('review', token);
+      window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+    } catch (e) {}
   }
 
-  if (!reviewToken) return;
+  function preserveReviewOnLinks(token) {
+    function rewrite(anchor) {
+      if (!anchor || !anchor.getAttribute) return;
+      var href = anchor.getAttribute('href');
+      if (!href || href.charAt(0) === '#' || href.indexOf('mailto:') === 0 ||
+          href.indexOf('tel:') === 0 || href.indexOf('javascript:') === 0) {
+        return;
+      }
+      try {
+        var url = new URL(href, window.location.href);
+        if (url.origin !== window.location.origin) return;
+        if (url.searchParams.get('review') === token) return;
+        url.searchParams.set('review', token);
+        var next = url.pathname + url.search + url.hash;
+        // Prefer relative-looking hrefs when the original was relative.
+        if (href.indexOf('http') !== 0 && href.charAt(0) !== '/') {
+          var baseDir = window.location.pathname.replace(/[^/]+$/, '');
+          if (next.indexOf(baseDir) === 0) {
+            next = next.slice(baseDir.length);
+          } else if (next.charAt(0) === '/') {
+            // keep absolute path form
+          }
+        }
+        anchor.setAttribute('href', next);
+      } catch (e) {}
+    }
 
-  initReviewMode(reviewToken);
+    document.querySelectorAll('a[href]').forEach(rewrite);
+
+    document.addEventListener('click', function (e) {
+      var anchor = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      rewrite(anchor);
+    }, true);
+  }
+
+  function bootstrapReviewMode() {
+    var params = new URLSearchParams(window.location.search);
+    var reviewToken = params.get('review');
+
+    // GitHub Pages (and any other static host without the review backend) has
+    // no server to mint tokens via the Admin UI, so fall back to a fixed
+    // offline token. This keeps "right-click to add a comment" working on the
+    // live site the same way it works locally, without requiring visitors to
+    // know/append a `?review=TOKEN` query string.
+    if (!reviewToken && isStaticHost()) {
+      reviewToken = DEFAULT_STATIC_TOKEN;
+    }
+
+    if (reviewToken) {
+      ensureReviewQuery(reviewToken);
+      preserveReviewOnLinks(reviewToken);
+      initReviewMode(reviewToken);
+      return;
+    }
+
+    apiFetch('/api/review-default')
+      .then(function (res) {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then(function (data) {
+        var token = data && data.session && data.session.token;
+        if (!token) return;
+        ensureReviewQuery(token);
+        preserveReviewOnLinks(token);
+        initReviewMode(token);
+      })
+      .catch(function () {});
+  }
+
+  function apiFetch(url, options) {
+    options = options || {};
+    options.cache = 'no-store';
+    options.headers = Object.assign({
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    }, options.headers || {});
+    return fetch(url, options);
+  }
+
+  bootstrapReviewMode();
 
   function initReviewMode(reviewToken) {
   var SECTIONS = detectSections();
+  var PAGE_PATH = getCurrentPagePath();
   var state = {
     token: reviewToken,
     session: null,
@@ -123,16 +233,6 @@
   var lastSyncFingerprint = '';
   var draftPopoverPos = null;
   var threadPopoverPos = null;
-
-  function apiFetch(url, options) {
-    options = options || {};
-    options.cache = 'no-store';
-    options.headers = Object.assign({
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache'
-    }, options.headers || {});
-    return fetch(url, options);
-  }
 
   function apiJson(url, options) {
     return apiFetch(url, options).then(function (res) {
@@ -256,7 +356,7 @@
   }
 
   function nearestSection(clientY) {
-    var best = SECTIONS[0];
+    var best = SECTIONS[0] || { id: null, label: 'General' };
     var bestDist = Infinity;
     SECTIONS.forEach(function (section) {
       var el = document.getElementById(section.id);
@@ -282,12 +382,27 @@
     return !!target.closest(REVIEW_UI_SELECTOR);
   }
 
+  function commentPagePath(comment) {
+    if (!comment) return '/';
+    if (comment.pagePath) return normalizeClientPagePath(comment.pagePath);
+    // Legacy comments (created before pagePath) belong to the homepage.
+    return '/';
+  }
+
+  function isCommentOnCurrentPage(comment) {
+    return commentPagePath(comment) === PAGE_PATH;
+  }
+
+  function pageComments() {
+    return state.comments.filter(isCommentOnCurrentPage);
+  }
+
   function getComment(commentId) {
     return state.comments.find(function (c) { return c.id === commentId; }) || null;
   }
 
   function openCount() {
-    return state.comments.filter(function (c) { return c.status === 'open'; }).length;
+    return pageComments().filter(function (c) { return c.status === 'open'; }).length;
   }
 
   function renderBar() {
@@ -312,7 +427,7 @@
         '<div class="rv-bar-actions">' +
           '<span class="rv-status rv-status--desktop"><span class="rv-status-dot' + statusClass + '"></span>' +
             statusLabel + '</span>' +
-          (isOfflineMode && state.comments.length
+          (isOfflineMode && pageComments().length
             ? '<button type="button" class="rv-btn rv-btn-ghost" id="rv-export-btn">' +
                 '<span class="rv-btn-long">Copy Feedback</span><span class="rv-btn-short">Copy</span>' +
               '</button>'
@@ -338,14 +453,15 @@
   }
 
   function renderCommentCards() {
-    if (!state.comments.length) {
+    var comments = pageComments();
+    if (!comments.length) {
       var hint = isMobileView() ?
         'Tap <strong>+ Add</strong>, then tap anywhere on the page.' :
         '<strong>Right-click</strong> anywhere on the page to leave feedback.';
-      return '<div class="rv-empty">No comments yet. ' + hint + '</div>';
+      return '<div class="rv-empty">No comments yet on this page. ' + hint + '</div>';
     }
 
-    return state.comments.slice().reverse().map(function (comment) {
+    return comments.slice().reverse().map(function (comment) {
       var resolved = comment.status === 'resolved';
       var active = comment.id === state.activeCommentId ? ' active' : '';
       var replyCount = (comment.replies || []).length;
@@ -470,7 +586,7 @@
     var height = docHeight();
     var pinNumber = 0;
 
-    state.comments.forEach(function (comment) {
+    pageComments().forEach(function (comment) {
       if (comment.pinX == null || comment.pinY == null) return;
       pinNumber += 1;
 
@@ -1142,12 +1258,13 @@
   }
 
   function exportFeedback() {
-    if (!state.comments.length) {
+    var comments = pageComments();
+    if (!comments.length) {
       showToast('No comments to export yet.', true);
       return;
     }
-    var lines = ['=== Design Feedback ===', ''];
-    state.comments.forEach(function (c, i) {
+    var lines = ['=== Design Feedback ===', 'Page: ' + PAGE_PATH, ''];
+    comments.forEach(function (c, i) {
       lines.push((i + 1) + '. ' + c.authorName + ', ' + (c.sectionLabel || 'General'));
       lines.push('   ' + c.body);
       if (c.status === 'resolved') lines.push('   [Resolved]');
@@ -1329,6 +1446,7 @@
         id: genId(),
         authorName: authorName,
         body: body,
+        pagePath: PAGE_PATH,
         sectionId: state.draft.sectionId,
         sectionLabel: state.draft.sectionLabel,
         scrollY: state.draft.scrollY,
@@ -1357,6 +1475,7 @@
       body: JSON.stringify({
         authorName: authorName,
         body: body,
+        pagePath: PAGE_PATH,
         sectionId: state.draft.sectionId,
         sectionLabel: state.draft.sectionLabel,
         scrollY: state.draft.scrollY,

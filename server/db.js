@@ -100,9 +100,11 @@ function persistSync() {
 }
 
 function persist() {
+  // Keep the local JSON write synchronous so API responses always reflect
+  // durable-on-disk state even when the optional remote store is slow/down.
+  persistSync();
   writeQueue = writeQueue
     .then(async () => {
-      persistSync();
       await remoteStore.saveJson(REMOTE_KEY, data);
     })
     .catch(err => {
@@ -217,6 +219,7 @@ function createComment(sessionToken, payload) {
     id: id(),
     sessionId: session.id,
     authorName,
+    pagePath: normalizePagePath(payload.pagePath || session.pagePath || '/'),
     sectionId: payload.sectionId || null,
     sectionLabel: payload.sectionLabel || null,
     scrollY: Number.isFinite(payload.scrollY) ? payload.scrollY : 0,

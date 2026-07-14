@@ -61,6 +61,8 @@ describe('Review API integration', () => {
     rmDir(TEST_DB_DIR);
     fs.mkdirSync(TEST_DB_DIR, { recursive: true });
     process.env.REVIEW_DB_PATH = TEST_DB_PATH;
+    delete process.env.DATABASE_URL;
+    delete process.env.REVIEW_DATABASE_URL;
 
     process.env.PORT = '0';
 
@@ -211,5 +213,25 @@ describe('Review API integration', () => {
     const saved = listRes.json.comments.find(c => c.id === commentId);
     assert.ok(saved);
     assert.equal(saved.replies.length, 1);
+  });
+
+  it('stores pagePath on module-page comments', async () => {
+    const createRes = await request(baseUrl, 'POST', `/api/sessions/${sessionToken}/comments`, {
+      authorName: 'Module Reviewer',
+      body: 'Intercompany hero spacing',
+      pagePath: '/modules/intercompany-control.html',
+      sectionId: 'mod-hero',
+      sectionLabel: 'Hero',
+      pinX: 0.4,
+      pinY: 0.25
+    });
+    assert.equal(createRes.status, 201);
+    assert.equal(createRes.json.comment.pagePath, '/modules/intercompany-control');
+  });
+
+  it('redirects module pages to default review token', async () => {
+    const res = await request(baseUrl, 'GET', '/modules/group-reporting');
+    assert.equal(res.status, 302);
+    assert.match(String(res.headers.location || ''), /review=/);
   });
 });

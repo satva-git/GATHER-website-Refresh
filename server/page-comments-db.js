@@ -52,9 +52,9 @@ function persistSync() {
 }
 
 function persist() {
+  persistSync();
   writeQueue = writeQueue
     .then(async () => {
-      persistSync();
       await remoteStore.saveJson(REMOTE_KEY, data);
     })
     .catch(err => {

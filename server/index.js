@@ -357,11 +357,11 @@ const MODULE_PAGES = [
 ];
 
 MODULE_PAGES.forEach(slug => {
-  app.get(`/modules/${slug}`, (_req, res) => {
+  app.get(`/modules/${slug}`, redirectToDefaultReview, (_req, res) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.sendFile(path.join(ROOT, 'modules', `${slug}.html`));
   });
-  app.get(`/modules/${slug}.html`, (_req, res) => {
+  app.get(`/modules/${slug}.html`, redirectToDefaultReview, (_req, res) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.sendFile(path.join(ROOT, 'modules', `${slug}.html`));
   });
