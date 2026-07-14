@@ -17,7 +17,8 @@ body.review-mode {
   padding-top: 52px;
 }
 
-body.review-mode #nav {
+body.review-mode #nav,
+body.review-mode .subpage-nav {
   top: 52px;
 }
 
@@ -962,6 +963,11 @@ body.rv-add-mode select {
 
   body.review-mode {
     padding-top: 48px;
+  }
+
+  body.review-mode #nav,
+  body.review-mode .subpage-nav {
+    top: 48px;
   }
 
   .rv-panel {
