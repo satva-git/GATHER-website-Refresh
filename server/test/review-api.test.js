@@ -68,8 +68,9 @@ describe('Review API integration', () => {
     delete require.cache[require.resolve('../page-comments-db.js')];
     delete require.cache[require.resolve('../index.js')];
 
-    const { server: startedServer } = require('../index.js');
-    server = startedServer;
+    const mod = require('../index.js');
+    await mod.ready;
+    server = mod.server;
 
     await new Promise(resolve => {
       if (server.listening) return resolve();

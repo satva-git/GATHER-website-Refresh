@@ -4,10 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { getDataDir, ensureDataDir } = require('./data-dir');
+const remoteStore = require('./remote-store');
 
 const DB_PATH = process.env.PAGE_COMMENTS_DB_PATH ||
   path.join(getDataDir(), 'page-comments.json');
-const DATA_DIR = path.dirname(DB_PATH);
+const REMOTE_KEY = 'page-comments';
 
 const DEFAULT_DATA = { comments: [] };
 
@@ -16,6 +17,12 @@ let writeQueue = Promise.resolve();
 
 function ensureDbDir() {
   ensureDataDir();
+}
+
+function normalizeData(raw) {
+  const next = raw && typeof raw === 'object' ? raw : {};
+  if (!Array.isArray(next.comments)) next.comments = [];
+  return next;
 }
 
 function load() {
@@ -28,8 +35,7 @@ function load() {
 
   try {
     const raw = fs.readFileSync(DB_PATH, 'utf8');
-    data = JSON.parse(raw);
-    if (!Array.isArray(data.comments)) data.comments = [];
+    data = normalizeData(JSON.parse(raw));
   } catch (err) {
     const backup = DB_PATH + '.corrupt-' + Date.now();
     if (fs.existsSync(DB_PATH)) fs.copyFileSync(DB_PATH, backup);
@@ -46,12 +52,34 @@ function persistSync() {
 }
 
 function persist() {
-  writeQueue = writeQueue.then(() => {
-    persistSync();
-  }).catch(err => {
-    console.error('[page-comments-db] persist failed:', err);
-  });
+  writeQueue = writeQueue
+    .then(async () => {
+      persistSync();
+      await remoteStore.saveJson(REMOTE_KEY, data);
+    })
+    .catch(err => {
+      console.error('[page-comments-db] persist failed:', err);
+    });
   return writeQueue;
+}
+
+async function bootstrap() {
+  if (!remoteStore.isEnabled()) return;
+
+  const remote = await remoteStore.loadJson(REMOTE_KEY);
+  if (remote) {
+    data = normalizeData(remote);
+    persistSync();
+    console.log(
+      '[page-comments-db] Restored from Postgres:',
+      data.comments.length,
+      'comments'
+    );
+    return;
+  }
+
+  await remoteStore.saveJson(REMOTE_KEY, data);
+  console.log('[page-comments-db] Initialized Postgres from local file');
 }
 
 function id() {
@@ -121,6 +149,7 @@ load();
 
 module.exports = {
   DB_PATH,
+  bootstrap,
   normalizePagePath,
   listComments,
   listAllComments,

@@ -415,13 +415,37 @@ function onServerReady() {
   console.log('');
 }
 
-const server = typeof PORT === 'number'
-  ? app.listen(PORT, HOST, onServerReady)
-  : app.listen(PORT, onServerReady);
+let server = null;
 
-server.on('error', err => {
-  console.error('[startup] listen failed on', HOST, PORT, err && err.stack ? err.stack : err);
-  process.exit(1);
-});
+async function startServer() {
+  try {
+    await db.bootstrap();
+    await pageCommentsDb.bootstrap();
+  } catch (err) {
+    console.error('[startup] database bootstrap failed:', err && err.stack ? err.stack : err);
+    process.exit(1);
+  }
 
-module.exports = { app, server, broadcast, broadcastAll };
+  server = typeof PORT === 'number'
+    ? app.listen(PORT, HOST, onServerReady)
+    : app.listen(PORT, onServerReady);
+
+  server.on('error', err => {
+    console.error('[startup] listen failed on', HOST, PORT, err && err.stack ? err.stack : err);
+    process.exit(1);
+  });
+
+  return server;
+}
+
+const ready = startServer();
+
+module.exports = {
+  app,
+  get server() {
+    return server;
+  },
+  ready,
+  broadcast,
+  broadcastAll
+};

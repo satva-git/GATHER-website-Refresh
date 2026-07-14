@@ -1,0 +1,34 @@
+# Render Blueprint — GATHER.nexus client review server
+# Deploy: Dashboard → New → Blueprint → connect this repo, or use `render services create`.
+#
+# Comments persist in free Render Postgres so free-tier web spin-downs
+# do not wipe the review database from the ephemeral filesystem.
+
+databases:
+  - name: gather-review-db
+    plan: free
+    region: oregon
+    databaseName: gather_review_db
+    user: gather_review_db_user
+
+services:
+  - type: web
+    name: gather-nexus-review
+    runtime: node
+    repo: https://github.com/satva-git/GATHER-website-Refresh
+    branch: main
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gather-review-db
+          property: connectionString

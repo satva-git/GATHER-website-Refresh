@@ -5,9 +5,10 @@ const path = require('path');
 const crypto = require('crypto');
 const { normalizePagePath } = require('./path-utils');
 const { getDataDir, ensureDataDir } = require('./data-dir');
+const remoteStore = require('./remote-store');
 
 const DB_PATH = process.env.REVIEW_DB_PATH || path.join(getDataDir(), 'review.db.json');
-const DATA_DIR = path.dirname(DB_PATH);
+const REMOTE_KEY = 'review.db';
 
 const DEFAULT_DATA = {
   sessions: [],
@@ -24,6 +25,14 @@ function ensureDbDir() {
 
 const SEED_DB_PATH = path.join(__dirname, 'seed', 'review.db.json');
 
+function normalizeData(raw) {
+  const next = raw && typeof raw === 'object' ? raw : {};
+  if (!Array.isArray(next.sessions)) next.sessions = [];
+  if (!Array.isArray(next.comments)) next.comments = [];
+  if (!Array.isArray(next.replies)) next.replies = [];
+  return next;
+}
+
 function seedFromTemplateIfNeeded() {
   if (!fs.existsSync(SEED_DB_PATH)) return;
 
@@ -32,6 +41,11 @@ function seedFromTemplateIfNeeded() {
     try {
       const parsed = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
       const sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
+      const comments = Array.isArray(parsed.comments) ? parsed.comments : [];
+
+      // Never overwrite a DB that already has review comments.
+      if (comments.length > 0) return;
+
       needsSeed = sessions.length === 0;
       if (!needsSeed) {
         const defaultsPath = path.join(__dirname, 'review-defaults.json');
@@ -69,10 +83,7 @@ function load() {
 
   try {
     const raw = fs.readFileSync(DB_PATH, 'utf8');
-    data = JSON.parse(raw);
-    if (!Array.isArray(data.sessions)) data.sessions = [];
-    if (!Array.isArray(data.comments)) data.comments = [];
-    if (!Array.isArray(data.replies)) data.replies = [];
+    data = normalizeData(JSON.parse(raw));
   } catch (err) {
     const backup = DB_PATH + '.corrupt-' + Date.now();
     fs.copyFileSync(DB_PATH, backup);
@@ -89,12 +100,44 @@ function persistSync() {
 }
 
 function persist() {
-  writeQueue = writeQueue.then(() => {
-    persistSync();
-  }).catch(err => {
-    console.error('[db] persist failed:', err);
-  });
+  writeQueue = writeQueue
+    .then(async () => {
+      persistSync();
+      await remoteStore.saveJson(REMOTE_KEY, data);
+    })
+    .catch(err => {
+      console.error('[db] persist failed:', err);
+    });
   return writeQueue;
+}
+
+async function bootstrap() {
+  if (!remoteStore.isEnabled()) {
+    console.log('[db] remote store disabled (no DATABASE_URL); using local file only');
+    return;
+  }
+
+  const remote = await remoteStore.loadJson(REMOTE_KEY);
+  if (remote) {
+    data = normalizeData(remote);
+    persistSync();
+    console.log(
+      '[db] Restored review database from Postgres:',
+      data.comments.length,
+      'comments,',
+      data.sessions.length,
+      'sessions'
+    );
+    return;
+  }
+
+  // First boot with Postgres: push the local/seeded DB so future restarts keep it.
+  await remoteStore.saveJson(REMOTE_KEY, data);
+  console.log(
+    '[db] Initialized Postgres review database from local file:',
+    data.comments.length,
+    'comments'
+  );
 }
 
 function id() {
@@ -257,6 +300,7 @@ function createReply(commentId, payload) {
 load();
 
 module.exports = {
+  bootstrap,
   getSessionByToken,
   listSessions,
   createSession,
