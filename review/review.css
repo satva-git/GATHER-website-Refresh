@@ -1220,6 +1220,62 @@ body.rv-add-mode select {
   font-weight: 500;
 }
 
+.rv-card.pinned {
+  border-left: 4px solid #E24B4A;
+  background: linear-gradient(90deg, rgba(226, 75, 74, 0.05), transparent);
+}
+
+.rv-card.pinned .rv-card-dot {
+  box-shadow: 0 0 0 2px rgba(226, 75, 74, 0.25);
+}
+
+.rv-priority-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  background: #E24B4A;
+  color: white;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 6px;
+}
+
+.rv-pin-comment {
+  background: var(--rv-teal-tint);
+  color: var(--rv-teal-2);
+  border: 1px solid var(--rv-teal-soft);
+  font-weight: 700;
+}
+
+.rv-pin-comment:hover {
+  background: var(--rv-teal-soft);
+}
+
+.rv-panel-resolve-all {
+  appearance: none;
+  border: none;
+  background: #E8F5E9;
+  color: #2E7D3E;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.rv-panel-resolve-all:hover {
+  background: #C8E6C9;
+  color: #1B5E20;
+}
+
+.rv-panel-resolve-all:active {
+  background: #A5D6A7;
+}
+
 /* Thread popover: tinted header using the comment's own pastel identity color */
 .rv-popover-head--tinted {
   background: var(--rv-accent-light, #f5fdf8);

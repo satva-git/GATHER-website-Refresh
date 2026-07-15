@@ -516,7 +516,13 @@
   }
 
   function visibleComments() {
-    return pageComments().filter(isCommentOnActiveTab);
+    var comments = pageComments().filter(isCommentOnActiveTab);
+    
+    return comments.sort(function (a, b) {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return b.createdAt.localeCompare(a.createdAt);
+    });
   }
 
   function getComment(commentId) {
@@ -635,8 +641,9 @@
       var replyCount = (comment.replies || []).length;
       var initial = (comment.authorName || '?').trim().charAt(0).toUpperCase();
       var isOwner = comment.authorName === getStoredName();
+      var isPinned = comment.pinned ? ' pinned' : '';
       return (
-        '<article class="rv-card' + (resolved ? ' resolved' : '') + (isOwner ? ' owner' : '') + active + '" ' +
+        '<article class="rv-card' + (resolved ? ' resolved' : '') + (isOwner ? ' owner' : '') + isPinned + active + '" ' +
           'data-id="' + comment.id + '" ' +
           'tabindex="0" ' +
           'role="button" ' +
@@ -645,10 +652,11 @@
           (replyCount ? ' with ' + replyCount + ' repl' + (replyCount === 1 ? 'y' : 'ies') : '') + '">' +
           '<span class="rv-card-dot' + (isOwner ? ' rv-card-dot--owner' : '') + '" style="background-color:' + color.hex + '">' + initial + '</span>' +
           '<div class="rv-card-main">' +
-            '<div class="rv-card-top">' +
-              '<span class="rv-card-num" style="color:' + color.hex + '">#' + commentNum + '</span>' +
-              '<span class="rv-card-author">' + escapeHtml(comment.authorName) + 
-              (isOwner ? '<span class="rv-card-owner-badge" aria-label="Your comment">You</span>' : '') + '</span>' +
+          '<div class="rv-card-top">' +
+            '<span class="rv-card-num" style="color:' + color.hex + '">#' + commentNum + '</span>' +
+            (comment.pinned ? '<span class="rv-priority-badge">📌 Pinned</span>' : '') +
+            '<span class="rv-card-author">' + escapeHtml(comment.authorName) + 
+            (isOwner ? '<span class="rv-card-owner-badge" aria-label="Your comment">You</span>' : '') + '</span>' +
               (comment.sectionLabel || comment.sectionId ?
                 '<span class="rv-card-section">' + escapeHtml(comment.sectionLabel || sectionLabel(comment.sectionId)) + '</span>' : '') +
               '<span class="rv-card-time" title="' + escapeHtml(formatTime(comment.createdAt)) + '">' + escapeHtml(formatRelativeTime(comment.createdAt)) + '</span>' +
@@ -720,6 +728,7 @@
         '</div>' +
         (all.length > 0 ?
           '<div class="rv-panel-actions">' +
+            '<button type="button" class="rv-panel-resolve-all" title="Mark all open comments as resolved" onclick="markAllResolved()">Mark all resolved</button>' +
             '<button type="button" class="rv-panel-delete-all" title="Delete all comments on this tab">Delete all</button>' +
           '</div>' : '') +
       '</div>' +
@@ -1243,6 +1252,9 @@
               (resolved ? 'Reopen' : 'Mark resolved') +
             '</button>' +
             '<button type="button" class="rv-btn rv-btn-primary-soft rv-edit-comment">Edit comment</button>' +
+            '<button type="button" class="rv-btn rv-btn-primary-soft rv-pin-comment" onclick="togglePinComment(\'' + comment.id + '\')" title="' + (comment.pinned ? 'Unpin' : 'Pin') + ' this comment">' +
+              (comment.pinned ? '📌 Pinned' : '📌 Pin comment') +
+            '</button>' +
           '</div>' +
           '<div class="rv-thread-danger">' +
             '<button type="button" class="rv-delete-link rv-delete-comment"' +
@@ -2249,6 +2261,145 @@
 
   window.insertMention = insertMention;
   window.bindMentionDetection = bindMentionDetection;
+
+  function togglePinComment(commentId) {
+    var comment = getComment(commentId);
+    if (!comment) return;
+
+    comment.pinned = !comment.pinned;
+    upsertComment(comment);
+
+    if (!isOfflineMode) {
+      apiJson('/api/comments/' + encodeURIComponent(commentId) + '/pin', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pinned: comment.pinned })
+      }).catch(function (err) {
+        showToast('Could not update pin status: ' + err.message, true);
+      });
+    }
+
+    refreshOpenThread();
+    renderAll();
+  }
+
+  function markAllResolved() {
+    var openComments = visibleComments().filter(function (c) {
+      return c.status === 'open';
+    });
+
+    if (!openComments.length) {
+      showToast('No open comments to resolve.', true);
+      return;
+    }
+
+    if (!confirm('Mark all ' + openComments.length + ' open comment(s) as resolved?')) {
+      return;
+    }
+
+    if (state.submitting) return;
+    state.submitting = true;
+
+    if (isOfflineMode) {
+      openComments.forEach(function (c) {
+        c.status = 'resolved';
+        c.updatedAt = new Date().toISOString();
+        upsertComment(c);
+      });
+      lsSave();
+      state.submitting = false;
+      renderAll();
+      showToast('All comments marked resolved.');
+      return;
+    }
+
+    var resolvePromises = openComments.map(function (c) {
+      return apiJson('/api/comments/' + encodeURIComponent(c.id), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'resolved' })
+      }).catch(function (err) {
+        console.warn('Failed to resolve comment ' + c.id + ':', err.message);
+        return Promise.resolve();
+      });
+    });
+
+    Promise.all(resolvePromises)
+      .then(function () {
+        openComments.forEach(function (c) {
+          c.status = 'resolved';
+          upsertComment(c);
+        });
+        renderAll();
+        showToast('All comments marked resolved.');
+      })
+      .catch(function (err) {
+        showToast('Error marking comments resolved: ' + err.message, true);
+      })
+      .finally(function () {
+        state.submitting = false;
+      });
+  }
+
+  function deleteAllComments() {
+    var comments = visibleComments();
+    if (!comments.length) {
+      showToast('No comments to delete.', true);
+      return;
+    }
+
+    if (!confirm('Delete all ' + comments.length + ' comment(s)? This cannot be undone.')) {
+      return;
+    }
+
+    if (state.submitting) return;
+    state.submitting = true;
+
+    if (isOfflineMode) {
+      comments.forEach(function (c) {
+        removeComment(c.id);
+      });
+      lsSave();
+      state.submitting = false;
+      state.panelFilter = 'all';
+      state.panelSearch = '';
+      closeThreadPopover();
+      renderAll();
+      showToast('All comments deleted.');
+      return;
+    }
+
+    var deletePromises = comments.map(function (c) {
+      return apiJson('/api/comments/' + encodeURIComponent(c.id), {
+        method: 'DELETE'
+      }).catch(function (err) {
+        console.warn('Failed to delete comment ' + c.id + ':', err.message);
+        return Promise.resolve();
+      });
+    });
+
+    Promise.all(deletePromises)
+      .then(function () {
+        comments.forEach(function (c) {
+          removeComment(c.id);
+        });
+        state.panelFilter = 'all';
+        state.panelSearch = '';
+        closeThreadPopover();
+        renderAll();
+        showToast('All comments deleted.');
+      })
+      .catch(function (err) {
+        showToast('Error deleting comments: ' + err.message, true);
+      })
+      .finally(function () {
+        state.submitting = false;
+      });
+  }
+
+  window.togglePinComment = togglePinComment;
+  window.markAllResolved = markAllResolved;
+  window.deleteAllComments = deleteAllComments;
 
   window.addEventListener('hashchange', handleDeepLink);
 
