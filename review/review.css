@@ -115,6 +115,11 @@ body.review-mode .subpage-nav {
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
+.rv-btn:focus-visible {
+  outline: 2px solid var(--rv-teal);
+  outline-offset: 2px;
+}
+
 .rv-btn-primary {
   background: var(--rv-teal);
   color: #fff;
@@ -271,6 +276,11 @@ body.review-mode .subpage-nav {
 .rv-filter-tab:hover {
   background: rgba(255, 255, 255, 0.85);
   color: var(--rv-ink);
+}
+
+.rv-filter-tab:focus-visible {
+  outline: 2px solid var(--rv-teal);
+  outline-offset: -4px;
 }
 
 .rv-filter-tab.active {
@@ -1096,6 +1106,13 @@ body.rv-add-mode select {
   border-color: var(--rv-teal);
   background: #fff;
   box-shadow: 0 0 0 3px var(--rv-teal-tint);
+}
+
+.rv-popover .rv-field input:disabled,
+.rv-popover .rv-field textarea:disabled {
+  opacity: 0.65;
+  background: #f0f1f3;
+  cursor: not-allowed;
 }
 
 .rv-popover .rv-field textarea {
