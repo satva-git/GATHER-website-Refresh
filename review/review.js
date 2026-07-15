@@ -15,10 +15,39 @@
     { id: 'faq', label: 'FAQ' }
   ];
 
+  /* hex = pin/marker accent (medium pastel, visible on page canvas)
+     light = very light tint used for popover/card backgrounds
+     text = darker saturated shade of the same hue for readable accent text */
+  var COMMENT_COLORS = [
+    { name: 'Teal', hex: '#5fa895', light: '#eef8f5', text: '#2f7d68' },
+    { name: 'Blue', hex: '#6b9bd1', light: '#eef4fc', text: '#3f6fad' },
+    { name: 'Lavender', hex: '#9b8ad4', light: '#f4f1fb', text: '#6f5bb5' },
+    { name: 'Rose', hex: '#d98ca6', light: '#fdf1f5', text: '#b15c7c' },
+    { name: 'Amber', hex: '#d9a15b', light: '#fcf5ea', text: '#a8722c' },
+    { name: 'Sage', hex: '#7fb08a', light: '#f0f8f1', text: '#4c8a5c' },
+    { name: 'Coral', hex: '#dd8f80', light: '#fdf1ee', text: '#b15d4c' },
+    { name: 'Periwinkle', hex: '#8b9fd9', light: '#f1f3fc', text: '#5568b0' },
+    { name: 'Aqua', hex: '#6fb3b8', light: '#eef8f8', text: '#3d8a90' },
+    { name: 'Mauve', hex: '#c48ab0', light: '#faf0f6', text: '#9c5580' }
+  ];
+
   function humanizeSectionId(id) {
     return String(id || '')
       .replace(/^step-/, '')
       .replace(/^mod-/, '')
+      .replace(/[-_]+/g, ' ')
+      .replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })
+      .trim() || 'General';
+  }
+
+  function humanizeTabId(id) {
+    if (!id || id === 'default') return 'General';
+    // Handle tab IDs like "journey-panel-overview", "pillar-0", etc.
+    return String(id)
+      .replace(/^journey-panel-/, '')
+      .replace(/^pillar-/, 'Pillar ')
+      .replace(/^pillars-/, '')
+      .replace(/^journey-/, '')
       .replace(/[-_]+/g, ' ')
       .replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })
       .trim() || 'General';
@@ -183,7 +212,10 @@
     connected: false,
     eventSource: null,
     submitting: false,
-    confirmOpen: false
+    confirmOpen: false,
+    allPinsVisible: true,
+    panelFilter: 'all',
+    panelSearch: ''
   };
 
   var isOfflineMode = false;
@@ -250,6 +282,9 @@
   function showToast(message, isError) {
     toastEl.textContent = message;
     toastEl.classList.toggle('error', !!isError);
+    toastEl.setAttribute('role', 'status');
+    toastEl.setAttribute('aria-live', 'assertive');
+    toastEl.setAttribute('aria-atomic', 'true');
     toastEl.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () {
@@ -382,6 +417,49 @@
     return !!target.closest(REVIEW_UI_SELECTOR);
   }
 
+  function getCurrentTabId() {
+    var journeyRoot = document.getElementById('product-journey');
+    if (journeyRoot) {
+      var activePanel = journeyRoot.querySelector('.journey-panel.is-active');
+      if (activePanel) {
+        // Prefer actual ID if it exists, otherwise use data-journey-panel attribute, then fall back to index
+        if (activePanel.id) return activePanel.id;
+        var journeyAttr = activePanel.getAttribute('data-journey-panel');
+        if (journeyAttr) return 'journey-panel-' + journeyAttr;
+        return 'journey-' + Array.prototype.indexOf.call(
+          journeyRoot.querySelectorAll('.journey-panel'),
+          activePanel
+        );
+      }
+    }
+
+    var pillarsRoot = document.getElementById('three-pillars');
+    if (pillarsRoot) {
+      var activePanel = pillarsRoot.querySelector('.pillars-panel-content.is-active');
+      if (activePanel) {
+        // Prefer actual ID if it exists, otherwise use data-pillar-panel attribute, then fall back to index
+        if (activePanel.id) return activePanel.id;
+        var pillarAttr = activePanel.getAttribute('data-pillar-panel');
+        if (pillarAttr) return 'pillar-' + pillarAttr;
+        return 'pillars-' + Array.prototype.indexOf.call(
+          pillarsRoot.querySelectorAll('.pillars-panel-content'),
+          activePanel
+        );
+      }
+    }
+
+    return 'default';
+  }
+
+  function getCommentColor(commentIndex) {
+    return COMMENT_COLORS[commentIndex % COMMENT_COLORS.length];
+  }
+
+  function getCommentColorByIndex(comments, commentId) {
+    var index = comments.findIndex(function (c) { return c.id === commentId; });
+    return index >= 0 ? getCommentColor(index) : COMMENT_COLORS[0];
+  }
+
   function commentPagePath(comment) {
     if (!comment) return '/';
     if (comment.pagePath) return normalizeClientPagePath(comment.pagePath);
@@ -393,8 +471,18 @@
     return commentPagePath(comment) === PAGE_PATH;
   }
 
+  function isCommentOnActiveTab(comment) {
+    // If comment has no tabId, assign it to 'default' (backward compatibility for legacy comments)
+    var commentTabId = comment.tabId || 'default';
+    return commentTabId === getCurrentTabId();
+  }
+
   function pageComments() {
     return state.comments.filter(isCommentOnCurrentPage);
+  }
+
+  function visibleComments() {
+    return pageComments().filter(isCommentOnActiveTab);
   }
 
   function getComment(commentId) {
@@ -402,7 +490,7 @@
   }
 
   function openCount() {
-    return pageComments().filter(function (c) { return c.status === 'open'; }).length;
+    return visibleComments().filter(function (c) { return c.status === 'open'; }).length;
   }
 
   function renderBar() {
@@ -432,6 +520,12 @@
                 '<span class="rv-btn-long">Copy Feedback</span><span class="rv-btn-short">Copy</span>' +
               '</button>'
             : '') +
+          (visibleComments().length > 0
+            ? '<button type="button" class="rv-btn rv-btn-ghost" id="rv-visibility-btn" title="' + (state.allPinsVisible ? 'Hide' : 'Show') + ' comments">' +
+                '<span class="rv-btn-long">' + (state.allPinsVisible ? 'Hide' : 'Show') + ' pins</span>' +
+                '<span class="rv-btn-short">' + (state.allPinsVisible ? '👁️' : '🔒') + '</span>' +
+              '</button>'
+            : '') +
           '<button type="button" class="rv-btn rv-btn-primary' + (state.tapMode ? ' active' : '') + '" id="rv-add-btn">' +
             '<span class="rv-btn-long">Tap to comment</span><span class="rv-btn-short">+ Add</span>' +
           '</button>' +
@@ -447,40 +541,90 @@
     root.appendChild(tooltip);
     root.querySelector('#rv-add-btn').addEventListener('click', toggleTapMode);
     root.querySelector('#rv-panel-btn').addEventListener('click', togglePanel);
+    var visibilityBtn = root.querySelector('#rv-visibility-btn');
+    if (visibilityBtn) visibilityBtn.addEventListener('click', togglePinsVisibility);
     var exportBtn = root.querySelector('#rv-export-btn');
     if (exportBtn) exportBtn.addEventListener('click', exportFeedback);
     document.body.classList.toggle('rv-add-mode', state.tapMode);
   }
 
+  function filteredPanelComments() {
+    var comments = visibleComments();
+    var numbered = comments.map(function (comment, i) {
+      return { comment: comment, num: i + 1, color: getCommentColor(i) };
+    });
+
+    if (state.panelFilter === 'open') {
+      numbered = numbered.filter(function (n) { return n.comment.status !== 'resolved'; });
+    } else if (state.panelFilter === 'resolved') {
+      numbered = numbered.filter(function (n) { return n.comment.status === 'resolved'; });
+    }
+
+    var query = (state.panelSearch || '').trim().toLowerCase();
+    if (query) {
+      numbered = numbered.filter(function (n) {
+        return (n.comment.body || '').toLowerCase().indexOf(query) !== -1 ||
+          (n.comment.authorName || '').toLowerCase().indexOf(query) !== -1;
+      });
+    }
+
+    return numbered;
+  }
+
   function renderCommentCards() {
-    var comments = pageComments();
-    if (!comments.length) {
+    var all = visibleComments();
+    var items = filteredPanelComments();
+
+    if (!all.length) {
       var hint = isMobileView() ?
         'Tap <strong>+ Add</strong>, then tap anywhere on the page.' :
         '<strong>Right-click</strong> anywhere on the page to leave feedback.';
-      return '<div class="rv-empty">No comments yet on this page. ' + hint + '</div>';
+      var hiddenCount = pageComments().length - all.length;
+      var message = '<div class="rv-empty">No comments yet on this tab. ' + hint + '</div>';
+      if (hiddenCount > 0) {
+        message = '<div class="rv-empty"><p>No comments on this tab.</p><p style="font-size:12px;color:#888;margin-top:8px">' +
+          hiddenCount + ' comment' + (hiddenCount === 1 ? '' : 's') + ' on other tabs</p></div>';
+      }
+      return message;
     }
 
-    return comments.slice().reverse().map(function (comment) {
+    if (!items.length) {
+      return '<div class="rv-empty">No comments match your filter.</div>';
+    }
+
+    return items.slice().reverse().map(function (entry) {
+      var comment = entry.comment;
+      var commentNum = entry.num;
+      var color = entry.color;
       var resolved = comment.status === 'resolved';
       var active = comment.id === state.activeCommentId ? ' active' : '';
       var replyCount = (comment.replies || []).length;
+      var initial = (comment.authorName || '?').trim().charAt(0).toUpperCase();
+      var isOwner = comment.authorName === getStoredName();
       return (
-        '<article class="rv-card' + (resolved ? ' resolved' : '') + active + '" data-id="' + comment.id + '">' +
-          '<div class="rv-card-top">' +
-            '<span class="rv-card-author">' + escapeHtml(comment.authorName) + '</span>' +
-            '<span class="rv-badge rv-badge-' + (resolved ? 'resolved' : 'open') + '">' +
-              (resolved ? 'Resolved' : 'Open') +
-            '</span>' +
-          '</div>' +
-          (comment.sectionLabel || comment.sectionId ?
-            '<div class="rv-card-section">' + escapeHtml(comment.sectionLabel || sectionLabel(comment.sectionId)) + '</div>' : '') +
-          '<div class="rv-card-body">' + escapeHtml(comment.body) + '</div>' +
-          '<div class="rv-card-foot">' +
-            '<span class="rv-card-time">' + escapeHtml(formatTime(comment.createdAt)) +
-              (replyCount ? ' · ' + replyCount + ' repl' + (replyCount === 1 ? 'y' : 'ies') : '') +
-            '</span>' +
-            '<span class="rv-card-open-hint">View</span>' +
+        '<article class="rv-card' + (resolved ? ' resolved' : '') + (isOwner ? ' owner' : '') + active + '" ' +
+          'data-id="' + comment.id + '" ' +
+          'tabindex="0" ' +
+          'role="button" ' +
+          'aria-label="Comment #' + commentNum + ' by ' + escapeHtml(comment.authorName) + 
+          (resolved ? ' - Resolved' : ' - Open') +
+          (replyCount ? ' with ' + replyCount + ' repl' + (replyCount === 1 ? 'y' : 'ies') : '') + '">' +
+          '<span class="rv-card-dot' + (isOwner ? ' rv-card-dot--owner' : '') + '" style="background-color:' + color.hex + '">' + initial + '</span>' +
+          '<div class="rv-card-main">' +
+            '<div class="rv-card-top">' +
+              '<span class="rv-card-num" style="color:' + color.hex + '">#' + commentNum + '</span>' +
+              '<span class="rv-card-author">' + escapeHtml(comment.authorName) + 
+              (isOwner ? '<span class="rv-card-owner-badge" aria-label="Your comment">You</span>' : '') + '</span>' +
+              (comment.sectionLabel || comment.sectionId ?
+                '<span class="rv-card-section">' + escapeHtml(comment.sectionLabel || sectionLabel(comment.sectionId)) + '</span>' : '') +
+              '<span class="rv-card-time">' + escapeHtml(formatTime(comment.createdAt)) + '</span>' +
+            '</div>' +
+            '<div class="rv-card-body">' + escapeHtml(comment.body) + '</div>' +
+            (replyCount || resolved ?
+              '<div class="rv-card-foot">' +
+                (replyCount ? '<span class="rv-card-replies">' + replyCount + ' repl' + (replyCount === 1 ? 'y' : 'ies') + '</span>' : '') +
+                (resolved ? '<span class="rv-badge rv-badge-resolved">Resolved</span>' : '') +
+              '</div>' : '') +
           '</div>' +
         '</article>'
       );
@@ -507,17 +651,45 @@
     var panel = document.createElement('aside');
     panel.id = 'rv-panel';
     panel.className = 'rv-panel rv-interactive' + (state.panelOpen ? ' open' : '');
-    panel.setAttribute('aria-label', 'Review comments');
+    panel.setAttribute('aria-label', 'Review comments panel');
+    panel.setAttribute('role', 'complementary');
+
+    var all = visibleComments();
+    var openN = all.filter(function (c) { return c.status !== 'resolved'; }).length;
+    var resolvedN = all.length - openN;
+    var filter = state.panelFilter;
+
+    function tab(key, label, count) {
+      return '<button type="button" class="rv-filter-tab' + (filter === key ? ' active' : '') + '" ' +
+        'data-filter="' + key + '" ' +
+        'role="tab" ' +
+        'aria-selected="' + (filter === key ? 'true' : 'false') + '" ' +
+        'aria-controls="rv-list">' +
+        label + '<span class="rv-filter-count" aria-hidden="true">' + count + '</span>' +
+      '</button>';
+    }
 
     panel.innerHTML =
       '<div class="rv-panel-head">' +
         '<div class="rv-panel-head-row">' +
-          '<h2>All comments</h2>' +
+          '<h2>Comments <span class="rv-panel-total">' + all.length + '</span></h2>' +
           '<button type="button" class="rv-panel-close" aria-label="Close comments panel">&times;</button>' +
         '</div>' +
-        '<p>Click a comment to jump to it on the page.</p>' +
+        '<div class="rv-search-wrap">' +
+          '<label for="rv-panel-search" class="rv-sr-only">Search comments</label>' +
+          '<input type="search" id="rv-panel-search" class="rv-search-input" placeholder="Search comments…" value="' + escapeHtml(state.panelSearch || '') + '" aria-label="Search comments by text or author">' +
+        '</div>' +
+        '<div class="rv-filter-tabs" role="tablist" aria-label="Filter comments by status">' +
+          tab('all', 'All', all.length) +
+          tab('open', 'Open', openN) +
+          tab('resolved', 'Resolved', resolvedN) +
+        '</div>' +
+        (all.length > 0 ?
+          '<div class="rv-panel-actions">' +
+            '<button type="button" class="rv-panel-delete-all" title="Delete all comments on this tab">Delete all</button>' +
+          '</div>' : '') +
       '</div>' +
-      '<div class="rv-list" id="rv-list">' + renderCommentCards() + '</div>';
+      '<div class="rv-list" id="rv-list" role="region" aria-label="Comments list" aria-live="polite">' + renderCommentCards() + '</div>';
 
     document.body.appendChild(panel);
 
@@ -526,6 +698,36 @@
       renderAll();
     });
 
+    var deleteAllBtn = panel.querySelector('.rv-panel-delete-all');
+    if (deleteAllBtn) {
+      deleteAllBtn.addEventListener('click', deleteAllComments);
+    }
+
+    panel.querySelectorAll('.rv-filter-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.panelFilter = btn.dataset.filter;
+        panel.querySelectorAll('.rv-filter-tab').forEach(function (t) {
+          t.setAttribute('aria-selected', 'false');
+        });
+        btn.setAttribute('aria-selected', 'true');
+        renderPanel();
+      });
+    });
+
+    var searchInput = panel.querySelector('#rv-panel-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        state.panelSearch = searchInput.value;
+        var list = panel.querySelector('#rv-list');
+        if (list) list.innerHTML = renderCommentCards();
+        bindCardClicks(panel);
+      });
+    }
+
+    bindCardClicks(panel);
+  }
+
+  function bindCardClicks(panel) {
     panel.querySelectorAll('.rv-card').forEach(function (card) {
       card.addEventListener('click', function () {
         focusComment(card.dataset.id);
@@ -583,13 +785,17 @@
 
   function renderPins() {
     pinLayer.innerHTML = '';
+    if (!state.allPinsVisible) return;
+    
     var height = docHeight();
+    var visibleCommentsList = visibleComments();
     var pinNumber = 0;
 
-    pageComments().forEach(function (comment) {
+    visibleCommentsList.forEach(function (comment) {
       if (comment.pinX == null || comment.pinY == null) return;
       pinNumber += 1;
 
+      var color = getCommentColor(visibleCommentsList.indexOf(comment));
       var pin = document.createElement('button');
       pin.type = 'button';
       pin.className = 'rv-pin' +
@@ -597,8 +803,11 @@
         (comment.id === state.activeCommentId ? ' active' : '');
       pin.style.top = (comment.pinY * height) + 'px';
       pin.style.left = (comment.pinX * 100) + 'vw';
+      pin.style.backgroundColor = color.hex;
+      pin.style.borderColor = '#fff';
       pin.textContent = String(pinNumber);
-      pin.setAttribute('aria-label', 'Comment by ' + comment.authorName);
+      pin.setAttribute('aria-label', 'Comment #' + pinNumber + ' by ' + comment.authorName);
+      pin.setAttribute('data-comment-id', comment.id);
 
       pin.addEventListener('mouseenter', function (e) {
         showTooltip(comment, e.clientX, e.clientY);
@@ -804,12 +1013,14 @@
     var docWidth = document.documentElement.clientWidth;
     var height = docHeight();
     var section = nearestSection(clientY);
+    var tabId = getCurrentTabId();
 
     state.draft = {
       clientX: clientX,
       clientY: clientY,
       sectionId: section.id,
       sectionLabel: section.label,
+      tabId: tabId,
       scrollY: window.scrollY,
       pinX: clientX / docWidth,
       pinY: (window.scrollY + clientY) / height
@@ -828,24 +1039,25 @@
     popover.className = 'rv-popover rv-interactive';
     popover.setAttribute('role', 'dialog');
     popover.setAttribute('aria-label', 'Add comment');
+    popover.setAttribute('aria-modal', 'true');
 
     popover.innerHTML =
       '<div class="rv-popover-head" title="Drag to move">' +
         '<div><strong>Add comment</strong><span>' + escapeHtml(state.draft.sectionLabel) + '</span></div>' +
-        '<button type="button" class="rv-popover-close" id="rv-popover-close" aria-label="Cancel">&times;</button>' +
+        '<button type="button" class="rv-popover-close" id="rv-popover-close" aria-label="Cancel adding comment">&times;</button>' +
       '</div>' +
       '<form id="rv-popover-form">' +
         '<label class="rv-field">' +
           '<span>Your name</span>' +
-          '<input name="author" type="text" required maxlength="80" placeholder="Jane Client" value="' + escapeHtml(getStoredName()) + '">' +
+          '<input name="author" type="text" required maxlength="80" placeholder="Jane Client" value="' + escapeHtml(getStoredName()) + '" aria-label="Your name">' +
         '</label>' +
         '<label class="rv-field">' +
           '<span>What should change?</span>' +
-          '<textarea name="body" required maxlength="4000" placeholder="Describe your feedback…"></textarea>' +
+          '<textarea name="body" required maxlength="4000" placeholder="Describe your feedback…" aria-label="Comment text"></textarea>' +
         '</label>' +
         '<div class="rv-popover-actions">' +
           '<button type="button" class="rv-btn rv-btn-ghost-dark" id="rv-popover-cancel">Cancel</button>' +
-          '<button type="submit" class="rv-btn rv-btn-primary"' + (state.submitting ? ' disabled' : '') + '>' +
+          '<button type="submit" class="rv-btn rv-btn-primary"' + (state.submitting ? ' disabled aria-busy="true"' : '') + '>' +
             (state.submitting ? 'Saving…' : 'Post comment') +
           '</button>' +
         '</div>' +
@@ -896,6 +1108,10 @@
     renderPins();
     openThreadBackdrop();
 
+    var visibleCommentsList = visibleComments();
+    var commentIndex = visibleCommentsList.findIndex(function (c) { return c.id === comment.id; });
+    var commentNum = commentIndex >= 0 ? commentIndex + 1 : '?';
+    var color = commentIndex >= 0 ? getCommentColor(commentIndex) : COMMENT_COLORS[0];
     var resolved = comment.status === 'resolved';
     var editing = state.editingCommentId === comment.id;
     var heightEstimate = editing ? 360 : 420;
@@ -905,19 +1121,30 @@
     popover.setAttribute('role', 'dialog');
     popover.setAttribute('aria-label', 'Comment thread');
 
+    popover.style.setProperty('--rv-accent', color.hex);
+    popover.style.setProperty('--rv-accent-light', color.light);
+    popover.style.setProperty('--rv-accent-text', color.text);
     popover.innerHTML =
-      '<div class="rv-popover-head" title="Drag to move">' +
-        '<div>' +
-          '<strong>' + escapeHtml(comment.authorName) + '</strong>' +
-          '<span class="rv-badge rv-badge-' + (resolved ? 'resolved' : 'open') + '">' +
-            (resolved ? 'Resolved' : 'Open') +
-          '</span>' +
+      '<div class="rv-popover-head rv-popover-head--tinted" title="Drag to move">' +
+        '<div class="rv-popover-head-id">' +
+          '<span class="rv-popover-avatar">' + escapeHtml((comment.authorName || '?').trim().charAt(0).toUpperCase()) + '</span>' +
+          '<div>' +
+            '<div class="rv-popover-head-title">' +
+              '<strong>' + escapeHtml(comment.authorName) + '</strong>' +
+              '<span class="rv-popover-num">#' + commentNum + '</span>' +
+            '</div>' +
+            '<span class="rv-badge rv-badge-' + (resolved ? 'resolved' : 'open') + '">' +
+              (resolved ? 'Resolved' : 'Open') +
+            '</span>' +
+          '</div>' +
         '</div>' +
         '<button type="button" class="rv-popover-close" aria-label="Close">&times;</button>' +
       '</div>' +
       '<div class="rv-thread-body">' +
         (comment.sectionLabel ?
           '<div class="rv-card-section">' + escapeHtml(comment.sectionLabel) + '</div>' : '') +
+        (comment.tabId && comment.tabId !== 'default' ?
+          '<div class="rv-card-section" style="margin-top:2px;"><span class="rv-badge rv-badge-tab">' + humanizeTabId(comment.tabId) + '</span></div>' : '') +
         (editing ?
           '<form class="rv-edit-form">' +
             '<label class="rv-field"><span>Edit comment</span>' +
@@ -944,15 +1171,12 @@
         '<div class="rv-thread-replies">' + renderRepliesHtml(comment.replies) + '</div>' +
         '<form class="rv-reply-form">' +
           '<label class="rv-field">' +
-            '<span>Reply as</span>' +
-            '<input name="author" type="text" required maxlength="80" value="' + escapeHtml(getStoredName()) + '">' +
-          '</label>' +
-          '<label class="rv-field">' +
             '<span>Your reply</span>' +
-            '<textarea name="body" required maxlength="2000" placeholder="Add a reply…"></textarea>' +
+            '<textarea name="body" required maxlength="2000" placeholder="Add a reply…" aria-label="Your reply text"></textarea>' +
           '</label>' +
+          '<input type="hidden" name="author" value="' + escapeHtml(getStoredName()) + '">' +
           '<div class="rv-popover-actions">' +
-            '<button type="submit" class="rv-btn rv-btn-primary"' + (state.submitting ? ' disabled' : '') + '>Reply</button>' +
+            '<button type="submit" class="rv-btn rv-btn-primary"' + (state.submitting ? ' disabled aria-busy="true"' : '') + '>Reply</button>' +
           '</div>' +
         '</form>' +
       '</div>';
@@ -1052,6 +1276,12 @@
   function togglePanel() {
     state.panelOpen = !state.panelOpen;
     renderAll();
+  }
+
+  function togglePinsVisibility() {
+    state.allPinsVisible = !state.allPinsVisible;
+    renderPins();
+    showToast(state.allPinsVisible ? 'Comments shown' : 'Comments hidden');
   }
 
   function toggleTapMode() {
@@ -1257,6 +1487,65 @@
     });
   }
 
+  function deleteAllComments() {
+    if (state.submitting || state.confirmOpen) return;
+    var comments = visibleComments();
+    if (!comments.length) {
+      showToast('No comments to delete on this tab.', true);
+      return;
+    }
+
+    confirmAction({
+      title: 'Delete all comments on this tab?',
+      message: 'This will permanently delete ' + comments.length + ' comment' + (comments.length === 1 ? '' : 's') +
+        (isOfflineMode ? ' from this browser.' : ' for everyone on this link.'),
+      confirmLabel: 'Yes, delete all',
+      loadingLabel: 'Deleting…'
+    }, function (closeConfirm, restoreConfirm) {
+      state.submitting = true;
+
+      if (isOfflineMode) {
+        closeConfirm();
+        comments.forEach(function (c) { removeComment(c.id); });
+        lsSave();
+        state.editingCommentId = null;
+        state.panelFilter = 'all';
+        state.panelSearch = '';
+        closeThreadPopover();
+        renderAll();
+        showToast('All comments deleted.');
+        return;
+      }
+
+      var deletePromises = comments.map(function (c) {
+        return apiJson('/api/comments/' + encodeURIComponent(c.id), { method: 'DELETE' })
+          .catch(function (err) {
+            console.warn('Failed to delete comment ' + c.id + ':', err.message);
+            return Promise.resolve(); // continue even if one fails
+          });
+      });
+
+      Promise.all(deletePromises)
+        .then(function () {
+          closeConfirm();
+          comments.forEach(function (c) { removeComment(c.id); });
+          state.editingCommentId = null;
+          state.panelFilter = 'all';
+          state.panelSearch = '';
+          closeThreadPopover();
+          renderAll();
+          showToast('All comments deleted.');
+        })
+        .catch(function (err) {
+          restoreConfirm();
+          showToast(err.message || 'Could not delete all comments.', true);
+        })
+        .finally(function () {
+          state.submitting = false;
+        });
+    });
+  }
+
   function exportFeedback() {
     var comments = pageComments();
     if (!comments.length) {
@@ -1449,6 +1738,7 @@
         pagePath: PAGE_PATH,
         sectionId: state.draft.sectionId,
         sectionLabel: state.draft.sectionLabel,
+        tabId: state.draft.tabId,
         scrollY: state.draft.scrollY,
         pinX: state.draft.pinX,
         pinY: state.draft.pinY,
@@ -1478,6 +1768,7 @@
         pagePath: PAGE_PATH,
         sectionId: state.draft.sectionId,
         sectionLabel: state.draft.sectionLabel,
+        tabId: state.draft.tabId,
         scrollY: state.draft.scrollY,
         pinX: state.draft.pinX,
         pinY: state.draft.pinY
@@ -1506,13 +1797,9 @@
     if (state.submitting) return;
 
     var form = e.target;
-    var authorName = form.author.value.trim();
+    var authorName = form.author.value.trim() || getStoredName();
     var body = form.body.value.trim();
 
-    if (!authorName) {
-      showToast('Please enter your name.', true);
-      return;
-    }
     if (!body) {
       showToast('Please enter a reply.', true);
       return;
@@ -1587,7 +1874,51 @@
         renderPins();
       }
     }
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      var cards = Array.from(document.querySelectorAll('.rv-card'));
+      if (!cards.length) return;
+      var focused = document.activeElement;
+      var isCardFocused = focused && focused.classList.contains('rv-card');
+      if (!isCardFocused && focused !== document.body) return;
+      
+      var currentIdx = cards.indexOf(focused);
+      var nextIdx = currentIdx;
+      if (e.key === 'ArrowDown') {
+        nextIdx = Math.min(currentIdx + 1, cards.length - 1);
+      } else {
+        nextIdx = Math.max(currentIdx - 1, 0);
+      }
+      if (nextIdx !== currentIdx) {
+        cards[nextIdx].focus();
+        e.preventDefault();
+      }
+    }
+
+    if (e.key === 'Enter') {
+      var focused = document.activeElement;
+      if (focused && focused.classList.contains('rv-card')) {
+        focused.click();
+        e.preventDefault();
+      }
+      if (focused && focused.id === 'reply-textarea' && (e.ctrlKey || e.metaKey)) {
+        var form = focused.closest('.rv-reply-form');
+        if (form) form.querySelector('button[type="submit"]').click();
+        e.preventDefault();
+      }
+    }
   });
+
+  var lastTabId = getCurrentTabId();
+  setInterval(function () {
+    var currentTabId = getCurrentTabId();
+    if (currentTabId !== lastTabId) {
+      lastTabId = currentTabId;
+      state.activeCommentId = null;
+      closeThreadPopover();
+      renderAll();
+    }
+  }, 300);
 
   loadSession()
     .then(function () { return loadComments(); })
