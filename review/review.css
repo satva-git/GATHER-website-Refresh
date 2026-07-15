@@ -1153,6 +1153,73 @@ body.rv-add-mode select {
   outline: 2px solid var(--rv-teal);
 }
 
+.rv-mention-dropdown {
+  position: absolute;
+  background: var(--rv-paper);
+  border: 1px solid var(--rv-line);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100050;
+  min-width: 200px;
+  max-height: 280px;
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+  pointer-events: none;
+}
+
+.rv-mention-dropdown.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.rv-mention-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  transition: background 0.12s;
+}
+
+.rv-mention-item:hover,
+.rv-mention-item:focus {
+  background: var(--rv-teal-tint);
+  outline: none;
+}
+
+.rv-mention-item:focus {
+  border-left: 3px solid var(--rv-teal);
+  padding-left: 9px;
+}
+
+.rv-mention-avatar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--rv-teal-tint);
+  color: var(--rv-teal-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rv-mention-name {
+  flex: 1;
+  color: var(--rv-ink);
+  font-weight: 500;
+}
+
 /* Thread popover: tinted header using the comment's own pastel identity color */
 .rv-popover-head--tinted {
   background: var(--rv-accent-light, #f5fdf8);

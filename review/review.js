@@ -99,6 +99,14 @@
 
   var EMOJI_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🎉', '✨', '🚀'];
 
+  var TEAM_MEMBERS = [
+    { name: 'Diana', id: 'diana' },
+    { name: 'Josh', id: 'josh' },
+    { name: 'Sarah', id: 'sarah' },
+    { name: 'Mike', id: 'mike' },
+    { name: 'Lisa', id: 'lisa' }
+  ];
+
   var DEFAULT_STATIC_TOKEN = 'gather-static-review';
 
   function isStaticHost() {
@@ -1079,7 +1087,7 @@
         '</label>' +
         '<label class="rv-field">' +
           '<span>What should change?</span>' +
-          '<textarea name="body" required maxlength="4000" placeholder="Describe your feedback…" aria-label="Comment text"></textarea>' +
+          '<textarea name="body" required maxlength="4000" placeholder="Describe your feedback… (type @ to mention)" aria-label="Comment text"></textarea>' +
         '</label>' +
         '<div class="rv-popover-actions">' +
           '<button type="button" class="rv-btn rv-btn-ghost-dark" id="rv-popover-cancel">Cancel</button>' +
@@ -1100,6 +1108,10 @@
 
     var authorField = popover.querySelector('input[name="author"]');
     var bodyField = popover.querySelector('textarea[name="body"]');
+    
+    bodyField.id = 'draft-textarea';
+    bindMentionDetection(bodyField);
+    
     if (getStoredName()) bodyField.focus();
     else authorField.focus();
   }
@@ -1238,10 +1250,10 @@
           '</div>') +
         '<div class="rv-thread-replies">' + renderRepliesHtml(comment.replies) + '</div>' +
         '<form class="rv-reply-form">' +
-          '<label class="rv-field">' +
-            '<span>Your reply</span>' +
-            '<textarea name="body" required maxlength="2000" placeholder="Add a reply…" aria-label="Your reply text"></textarea>' +
-          '</label>' +
+        '<label class="rv-field">' +
+          '<span>Your reply</span>' +
+          '<textarea name="body" required maxlength="2000" placeholder="Add a reply… (type @ to mention)" aria-label="Your reply text"></textarea>' +
+        '</label>' +
           '<input type="hidden" name="author" value="' + escapeHtml(getStoredName()) + '">' +
           '<div class="rv-popover-actions">' +
             '<button type="submit" class="rv-btn rv-btn-primary"' + (state.submitting ? ' disabled aria-busy="true"' : '') + '>Reply</button>' +
@@ -1297,7 +1309,14 @@
       });
     }
 
-    popover.querySelector('.rv-reply-form').addEventListener('submit', function (e) {
+    var replyForm = popover.querySelector('.rv-reply-form');
+    var replyTextarea = replyForm.querySelector('textarea[name="body"]');
+    if (replyTextarea) {
+      replyTextarea.id = 'reply-textarea-' + comment.id;
+      bindMentionDetection(replyTextarea);
+    }
+
+    replyForm.addEventListener('submit', function (e) {
       onSubmitReply(e, comment.id);
     });
   }
@@ -2096,6 +2115,140 @@
 
   window.toggleReaction = toggleReaction;
   window.showEmojiPicker = showEmojiPicker;
+
+  function detectMentionQuery(text) {
+    var lastWord = text.split(/\s+/).pop();
+    if (lastWord.startsWith('@')) {
+      var query = lastWord.slice(1).toLowerCase();
+      if (query.length > 0) {
+        return { query: query, startIndex: text.lastIndexOf('@') };
+      }
+    }
+    return null;
+  }
+
+  function getMentionMatches(query) {
+    return TEAM_MEMBERS.filter(function (member) {
+      return member.name.toLowerCase().includes(query);
+    });
+  }
+
+  function showMentionDropdown(textarea, matches, startIndex) {
+    closeMentionDropdown();
+
+    if (!matches.length) return;
+
+    var dropdown = document.createElement('div');
+    dropdown.className = 'rv-mention-dropdown rv-interactive';
+    dropdown.setAttribute('role', 'listbox');
+    dropdown.setAttribute('aria-label', 'Team member suggestions');
+
+    dropdown.innerHTML = matches.map(function (member) {
+      return '<button type="button" class="rv-mention-item" role="option" ' +
+        'onclick="insertMention(\'' + textarea.id + '\', \'' + member.name + '\')" ' +
+        'title="Mention ' + member.name + '">' +
+        '<span class="rv-mention-avatar">' + member.name.charAt(0).toUpperCase() + '</span>' +
+        '<span class="rv-mention-name">' + escapeHtml(member.name) + '</span>' +
+      '</button>';
+    }).join('');
+
+    textarea.parentElement.appendChild(dropdown);
+
+    var textareaRect = textarea.getBoundingClientRect();
+    dropdown.style.top = (textareaRect.bottom + 4) + 'px';
+    dropdown.style.left = textareaRect.left + 'px';
+    dropdown.style.width = Math.min(300, textareaRect.width) + 'px';
+
+    dropdown.classList.add('visible');
+  }
+
+  function closeMentionDropdown() {
+    var dropdown = document.querySelector('.rv-mention-dropdown');
+    if (dropdown) {
+      dropdown.classList.remove('visible');
+      setTimeout(function () {
+        var d = document.querySelector('.rv-mention-dropdown');
+        if (d) d.remove();
+      }, 150);
+    }
+  }
+
+  function insertMention(textareaId, memberName) {
+    var textarea = document.getElementById(textareaId);
+    var text = textarea.value;
+    var lastAt = text.lastIndexOf('@');
+    
+    if (lastAt !== -1) {
+      var beforeAt = text.substring(0, lastAt);
+      var after = text.substring(lastAt).split(/\s+/, 1)[0];
+      var afterWord = text.substring(lastAt + after.length);
+      textarea.value = beforeAt + '@' + memberName + ' ' + afterWord.trim();
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+    }
+
+    closeMentionDropdown();
+  }
+
+  function bindMentionDetection(textarea) {
+    var mentionTimeout;
+
+    textarea.addEventListener('input', function (e) {
+      clearTimeout(mentionTimeout);
+      
+      mentionTimeout = setTimeout(function () {
+        var query = detectMentionQuery(textarea.value);
+        
+        if (query) {
+          var matches = getMentionMatches(query.query);
+          if (matches.length > 0) {
+            showMentionDropdown(textarea, matches, query.startIndex);
+          } else {
+            closeMentionDropdown();
+          }
+        } else {
+          closeMentionDropdown();
+        }
+      }, 100);
+    });
+
+    textarea.addEventListener('keydown', function (e) {
+      var dropdown = document.querySelector('.rv-mention-dropdown');
+      if (!dropdown || !dropdown.classList.contains('visible')) return;
+
+      if (e.key === 'Escape') {
+        closeMentionDropdown();
+        e.preventDefault();
+      } else if (e.key === 'ArrowDown') {
+        var items = dropdown.querySelectorAll('.rv-mention-item');
+        var focused = dropdown.querySelector('.rv-mention-item:focus');
+        if (!focused && items.length > 0) {
+          items[0].focus();
+        } else {
+          var nextIdx = Array.prototype.indexOf.call(items, focused) + 1;
+          if (nextIdx < items.length) items[nextIdx].focus();
+        }
+        e.preventDefault();
+      } else if (e.key === 'ArrowUp') {
+        var items = dropdown.querySelectorAll('.rv-mention-item');
+        var focused = dropdown.querySelector('.rv-mention-item:focus');
+        if (focused) {
+          var prevIdx = Array.prototype.indexOf.call(items, focused) - 1;
+          if (prevIdx >= 0) items[prevIdx].focus();
+        }
+        e.preventDefault();
+      } else if (e.key === 'Enter') {
+        var focused = dropdown.querySelector('.rv-mention-item:focus');
+        if (focused) {
+          focused.click();
+          e.preventDefault();
+        }
+      }
+    });
+  }
+
+  window.insertMention = insertMention;
+  window.bindMentionDetection = bindMentionDetection;
 
   window.addEventListener('hashchange', handleDeepLink);
 
