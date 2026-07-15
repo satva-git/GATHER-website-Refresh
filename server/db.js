@@ -225,6 +225,7 @@ function createComment(sessionToken, payload) {
     scrollY: Number.isFinite(payload.scrollY) ? payload.scrollY : 0,
     pinX: Number.isFinite(payload.pinX) ? payload.pinX : null,
     pinY: Number.isFinite(payload.pinY) ? payload.pinY : null,
+    tabId: String(payload.tabId || 'default').trim(),
     body,
     status: 'open',
     createdAt: now(),
