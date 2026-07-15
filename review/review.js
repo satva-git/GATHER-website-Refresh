@@ -372,6 +372,30 @@
     }
   }
 
+  function formatRelativeTime(iso) {
+    try {
+      var date = new Date(iso);
+      var now = new Date();
+      var diffMs = now - date;
+      var diffSecs = Math.floor(diffMs / 1000);
+      var diffMins = Math.floor(diffSecs / 60);
+      var diffHours = Math.floor(diffMins / 60);
+      var diffDays = Math.floor(diffHours / 24);
+
+      if (diffSecs < 60) return 'just now';
+      if (diffMins < 60) return diffMins + 'm ago';
+      if (diffHours < 24) return diffHours + 'h ago';
+      if (diffDays < 7) return diffDays + 'd ago';
+
+      return new Intl.DateTimeFormat(undefined, {
+        month: 'short',
+        day: 'numeric'
+      }).format(date);
+    } catch (e) {
+      return iso;
+    }
+  }
+
   function getStoredName() {
     try {
       return localStorage.getItem('rv-author-name') || '';
@@ -617,7 +641,7 @@
               (isOwner ? '<span class="rv-card-owner-badge" aria-label="Your comment">You</span>' : '') + '</span>' +
               (comment.sectionLabel || comment.sectionId ?
                 '<span class="rv-card-section">' + escapeHtml(comment.sectionLabel || sectionLabel(comment.sectionId)) + '</span>' : '') +
-              '<span class="rv-card-time">' + escapeHtml(formatTime(comment.createdAt)) + '</span>' +
+              '<span class="rv-card-time" title="' + escapeHtml(formatTime(comment.createdAt)) + '">' + escapeHtml(formatRelativeTime(comment.createdAt)) + '</span>' +
             '</div>' +
             '<div class="rv-card-body">' + escapeHtml(comment.body) + '</div>' +
             (replyCount || resolved ?
@@ -1087,7 +1111,7 @@
         '<div class="rv-reply">' +
           '<div class="rv-reply-top">' +
             '<span class="rv-reply-author">' + escapeHtml(reply.authorName) + '</span>' +
-            '<span class="rv-reply-time">' + escapeHtml(formatTime(reply.createdAt)) + '</span>' +
+            '<span class="rv-reply-time" title="' + escapeHtml(formatTime(reply.createdAt)) + '">' + escapeHtml(formatRelativeTime(reply.createdAt)) + '</span>' +
           '</div>' +
           '<div class="rv-reply-body">' + escapeHtml(reply.body) + '</div>' +
         '</div>'
@@ -1156,7 +1180,7 @@
             '</div>' +
           '</form>' :
           '<div class="rv-thread-comment">' + escapeHtml(comment.body) + '</div>' +
-          '<div class="rv-card-time">' + escapeHtml(formatTime(comment.createdAt)) + '</div>' +
+          '<div class="rv-card-time" title="' + escapeHtml(formatTime(comment.createdAt)) + '">' + escapeHtml(formatRelativeTime(comment.createdAt)) + '</div>' +
           '<div class="rv-thread-actions">' +
             '<button type="button" class="rv-btn rv-btn-ghost-dark rv-toggle-status" data-status="' +
               (resolved ? 'open' : 'resolved') + '">' +

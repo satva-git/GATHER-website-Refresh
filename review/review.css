@@ -74,7 +74,7 @@ body.review-mode .subpage-nav {
 
 @keyframes rv-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.45; }
+  50% { opacity: 0.5; }
 }
 
 .rv-bar-title {
@@ -428,6 +428,11 @@ body.review-mode .subpage-nav {
 
 .rv-card.resolved {
   opacity: 0.6;
+}
+
+.rv-card.resolved .rv-card-body {
+  text-decoration: line-through;
+  color: #8b96a8;
 }
 
 .rv-card-dot {
@@ -1363,4 +1368,48 @@ body.rv-add-mode select {
   border-radius: 50%;
   animation: rv-spin 0.8s linear infinite;
   margin-right: 6px;
+}
+
+.rv-card-skeleton {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: none;
+  border-bottom: 1px solid var(--rv-line);
+  border-left: 3px solid transparent;
+  padding: 9px 16px 9px 14px;
+  background: #fff;
+  animation: rv-pulse 2s ease-in-out infinite;
+}
+
+.rv-card-skeleton-dot {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(95, 168, 149, 0.12);
+}
+
+.rv-card-skeleton-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.rv-card-skeleton-line {
+  height: 12px;
+  background: rgba(95, 168, 149, 0.1);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.rv-card-skeleton-line:last-child {
+  margin-bottom: 0;
+}
+
+.rv-card-skeleton-line.short {
+  width: 60%;
+}
+
+.rv-card-skeleton-line.medium {
+  width: 80%;
 }
