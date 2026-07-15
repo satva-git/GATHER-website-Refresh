@@ -467,37 +467,63 @@
     return !!target.closest(REVIEW_UI_SELECTOR);
   }
 
-  function getCurrentTabId() {
+  function getJourneyTabId() {
     var journeyRoot = document.getElementById('product-journey');
-    if (journeyRoot) {
-      var activePanel = journeyRoot.querySelector('.journey-panel.is-active');
-      if (activePanel) {
-        // Prefer actual ID if it exists, otherwise use data-journey-panel attribute, then fall back to index
-        if (activePanel.id) return activePanel.id;
-        var journeyAttr = activePanel.getAttribute('data-journey-panel');
-        if (journeyAttr) return 'journey-panel-' + journeyAttr;
-        return 'journey-' + Array.prototype.indexOf.call(
-          journeyRoot.querySelectorAll('.journey-panel'),
-          activePanel
-        );
-      }
-    }
+    if (!journeyRoot) return null;
+    var activePanel = journeyRoot.querySelector('.journey-panel.is-active');
+    if (!activePanel) return null;
+    // Prefer actual ID if it exists, otherwise use data-journey-panel attribute, then fall back to index
+    if (activePanel.id) return activePanel.id;
+    var journeyAttr = activePanel.getAttribute('data-journey-panel');
+    if (journeyAttr) return 'journey-panel-' + journeyAttr;
+    return 'journey-' + Array.prototype.indexOf.call(
+      journeyRoot.querySelectorAll('.journey-panel'),
+      activePanel
+    );
+  }
 
+  function getPillarsTabId() {
     var pillarsRoot = document.getElementById('three-pillars');
-    if (pillarsRoot) {
-      var activePanel = pillarsRoot.querySelector('.pillars-panel-content.is-active');
-      if (activePanel) {
-        // Prefer actual ID if it exists, otherwise use data-pillar-panel attribute, then fall back to index
-        if (activePanel.id) return activePanel.id;
-        var pillarAttr = activePanel.getAttribute('data-pillar-panel');
-        if (pillarAttr) return 'pillar-' + pillarAttr;
-        return 'pillars-' + Array.prototype.indexOf.call(
-          pillarsRoot.querySelectorAll('.pillars-panel-content'),
-          activePanel
-        );
+    if (!pillarsRoot) return null;
+    var activePanel = pillarsRoot.querySelector('.pillars-panel-content.is-active');
+    if (!activePanel) return null;
+    // Prefer actual ID if it exists, otherwise use data-pillar-panel attribute, then fall back to index
+    if (activePanel.id) return activePanel.id;
+    var pillarAttr = activePanel.getAttribute('data-pillar-panel');
+    if (pillarAttr) return 'pillar-' + pillarAttr;
+    return 'pillars-' + Array.prototype.indexOf.call(
+      pillarsRoot.querySelectorAll('.pillars-panel-content'),
+      activePanel
+    );
+  }
+
+  // Global "currently active sub-tab" - used only to match against comments that were
+  // themselves created inside a tabbed widget (journey/pillars). Does NOT reflect scroll position.
+  function getCurrentTabId() {
+    return getJourneyTabId() || getPillarsTabId() || 'default';
+  }
+
+  // Returns a widget-specific tab id only if the given viewport point is actually
+  // located inside the journey or pillars widget; otherwise 'default'. This prevents
+  // comments pinned elsewhere on the page (hero, footer, pricing, etc.) from being
+  // mistakenly tagged with whichever sub-tab happens to be active in a widget below/above them.
+  function getTabIdForPoint(clientX, clientY) {
+    var el = null;
+    try {
+      el = document.elementFromPoint(clientX, clientY);
+    } catch (e) {
+      el = null;
+    }
+    if (el) {
+      var journeyRoot = document.getElementById('product-journey');
+      if (journeyRoot && journeyRoot.contains(el)) {
+        return getJourneyTabId() || 'default';
+      }
+      var pillarsRoot = document.getElementById('three-pillars');
+      if (pillarsRoot && pillarsRoot.contains(el)) {
+        return getPillarsTabId() || 'default';
       }
     }
-
     return 'default';
   }
 
@@ -522,8 +548,11 @@
   }
 
   function isCommentOnActiveTab(comment) {
-    // If comment has no tabId, assign it to 'default' (backward compatibility for legacy comments)
+    // If comment has no tabId, treat it as 'default' (backward compatibility for legacy comments).
+    // 'default' comments belong to the page at large (not a specific journey/pillars sub-tab),
+    // so they should always be visible regardless of which sub-tab happens to be active.
     var commentTabId = comment.tabId || 'default';
+    if (commentTabId === 'default') return true;
     return commentTabId === getCurrentTabId();
   }
 
@@ -1072,7 +1101,7 @@
     var docWidth = document.documentElement.clientWidth;
     var height = docHeight();
     var section = nearestSection(clientY);
-    var tabId = getCurrentTabId();
+    var tabId = getTabIdForPoint(clientX, clientY);
 
     state.draft = {
       clientX: clientX,
