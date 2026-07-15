@@ -1244,7 +1244,13 @@
             '</div>' +
           '</form>' :
           '<div class="rv-thread-comment">' + escapeHtml(comment.body) + '</div>' +
-          '<div class="rv-card-time" title="' + escapeHtml(formatTime(comment.createdAt)) + '">' + escapeHtml(formatRelativeTime(comment.createdAt)) + '</div>' +
+          '<div class="rv-card-time" title="' + escapeHtml(formatTime(comment.createdAt)) + '">' + 
+            escapeHtml(formatRelativeTime(comment.createdAt)) +
+            (comment.editHistory && comment.editHistory.length > 1 ? 
+              '<button class="rv-edit-indicator" onclick="showEditHistory(\'' + comment.id + '\')" title="View edit history">' +
+              '(edited ' + escapeHtml(formatRelativeTime(comment.updatedAt)) + ')' +
+              '</button>' : '') +
+          '</div>' +
           renderReactionsHtml(comment) +
           '<div class="rv-thread-actions">' +
             '<button type="button" class="rv-btn rv-btn-ghost-dark rv-toggle-status" data-status="' +
@@ -1260,7 +1266,7 @@
             '<button type="button" class="rv-delete-link rv-delete-comment"' +
               (state.submitting ? ' disabled' : '') + '>Delete this comment</button>' +
           '</div>') +
-        '<div class="rv-thread-replies">' + renderRepliesHtml(comment.replies) + '</div>' +
+        '<div class="rv-thread-replies">' + renderThreadedReplies(comment.replies) + '</div>' +
         '<form class="rv-reply-form">' +
         '<label class="rv-field">' +
           '<span>Your reply</span>' +
@@ -1505,8 +1511,7 @@
     if (isOfflineMode) {
       var c = getComment(commentId);
       if (c) {
-        c.body = body;
-        c.updatedAt = new Date().toISOString();
+        trackCommentEdit(commentId, body);
         upsertComment(c);
         lsSave();
       }
@@ -1525,6 +1530,7 @@
       body: JSON.stringify({ body: body })
     })
       .then(function (data) {
+        trackCommentEdit(commentId, body);
         upsertComment(data.comment);
         state.editingCommentId = null;
         renderAll();
@@ -2400,6 +2406,115 @@
   window.togglePinComment = togglePinComment;
   window.markAllResolved = markAllResolved;
   window.deleteAllComments = deleteAllComments;
+
+  function renderThreadedReplies(replies, depth) {
+    depth = depth || 0;
+    if (!replies || !replies.length) {
+      return '<div class="rv-thread-empty">No replies yet.</div>';
+    }
+
+    return '<div class="rv-replies-container" style="margin-left:' + (depth * 20) + 'px">' +
+      replies.map(function (reply) {
+        return (
+          '<div class="rv-reply' + (depth > 0 ? ' rv-reply-nested' : '') + '">' +
+            '<div class="rv-reply-top">' +
+              '<span class="rv-reply-author">' + escapeHtml(reply.authorName) + '</span>' +
+              '<span class="rv-reply-time" title="' + escapeHtml(formatTime(reply.createdAt)) + '">' + 
+                escapeHtml(formatRelativeTime(reply.createdAt)) + '</span>' +
+            '</div>' +
+            '<div class="rv-reply-body">' + escapeHtml(reply.body) + '</div>' +
+            (reply.replies && reply.replies.length > 0 ? 
+              renderThreadedReplies(reply.replies, depth + 1) : '') +
+          '</div>'
+        );
+      }).join('') +
+    '</div>';
+  }
+
+  window.renderThreadedReplies = renderThreadedReplies;
+
+  function showEditHistory(commentId) {
+    var comment = getComment(commentId);
+    if (!comment) return;
+
+    var existing = document.getElementById('rv-edit-history-modal');
+    if (existing) existing.remove();
+
+    var history = comment.editHistory || [];
+    if (!history.length) {
+      showToast('No edit history available.', true);
+      return;
+    }
+
+    var modal = document.createElement('div');
+    modal.id = 'rv-edit-history-modal';
+    modal.className = 'rv-modal rv-interactive';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'rv-edit-history-title');
+
+    modal.innerHTML =
+      '<div class="rv-modal-content">' +
+        '<div class="rv-modal-head">' +
+          '<h2 id="rv-edit-history-title">Edit History - Comment #' + commentId.slice(0, 8) + '</h2>' +
+          '<button type="button" class="rv-modal-close" aria-label="Close">&times;</button>' +
+        '</div>' +
+        '<div class="rv-modal-body">' +
+          history.map(function (entry, idx) {
+            var isOriginal = idx === history.length - 1;
+            return (
+              '<div class="rv-history-entry">' +
+                '<div class="rv-history-meta">' +
+                  '<strong>' + (isOriginal ? 'Original' : 'Edited') + '</strong>' +
+                  '<time>' + escapeHtml(formatTime(entry.timestamp)) + '</time>' +
+                  (entry.editorName ? '<span class="rv-history-editor">by ' + escapeHtml(entry.editorName) + '</span>' : '') +
+                '</div>' +
+                (idx < history.length - 1 ?
+                  '<div class="rv-history-diff">' +
+                    '<div class="rv-diff-before"><strong>Before:</strong><p>' + escapeHtml(history[idx + 1].text) + '</p></div>' +
+                    '<div class="rv-diff-arrow">→</div>' +
+                    '<div class="rv-diff-after"><strong>After:</strong><p>' + escapeHtml(entry.text) + '</p></div>' +
+                  '</div>' :
+                  '<div class="rv-history-text">' + escapeHtml(entry.text) + '</div>') +
+              '</div>'
+            );
+          }).join('') +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(modal);
+
+    modal.querySelector('.rv-modal-close').addEventListener('click', function () {
+      modal.remove();
+    });
+
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) modal.remove();
+    });
+  }
+
+  function trackCommentEdit(commentId, newText) {
+    var comment = getComment(commentId);
+    if (!comment) return;
+
+    if (!comment.editHistory) {
+      comment.editHistory = [
+        { text: comment.body, timestamp: comment.createdAt, editorName: comment.authorName }
+      ];
+    }
+
+    comment.editHistory.unshift({
+      text: newText,
+      timestamp: new Date().toISOString(),
+      editorName: getStoredName()
+    });
+
+    comment.body = newText;
+    comment.updatedAt = new Date().toISOString();
+  }
+
+  window.showEditHistory = showEditHistory;
+  window.trackCommentEdit = trackCommentEdit;
 
   window.addEventListener('hashchange', handleDeepLink);
 
