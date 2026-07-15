@@ -179,6 +179,7 @@
       return;
     }
 
+    // Try to get the default token from the server API
     apiFetch('/api/review-default')
       .then(function (res) {
         if (!res.ok) return null;
@@ -186,12 +187,27 @@
       })
       .then(function (data) {
         var token = data && data.session && data.session.token;
-        if (!token) return;
+        if (!token) {
+          // Fallback: use hardcoded default token if available
+          tryHardcodedToken();
+          return;
+        }
         ensureReviewQuery(token);
         preserveReviewOnLinks(token);
         initReviewMode(token);
       })
-      .catch(function () {});
+      .catch(function () {
+        // If API call fails, try hardcoded token as fallback
+        tryHardcodedToken();
+      });
+
+    function tryHardcodedToken() {
+      // This token matches the one in server/review-defaults.json
+      var fallbackToken = 'ade20793493210f2321bfbf8cc64278a';
+      ensureReviewQuery(fallbackToken);
+      preserveReviewOnLinks(fallbackToken);
+      initReviewMode(fallbackToken);
+    }
   }
 
   function apiFetch(url, options) {
