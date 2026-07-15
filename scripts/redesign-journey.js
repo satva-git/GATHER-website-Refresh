@@ -238,7 +238,7 @@ const TAB_DEFS = [
   { id: 'overview', num: '01', kicker: 'Platform overview', label: 'Multi-entity finance teams' },
   { id: 'solution', num: '02', kicker: 'The solution', label: 'One integrated workflow' },
   { id: 'intercompany', num: '03', kicker: 'Module 01', label: 'Intercompany control' },
-  { id: 'reporting', num: '04', kicker: 'Module 02', label: 'Group reporting' },
+  { id: 'reporting', num: '04', kicker: 'Module 02', label: 'Group<br>reporting' },
   { id: 'planning', num: '05', kicker: 'Module 05', label: 'Planning & variance' }
 ];
 

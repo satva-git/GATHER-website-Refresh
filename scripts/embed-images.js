@@ -18,6 +18,7 @@ const images = [
   'assets/images/featured-accountingweb.webp',
   'assets/images/featured-digital-disruptors.webp',
   'assets/images/featured-accounting-tech-happenings.webp',
+  'assets/images/featured-ifa.png',
 ];
 
 function mimeFor(rel) {
