@@ -97,6 +97,8 @@
     '#rv-thread-backdrop'
   ].join(',');
 
+  var EMOJI_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🎉', '✨', '🚀'];
+
   var DEFAULT_STATIC_TOKEN = 'gather-static-review';
 
   function isStaticHost() {
@@ -1102,6 +1104,41 @@
     else authorField.focus();
   }
 
+  function generateCommentLink(commentId) {
+    var baseUrl = window.location.origin + window.location.pathname;
+    return baseUrl + '#comment-' + commentId;
+  }
+
+  function copyCommentLink(commentId) {
+    var link = generateCommentLink(commentId);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link)
+        .then(function () {
+          showToast('Link copied to clipboard!');
+        })
+        .catch(function () {
+          fallbackCopyLink(link);
+        });
+    } else {
+      fallbackCopyLink(link);
+    }
+  }
+
+  function fallbackCopyLink(link) {
+    var ta = document.createElement('textarea');
+    ta.value = link;
+    ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showToast('Link copied to clipboard!');
+    } catch (e) {
+      showToast('Could not copy link. Try manually: ' + link, true);
+    }
+    ta.remove();
+  }
+
   function renderRepliesHtml(replies) {
     if (!replies || !replies.length) {
       return '<div class="rv-thread-empty">No replies yet.</div>';
@@ -1163,6 +1200,12 @@
           '</div>' +
         '</div>' +
         '<button type="button" class="rv-popover-close" aria-label="Close">&times;</button>' +
+        '<button type="button" class="rv-popover-link" onclick="copyCommentLink(\'' + comment.id + '\')" aria-label="Copy comment link" title="Copy shareable link">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+            '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>' +
+            '<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>' +
+          '</svg>' +
+        '</button>' +
       '</div>' +
       '<div class="rv-thread-body">' +
         (comment.sectionLabel ?
@@ -1181,6 +1224,7 @@
           '</form>' :
           '<div class="rv-thread-comment">' + escapeHtml(comment.body) + '</div>' +
           '<div class="rv-card-time" title="' + escapeHtml(formatTime(comment.createdAt)) + '">' + escapeHtml(formatRelativeTime(comment.createdAt)) + '</div>' +
+          renderReactionsHtml(comment) +
           '<div class="rv-thread-actions">' +
             '<button type="button" class="rv-btn rv-btn-ghost-dark rv-toggle-status" data-status="' +
               (resolved ? 'open' : 'resolved') + '">' +
@@ -1944,6 +1988,117 @@
     }
   }, 300);
 
+  function handleDeepLink() {
+    var hash = window.location.hash;
+    if (hash.startsWith('#comment-')) {
+      var commentId = hash.substring(9);
+      var comment = getComment(commentId);
+      if (comment) {
+        focusComment(commentId);
+        highlightComment(commentId);
+      }
+    }
+  }
+
+  function highlightComment(commentId) {
+    var card = document.querySelector('[data-id="' + commentId + '"]');
+    if (card) {
+      card.classList.add('rv-highlighted');
+      setTimeout(function () {
+        card.classList.remove('rv-highlighted');
+      }, 3000);
+    }
+  }
+
+  function renderReactionsHtml(comment) {
+    if (!comment.reactions || Object.keys(comment.reactions).length === 0) {
+      return '';
+    }
+    
+    return '<div class="rv-comment-reactions">' + 
+      Object.keys(comment.reactions).map(function (emoji) {
+        var count = comment.reactions[emoji];
+        return '<button class="rv-reaction" onclick="toggleReaction(\'' + comment.id + '\', \'' + emoji + '\')" title="' + emoji + ' (' + count + ')">' +
+          '<span class="rv-reaction-emoji">' + emoji + '</span>' +
+          '<span class="rv-reaction-count">' + count + '</span>' +
+        '</button>';
+      }).join('') +
+      '<button class="rv-reaction-add" onclick="showEmojiPicker(\'' + comment.id + '\')" title="Add reaction" aria-label="Add emoji reaction">' +
+        '<span>+</span>' +
+      '</button>' +
+    '</div>';
+  }
+
+  function toggleReaction(commentId, emoji) {
+    if (state.submitting) return;
+    var comment = getComment(commentId);
+    if (!comment) return;
+
+    if (!comment.reactions) comment.reactions = {};
+    if (!comment.reactions[emoji]) {
+      comment.reactions[emoji] = 0;
+    }
+
+    comment.reactions[emoji]++;
+    upsertComment(comment);
+
+    if (!isOfflineMode) {
+      apiJson('/api/comments/' + encodeURIComponent(commentId) + '/reactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emoji: emoji })
+      }).catch(function (err) {
+        showToast('Could not add reaction: ' + err.message, true);
+      });
+    }
+
+    refreshOpenThread();
+    renderPins();
+  }
+
+  function showEmojiPicker(commentId) {
+    var existing = document.querySelector('.rv-emoji-picker');
+    if (existing) existing.remove();
+
+    var picker = document.createElement('div');
+    picker.className = 'rv-emoji-picker rv-interactive';
+    picker.setAttribute('role', 'menu');
+    picker.setAttribute('aria-label', 'Select emoji reaction');
+
+    picker.innerHTML = EMOJI_REACTIONS.map(function (emoji) {
+      return '<button type="button" class="rv-emoji-option" role="menuitem" onclick="toggleReaction(\'' + commentId + '\', \'' + emoji + '\')">' + 
+        emoji + 
+      '</button>';
+    }).join('');
+
+    document.body.appendChild(picker);
+
+    var rect = picker.getBoundingClientRect();
+    if (rect.right > window.innerWidth - 12) {
+      picker.style.right = '12px';
+      picker.style.left = 'auto';
+    }
+    if (rect.bottom > window.innerHeight - 12) {
+      picker.style.bottom = '12px';
+      picker.style.top = 'auto';
+    }
+
+    setTimeout(function () {
+      document.addEventListener('click', closeEmojiPicker);
+    }, 10);
+  }
+
+  function closeEmojiPicker() {
+    var picker = document.querySelector('.rv-emoji-picker');
+    if (picker) picker.remove();
+    document.removeEventListener('click', closeEmojiPicker);
+  }
+
+  window.toggleReaction = toggleReaction;
+  window.showEmojiPicker = showEmojiPicker;
+
+  window.addEventListener('hashchange', handleDeepLink);
+
   loadSession()
     .then(function () { return loadComments(); })
     .then(function () {
@@ -1951,6 +2106,8 @@
       renderAll();
       startSyncLoop();
       connectEvents();
+      
+      handleDeepLink();
       showWelcomeTip();
     })
     .catch(function (err) {
