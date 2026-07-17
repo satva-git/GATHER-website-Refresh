@@ -282,8 +282,8 @@ const PRICING_SECTION = `<!-- ═════ PRICING ═════ -->
     <div class="pri-head sr">
       <div class="pri-head-l">
         <div class="eyebrow">Pricing</div>
-        <h2 class="h2" style="margin-top:10px">Pay for the modules and groups you manage</h2>
-        <p class="lead" style="margin-top:6px">Monthly per-module subscription, unlimited companies per group.<br>All plans include a 30-day free trial.</p>
+        <h2 class="h2" style="margin-top:10px">Only Pay for the Modules and Groups You Manage.</h2>
+        <p class="lead" style="margin-top:6px">Simple monthly<br>Per-module subscription with unlimited companies per group. All plans include a 30-day free trial.</p>
       </div>
       <div class="pri-cta-row">
         <a href="https://app.gather.nexus/auth/user/signup" class="btn btn--primary">Start free trial</a>
@@ -303,56 +303,57 @@ const PRICING_SECTION = `<!-- ═════ PRICING ═════ -->
           <tr>
             <th scope="col"></th>
             <th scope="col">
-              <div class="pt-audience">Finance teams</div>
-              <div class="pt-groups">1 group<br><span class="small">(unlimited companies)</span></div>
-            </th>
-            <th scope="col" class="pt-featured">
-              <div class="pt-audience">Fractional CFOs</div>
-              <div class="pt-groups">2–3 groups</div>
+              <div class="pt-audience">For Finance Teams</div>
+              <div class="pt-groups">1 Group<br><span class="small">(unlimited companies)</span></div>
             </th>
             <th scope="col">
-              <div class="pt-audience">Fractional CFOs</div>
-              <div class="pt-groups">4–5 groups</div>
+              <div class="pt-audience">For Fractional CFOs</div>
+              <div class="pt-groups">2–3 Groups<br><span class="small">(unlimited companies)</span></div>
             </th>
             <th scope="col">
-              <div class="pt-audience">Fractional CFOs</div>
-              <div class="pt-groups">Unlimited groups</div>
+              <div class="pt-audience">For Fractional CFOs</div>
+              <div class="pt-groups">4–5 Groups<br><span class="small">(unlimited companies)</span></div>
+            </th>
+            <th scope="col">
+              <div class="pt-audience">Enterprise Plan</div>
+              <div class="pt-groups">Over 5 Groups<br><span class="small">(unlimited companies)</span></div>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th scope="row">
-              <div class="pt-module">Group Reporting &amp; Group Planning</div>
-              <p class="pt-desc-text">Consolidated P&amp;L, balance sheet, cash flow. Group budgeting, forecasting, and budget vs actual.</p>
+              <div class="pt-module">Group Financial Reporting &amp; Group Financial Planning</div>
+              <p class="pt-desc-text">All features included</p>
             </th>
-            <td><div class="pt-price">£70</div><span class="small">/ month</span></td>
-            <td class="pt-featured"><div class="pt-price">£120</div><span class="small">/ month</span></td>
-            <td><div class="pt-price">£160</div><span class="small">/ month</span></td>
-            <td><div class="pt-price">£200</div><span class="small">/ month</span></td>
+            <td><div class="pt-price">£70.00</div><span class="small">/ month</span></td>
+            <td><div class="pt-price">£120.00</div><span class="small">/ month</span></td>
+            <td><div class="pt-price">£160.00</div><span class="small">/ month</span></td>
+            <td><span class="small">Contact our team for Pricing</span></td>
           </tr>
           <tr>
             <th scope="row">
               <div class="pt-module">Intercompany Control</div>
-              <p class="pt-desc-text">IC posting, matching, elimination workflows, and balance reconciliation across all entities.</p>
+              <p class="pt-desc-text">All features included</p>
             </th>
-            <td><div class="pt-price">£50</div><span class="small">/ month</span></td>
-            <td class="pt-featured"><div class="pt-price">£90</div><span class="small">/ month</span></td>
-            <td><div class="pt-price">£120</div><span class="small">/ month</span></td>
-            <td><div class="pt-price">£150</div><span class="small">/ month</span></td>
+            <td><div class="pt-price">£50.00</div><span class="small">/ month</span></td>
+            <td><div class="pt-price">£90.00</div><span class="small">/ month</span></td>
+            <td><div class="pt-price">£120.00</div><span class="small">/ month</span></td>
+            <td><span class="small">Contact our team for Pricing</span></td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <td colspan="5" class="pricing-foot">
-              <strong>All plans include</strong>
+              <strong>For all packages:</strong>
               <ul class="pricing-includes">
-                <li>30-day free trial with full platform access</li>
-                <li>Unlimited companies per group</li>
-                <li>One-click Xero &amp; QuickBooks integration</li>
-                <li>GATHER AI account auto-mapping</li>
-                <li>Mixed Xero + QuickBooks groups</li>
-                <li>Cancel anytime · 14 days notice</li>
+                <li>All Features</li>
+                <li>GATHER AI account auto-mapping - 30 credits</li>
+                <li>Subscriptions may be cancelled with one month's notice</li>
+                <li>Monthly contract which auto-renews – one month initial period and one month for each subsequent extension period</li>
+                <li>Subscription may be cancelled with 14 days notice</li>
+                <li>Subject to Terms and Conditions</li>
+                <li>No credit card required to start · Upgrade or downgrade with 14 days notice</li>
               </ul>
             </td>
           </tr>
