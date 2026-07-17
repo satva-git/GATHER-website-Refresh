@@ -106,7 +106,7 @@ function buildJourneySection(images) {
               <div class="wf-pill" id="the-solution">GATHER.NEXUS — The Solution</div>
               <h3 class="h3">The Solution</h3>
               <p class="wf-body">GATHER.nexus provides a fully integrated workflow covering <strong>Intercompany Control</strong>, <strong>Group Financial Reporting</strong>, and <strong>Group Financial Planning</strong>.</p>
-              <p class="wf-body">Each module is purpose-built for Group finance — replacing disconnected spreadsheets with a single, auditable, real-time workflow.</p>
+              <p class="wf-body">Each module is purpose-built for Group finance — replacing disconnected spreadsheets with a single, auditable workflow.</p>
               <ul class="checks journey-checks">
                 ${checkItem('Intercompany Control')}
                 ${checkItem('Group Financial Reporting')}
@@ -115,7 +115,7 @@ function buildJourneySection(images) {
             </div>
             <div class="journey-visual">
               <div class="journey-visual-frame">
-                <div class="journey-visual-caption"><span>Unified platform</span><span>Xero &amp; QuickBooks connected</span></div>
+                <div class="journey-visual-caption"><span>One unified Platform</span><span>Xero &amp; QuickBooks connected</span></div>
                 <img src="${imgSolution}" alt="GATHER.nexus unified workflow connecting Xero and QuickBooks entities" loading="lazy" decoding="async"/>
               </div>
               <div class="journey-flow-mini" aria-hidden="true">
@@ -131,24 +131,19 @@ function buildJourneySection(images) {
               <div class="wf-pill" id="intercompany-control">Module 01 — Intercompany Control</div>
               <h3 class="h3">Intercompany Control</h3>
               <p class="wf-body">A central hub for intercompany activity across all Group entities — with full balance visibility and always-accurate relationships.</p>
-              <p class="wf-body">Built on a <strong>quadruple-entry posting framework</strong>, automating journals, invoices, and bills synced in real time to Xero and QuickBooks.</p>
+              <p class="wf-body">Built on a <strong>quadruple-entry posting framework</strong>, automating journals, invoices, and bills synced to Xero and QuickBooks.</p>
               <ul class="checks journey-checks">
                 ${checkItem('Quadruple-entry posting framework')}
                 ${checkItem('Multi-currency support')}
-                ${checkItem('Recharge by GL, vendor, customer, or tracking category')}
+                ${checkItem('Recharge mark-ups, discounts and splits (highly configurable)')}
                 ${checkItem('Full transaction audit trail')}
               </ul>
               <div class="wf-cta-row"><a href="modules/intercompany-control.html" class="btn btn--primary">Find out more <svg class="a" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
             </div>
-            <div class="journey-visual">
+              <div class="journey-visual">
               <div class="journey-visual-frame">
                 <div class="journey-visual-caption"><span>Module 01</span><span>Intercompany workflow</span></div>
                 <img src="${imgIC}" alt="Intercompany control workflow with posting, matrix views, and reconciliation" loading="lazy" decoding="async"/>
-              </div>
-              <div class="journey-module-steps" aria-label="Intercompany workflow steps">
-                <div class="journey-module-step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg><span>Post</span></div>
-                <div class="journey-module-step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Matrix</span></div>
-                <div class="journey-module-step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Reconcile</span></div>
               </div>
             </div>
           </div>
@@ -233,7 +228,7 @@ function buildJourneySection(images) {
       <header class="connected-workflow-head">
         <div class="wf-pill">The GATHER Difference</div>
         <h2 class="h2">One Platform. One Connected Workflow.</h2>
-        <p class="lead">Intercompany control, consolidation, and planning are not separate tools — they flow together in one auditable, real-time path.</p>
+        <p class="lead">Intercompany control, consolidation, and planning are not separate tools — they flow together in one auditable path.</p>
       </header>
       <div class="connected-pipeline" role="tablist" aria-label="Connected workflow stages">
         <button type="button" class="connected-node is-active" role="tab" aria-selected="true" data-connected="ic">
@@ -258,8 +253,8 @@ function buildJourneySection(images) {
       </div>
       <div class="connected-detail">
         <article class="connected-panel is-active" data-connected-panel="ic" role="tabpanel">
-          <h4>Single connected workflow</h4>
-          <p>From intercompany transactions through consolidation working papers to group actuals and budget variance — every step is connected in one auditable, real-time workflow.</p>
+          <h4>One Unified Workflow</h4>
+          <p>From intercompany transactions through consolidation working papers to group actuals and budget variance — every step is connected in one auditable workflow.</p>
         </article>
         <article class="connected-panel" data-connected-panel="wp" role="tabpanel" hidden>
           <h4>Audit-ready by design</h4>
