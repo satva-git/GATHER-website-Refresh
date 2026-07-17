@@ -27,7 +27,7 @@ function buildJourneySection(images) {
     <header class="journey-intro sr">
       <div class="eyebrow">Product journey</div>
       <h2 class="h2" id="journey-heading">From fragmented spreadsheets to one connected group workflow</h2>
-      <p class="lead">Follow the path finance teams take with GATHER.nexus — overview, solution, and each core module in one place.</p>
+      <p class="lead">Dive into the workflow that finance teams follow with GATHER.nexus.</p>
     </header>
 
     <div class="journey-shell sr sr-d1" id="product-journey">
@@ -312,7 +312,6 @@ const PRICING_SECTION = `<!-- ═════ PRICING ═════ -->
               <div class="pt-groups">1 group<br><span class="small">(unlimited companies)</span></div>
             </th>
             <th scope="col" class="pt-featured">
-              <div class="pt-popular">Most popular</div>
               <div class="pt-audience">Fractional CFOs</div>
               <div class="pt-groups">2–3 groups</div>
             </th>

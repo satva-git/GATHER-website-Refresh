@@ -307,17 +307,19 @@ ul { list-style: none; }
 
 /* Level cards: cascading indent with brand teal drill-down borders */
 .level-block { margin: 0; }
-.level-1, .level-2, .level-3, .level-4 { margin-left: 0; }
+.level-1, .level-2, .level-3, .level-4, .level-5 { margin-left: 0; }
 
 .level-1 .level-card { margin-left: 0; border-left: 3px solid var(--teal-line); }
-.level-2 .level-card { margin-left: 20px; border-left: 3px solid var(--teal-2); }
-.level-3 .level-card { margin-left: 40px; border-left: 3px solid var(--teal); }
-.level-4 .level-card { margin-left: 60px; border-left: 3px solid var(--teal-deep); }
+.level-2 .level-card { margin-left: 15px; border-left: 3px solid rgba(var(--teal-rgb), 0.35); }
+.level-3 .level-card { margin-left: 30px; border-left: 3px solid var(--teal-2); }
+.level-4 .level-card { margin-left: 45px; border-left: 3px solid var(--teal); }
+.level-5 .level-card { margin-left: 60px; border-left: 3px solid var(--teal-deep); }
 
 @media (max-width: 767px) {
-  .level-2 .level-card { margin-left: 10px; }
-  .level-3 .level-card { margin-left: 20px; }
-  .level-4 .level-card { margin-left: 30px; }
+  .level-2 .level-card { margin-left: 8px; }
+  .level-3 .level-card { margin-left: 16px; }
+  .level-4 .level-card { margin-left: 24px; }
+  .level-5 .level-card { margin-left: 32px; }
 }
 
 .level-card {
@@ -331,7 +333,7 @@ ul { list-style: none; }
   padding: 22px 24px;
   box-shadow: 0 4px 16px rgba(10, 27, 48, 0.04);
 }
-.level-4 .level-card {
+.level-5 .level-card {
   border: 1px solid var(--teal-line);
   border-left: 3px solid var(--teal-deep);
   box-shadow: 0 8px 28px rgba(var(--teal-rgb), 0.12);
@@ -374,7 +376,7 @@ ul { list-style: none; }
   justify-content: center;
   color: var(--teal);
 }
-.level-4 .card-icon { background: rgba(var(--teal-rgb), 0.15); }
+.level-5 .card-icon { background: rgba(var(--teal-rgb), 0.15); }
 .card-icon svg {
   width: 22px;
   height: 22px;
@@ -426,6 +428,7 @@ ul { list-style: none; }
 .drill-label-row.indent-2 { padding-left: 28px; }
 .drill-label-row.indent-3 { padding-left: 56px; }
 .drill-label-row.indent-4 { padding-left: 84px; }
+.drill-label-row.indent-5 { padding-left: 112px; }
 .drill-label {
   display: inline-flex;
   align-items: center;
@@ -625,7 +628,8 @@ ul { list-style: none; }
   .pillars-panel-watermark { display: none; }
   .drill-label-row.indent-2,
   .drill-label-row.indent-3,
-  .drill-label-row.indent-4 { padding-left: 0; justify-content: center; }
+  .drill-label-row.indent-4,
+  .drill-label-row.indent-5 { padding-left: 0; justify-content: center; }
   .level-card { flex-wrap: wrap; gap: 14px; }
   .level-badge { justify-self: start; }
   .summary-box { grid-template-columns: 1fr; text-align: center; }
@@ -717,8 +721,9 @@ ul { list-style: none; }
   display:grid;
   grid-template-columns:40px minmax(0,1fr);
   gap:16px;align-items:start;
-  padding:14px 0;
+  padding:10px 0;
 }
+.gather-diff-step-label:only-child{margin-bottom:0}
 .gather-diff-step:first-child{padding-top:0}
 .gather-diff-step:last-child{padding-bottom:4px}
 .gather-diff-step-num{
@@ -757,3 +762,7 @@ ul { list-style: none; }
   .gather-diff-step-num{width:36px;height:36px;font-size:10px}
   .gather-diff-spine-foot{margin:0 12px}
 }
+
+/* Platform section styling */
+#platform { padding: 96px 0 !important; }
+#platform .wrap { padding-bottom: 80px !important; }
