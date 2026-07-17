@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -561,7 +561,7 @@ ul{list-style:none}
 }
 .wf-solution-head span{font-size:13px;font-weight:600;color:var(--ink)}
 .wf-solution-head::after{
-  content:'→';position:absolute;right:0;top:50%;transform:translateY(-60%);
+  content:'â†’';position:absolute;right:0;top:50%;transform:translateY(-60%);
   color:var(--teal-deep);font-size:20px;font-weight:700;
 }
 .wf-solution-cards .wf-card{padding:14px 12px}
@@ -815,7 +815,7 @@ ul{list-style:none}
 .pricing-foot{background:var(--paper-2)!important;text-align:left!important;padding:24px 22px!important}
 .pricing-includes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 20px;margin-top:12px;list-style:none;padding:0}
 .pricing-includes li{font-size:13px;color:var(--text-mid);display:flex;gap:8px;align-items:flex-start}
-.pricing-includes li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0}
+.pricing-includes li::before{content:'âœ“';color:var(--teal);font-weight:700;flex-shrink:0}
 
 /* FAQ polish */
 .faq-section .sec-head{margin-bottom:40px}
@@ -1337,7 +1337,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
 <body id="top">
 <a href="#main-content" class="skip-link">Skip to content</a>
 
-<!-- ═════ NAV ═════ -->
+<!-- â•â•â•â•â• NAV â•â•â•â•â• -->
 <nav id="nav">
   <div class="nav-inner">
     <a href="#top" class="nav-logo" title="GATHER.nexus homepage">
@@ -1396,7 +1396,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   <div id="nav-progress"></div>
 </nav>
 
-<!-- ═════ HERO ═════ -->
+<!-- â•â•â•â•â• HERO â•â•â•â•â• -->
 <section class="hero" id="main-content">
   <div class="wrap hero-grid">
     <div class="hero-img-wrap sr">
@@ -1433,7 +1433,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   </div>
 </section>
 
-<!-- ═════ FEATURED IN ═════ -->
+<!-- â•â•â•â•â• FEATURED IN â•â•â•â•â• -->
 <div class="featured">
   <div class="wrap featured-inner">
     <span class="featured-label">We&rsquo;ve been featured in</span>
@@ -1448,7 +1448,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   </div>
 </div>
 
-<!-- ═════ STATS BAR ═════ -->
+<!-- â•â•â•â•â• STATS BAR â•â•â•â•â• -->
 <div class="stats-bar">
   <div class="wrap stats-grid">
     <div class="stat sr">
@@ -1461,7 +1461,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
       <div class="stat-ic">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
-      <div class="stat-text"><div class="n">30-Day Free Trial</div><div class="l">Full access · no card needed</div></div>
+      <div class="stat-text"><div class="n">30-Day Free Trial</div><div class="l">Full access Â· no card needed</div></div>
     </div>
     <div class="stat sr sr-d2">
       <div class="stat-ic">
@@ -1472,7 +1472,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   </div>
 </div>
 
-<!-- ═════ PRODUCT JOURNEY (TAB STORYTELLING) ═════ -->
+<!-- â•â•â•â•â• PRODUCT JOURNEY (TAB STORYTELLING) â•â•â•â•â• -->
 <section id="platform" class="journey-section bg-paper" aria-labelledby="journey-heading">
   <div class="wrap">
     <div class="sec-head sr">
@@ -1598,7 +1598,20 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
 
         <article class="journey-panel" id="journey-panel-reporting" data-journey-panel="reporting" role="tabpanel" aria-labelledby="journey-tab-reporting" aria-hidden="true">
                     <div class="journey-panel-layout">
-          <div class="journey-panel-body"><div class="journey-copy"><div class="wf-pill" id="group-reporting">Module 02: Group Financial Reporting</div>
+          <!-- AWAITING STRUCTURAL CLARIFICATION -->
+          <!-- Client said: "I have one structural comment on Group Financial Reporting" -->
+          <!-- But did NOT specify the exact structural change -->
+          <!--
+          Current 5-step workflow:
+          1. Create GRT
+          2. Map GRT with AI Assistant
+          3. Create Autojournals
+          4. Review Working Papers
+          5. Generate Reports
+
+          ACTION: Waiting for client clarification on structural change
+          BLOCKING: Cannot implement until client specifies exact requirement
+          -->          <div class="journey-panel-body"><div class="journey-copy"><div class="wf-pill" id="group-reporting">Module 02: Group Financial Reporting</div>
               <h3 class="h3">Group Financial Reporting</h3>
               <p class="wf-body">A five-step consolidation workflow, from <strong>Group Reporting Template</strong> setup through AI-assisted mapping, <strong>autojournals</strong>, and <strong>Working Papers</strong> to final reports.</p>
               <p class="wf-body">Native handling of complex consolidation scenarios and audit-ready <strong>FX differences in Reserves</strong> tracking.</p></div>
@@ -1667,91 +1680,47 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
 <!-- GATHER-ENHANCEMENTS -->
   <!-- THREE PILLARS -->
   <!-- THE GATHER DIFFERENCE -->
-  <div class="wf-section wf-section--alt" id="gather-difference">
+  <section class="wf-section wf-section--alt" id="gather-difference">
     <div class="wrap">
-      <div class="gather-diff">
-        <div class="gather-diff-intro sr">
-          <div class="wf-pill">The GATHER Difference</div>
-          <h2 class="h2">One platform. One auditable path.</h2>
-          <p class="lead">Intercompany control, consolidation, and planning are not bolted together after the fact, they share one ledger path from posting through working papers to group variance.</p>
-          <div class="gather-diff-proofs">
-            <div class="gather-diff-proof sr sr-d1">
-              <h4>Audit-ready working papers</h4>
-              <p>FX in reserves, eliminations, and full transaction trails, built for review, not spreadsheet rebuilds.</p>
-            </div>
-            <div class="gather-diff-proof sr sr-d2">
-              <h4>Multi-entity, multi-currency</h4>
-              <p>Scale across groups and periods with three-level drill-down from consolidated result to ledger detail.</p>
-            </div>
-            <div class="gather-diff-proof sr sr-d3">
-              <h4>Native Xero &amp; QuickBooks sync</h4>
-              <p>One-click sync across mixed-entity groups, journals and actuals stay live in the same workflow.</p>
-            </div>
-          </div>
+      <h2 class="h2 gather-diff-title">The GATHER Difference</h2>
+
+      <!-- Tagline: Centered, prominent -->
+      <p class="gather-tagline">Continuous · real-time · one system of record</p>
+
+      <!-- 4-Column Grid Container -->
+      <div class="gather-cards-grid">
+
+        <!-- Card 01 -->
+        <div class="gather-card">
+          <div class="card-number">01</div>
+          <h3>Intercompany</h3>
+          <p>Quadruple-entry posting, matching, and balances across every entity pair.</p>
         </div>
-        <div class="gather-diff-visual sr sr-d1">
-          <ol class="gather-diff-spine" aria-label="Connected workflow">
-            <li class="gather-diff-step">
-              <span class="gather-diff-step-num" aria-hidden="true">01</span>
-              <div class="gather-diff-step-body">
-                <span class="gather-diff-step-label">Intercompany Recharges</span>
-              </div>
-            </li>
-            <li class="gather-diff-step">
-              <span class="gather-diff-step-num" aria-hidden="true">02</span>
-              <div class="gather-diff-step-body">
-                <span class="gather-diff-step-label">Counterparty Balance Visibility</span>
-              </div>
-            </li>
-            <li class="gather-diff-step">
-              <span class="gather-diff-step-num" aria-hidden="true">03</span>
-              <div class="gather-diff-step-body">
-                <span class="gather-diff-step-label">Automated Reconciliations</span>
-              </div>
-            </li>
-            <li class="gather-diff-step">
-              <span class="gather-diff-step-num" aria-hidden="true">04</span>
-              <div class="gather-diff-step-body">
-                <span class="gather-diff-step-label">GRT Mapping</span>
-              </div>
-            </li>
-            <li class="gather-diff-step">
-              <span class="gather-diff-step-num" aria-hidden="true">05</span>
-              <div class="gather-diff-step-body">
-                <span class="gather-diff-step-label">Automated Journals</span>
-              </div>
-            </li>
-            <li class="gather-diff-step is-key">
-              <span class="gather-diff-step-num" aria-hidden="true">06</span>
-              <div class="gather-diff-step-body">
-                <span class="gather-diff-step-label">Working Papers</span>
-                <span class="gather-diff-step-note">Drill down for data validation and manual adjustments.</span>
-              </div>
-            </li>
-            <li class="gather-diff-step">
-              <span class="gather-diff-step-num" aria-hidden="true">07</span>
-              <div class="gather-diff-step-body">
-                <span class="gather-diff-step-label">Reports</span>
-                <span class="gather-diff-step-note">Drill down for variance analysis.</span>
-              </div>
-            </li>
-            <li class="gather-diff-step">
-              <span class="gather-diff-step-num" aria-hidden="true">08</span>
-              <div class="gather-diff-step-body">
-                <span class="gather-diff-step-label">Planning</span>
-                <span class="gather-diff-step-note">Divisional and functional budgets, roll-up to Group budget, variance analysis vs actuals with drill-down.</span>
-              </div>
-            </li>
-          </ol>
-          <p class="gather-diff-spine-foot" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            Continuous · real-time · one system of record
-          </p>
+
+        <!-- Card 02 -->
+        <div class="gather-card">
+          <div class="card-number">02</div>
+          <h3>Working Papers</h3>
+          <p>The audit hub, eliminations, adjustments, and IC validated against consolidation.</p>
         </div>
+
+        <!-- Card 03 -->
+        <div class="gather-card">
+          <div class="card-number">03</div>
+          <h3>Consolidation</h3>
+          <p>GRT, AI mapping, autojournals, and industry-ready group reports.</p>
+        </div>
+
+        <!-- Card 04 -->
+        <div class="gather-card">
+          <div class="card-number">04</div>
+          <h3>Planning</h3>
+          <p>Budgets roll up to the Group view and compare live against consolidated actuals.</p>
+        </div>
+
       </div>
     </div>
-  </div>
-
+  </section>
 
   <!-- 4 LEVELS: DATA INTEGRITY -->
   <div class="unrivaled-data-integrity-main-box top-space bottom-space" id="data-integrity">
@@ -1773,17 +1742,17 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
               <span class="step-dot"></span>
               <span>Group level eliminations and adjustments</span>
             </div>
-            <span class="step-arrow">→</span>
+            <span class="step-arrow">â†’</span>
             <div class="step-item">
               <span class="step-dot"></span>
               <span>Entity level</span>
             </div>
-            <span class="step-arrow">→</span>
+            <span class="step-arrow">â†’</span>
             <div class="step-item">
               <span class="step-dot"></span>
               <span>Ledger level</span>
             </div>
-            <span class="step-arrow">→</span>
+            <span class="step-arrow">â†’</span>
             <div class="step-item step-active">
               <span class="step-dot"></span>
               <span>Full audit traceability</span>
@@ -1812,7 +1781,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
             </div>
           </div>
 
-          <!-- Drill → Eliminations -->
+          <!-- Drill â†’ Eliminations -->
           <div class="drill-label-row indent-2">
             <div class="drill-label">
               <span class="label-arrow">&gt;</span>
@@ -1847,7 +1816,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
             </div>
           </div>
 
-          <!-- Drill → Entity -->
+          <!-- Drill â†’ Entity -->
           <div class="drill-label-row indent-3">
             <div class="drill-label">
               <span class="label-arrow">&gt;</span>
@@ -1876,7 +1845,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
             </div>
           </div>
 
-          <!-- Drill → Ledger -->
+          <!-- Drill â†’ Ledger -->
           <div class="drill-label-row indent-4">
             <div class="drill-label">
               <span class="label-arrow">&gt;</span>
@@ -1904,7 +1873,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
             </div>
           </div>
 
-          <!-- Drill → Transaction -->
+          <!-- Drill â†’ Transaction -->
           <div class="drill-label-row indent-5">
             <div class="drill-label">
               <span class="label-arrow">&gt;</span>
@@ -1960,7 +1929,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
 <!-- Legacy anchor for nav -->
 <div id="modules" aria-hidden="true" style="position:absolute;margin-top:-80px"></div>
 
-<!-- ═════ INTEGRATIONS ═════ -->
+<!-- â•â•â•â•â• INTEGRATIONS â•â•â•â•â• -->
 <section class="section bg-paper" id="integrations">
   <div class="wrap">
     <div class="sec-head sr">
@@ -2018,7 +1987,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   </div>
 </section>
 
-<!-- ═════ PRICING ═════ -->
+<!-- â•â•â•â•â• PRICING â•â•â•â•â• -->
 <section class="section bg-paper" id="pricing">
   <div class="wrap">
     <div class="pri-head sr">
@@ -2065,12 +2034,12 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
             <th scope="col" class="pt-featured">
               <div class="pt-badge"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 7l1.7 1.7L9.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Monthly fee</div>
               <div class="pt-audience">For fractional CFOs</div>
-              <div class="pt-groups">2 – 3 Groups<br><span class="small">(unlimited companies)</span></div>
+              <div class="pt-groups">2 â€“ 3 Groups<br><span class="small">(unlimited companies)</span></div>
             </th>
             <th scope="col">
               <div class="pt-badge"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 7l1.7 1.7L9.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Monthly fee</div>
               <div class="pt-audience">For fractional CFOs</div>
-              <div class="pt-groups">4 – 5 Groups<br><span class="small">(unlimited companies)</span></div>
+              <div class="pt-groups">4 â€“ 5 Groups<br><span class="small">(unlimited companies)</span></div>
             </th>
             <th scope="col">
               <div class="pt-badge"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 7l1.7 1.7L9.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Monthly fee</div>
@@ -2089,9 +2058,9 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                 <li><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.3l3 3L11.5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Up to 30 "Automap with AI" actions per subscription per month</li>
               </ul>
             </th>
-            <td><div class="pt-price" data-row="1" data-col="finance">£70.00</div><span class="small">/ month</span></td>
-            <td class="pt-featured"><div class="pt-price" data-row="1" data-col="cfo23">£120.00</div><span class="small">/ month</span></td>
-            <td><div class="pt-price" data-row="1" data-col="cfo45">£160.00</div><span class="small">/ month</span></td>
+            <td><div class="pt-price" data-row="1" data-col="finance">Â£70.00</div><span class="small">/ month</span></td>
+            <td class="pt-featured"><div class="pt-price" data-row="1" data-col="cfo23">Â£120.00</div><span class="small">/ month</span></td>
+            <td><div class="pt-price" data-row="1" data-col="cfo45">Â£160.00</div><span class="small">/ month</span></td>
             <td>
               <p class="pt-contact">Contact our team for Pricing</p>
               <a href="mailto:sales@gather.nexus" class="pt-request-btn"><svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Send Request</a>
@@ -2105,9 +2074,9 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                 <li><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.3l3 3L11.5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Customer support</li>
               </ul>
             </th>
-            <td><div class="pt-price" data-row="2" data-col="finance">£50.00</div><span class="small">/ month</span></td>
-            <td class="pt-featured"><div class="pt-price" data-row="2" data-col="cfo23">£90.00</div><span class="small">/ month</span></td>
-            <td><div class="pt-price" data-row="2" data-col="cfo45">£120.00</div><span class="small">/ month</span></td>
+            <td><div class="pt-price" data-row="2" data-col="finance">Â£50.00</div><span class="small">/ month</span></td>
+            <td class="pt-featured"><div class="pt-price" data-row="2" data-col="cfo23">Â£90.00</div><span class="small">/ month</span></td>
+            <td><div class="pt-price" data-row="2" data-col="cfo45">Â£120.00</div><span class="small">/ month</span></td>
             <td>
               <p class="pt-contact">Contact our team for Pricing</p>
               <a href="mailto:sales@gather.nexus" class="pt-request-btn"><svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Send Request</a>
@@ -2121,7 +2090,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
               <ul class="pricing-includes">
                 <li>Monthly fees are paid in advance</li>
                 <li>Subscriptions may be cancelled with one month's notice</li>
-                <li>Monthly contract which auto-renews – one month initial period and one month for each subsequent extension period</li>
+                <li>Monthly contract which auto-renews â€“ one month initial period and one month for each subsequent extension period</li>
                 <li>Subscription may be cancelled with 14 days notice</li>
                 <li>Minimum subscription period is one month</li>
                 <li>Subject to Terms and Conditions</li>
@@ -2131,11 +2100,11 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
         </tfoot>
       </table>
     </div>
-    <div class="pri-note-wrap sr"><p class="pri-note"><span class="ck">✓</span> No credit card required to start · Upgrade or downgrade with 14 days notice</p></div>
+    <div class="pri-note-wrap sr"><p class="pri-note"><span class="ck">âœ“</span> No credit card required to start Â· Upgrade or downgrade with 14 days notice</p></div>
   </div>
 </section>
 
-<!-- ═════ CTA BANNER ═════ -->
+<!-- â•â•â•â•â• CTA BANNER â•â•â•â•â• -->
 <div class="cta">
   <div class="wrap cta-grid">
     <div class="cta-l sr">
@@ -2235,7 +2204,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   </div>
 </div>
 
-<!-- ═════ FAQ ═════ -->
+<!-- â•â•â•â•â• FAQ â•â•â•â•â• -->
 <section class="faq-section" id="faq">
   <div class="wrap">
     <div class="sec-head sr">
@@ -2327,7 +2296,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   </div>
 </section>
 
-<!-- ═════ FOOTER ═════ -->
+<!-- â•â•â•â•â• FOOTER â•â•â•â•â• -->
 <footer>
   <div class="wrap">
     <div class="foot-top">
@@ -2394,7 +2363,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
     </div>
 
     <div class="foot-bot">
-      <p class="foot-copy">© 2026 GATHER.nexus. All rights reserved.</p>
+      <p class="foot-copy">Â© 2026 GATHER.nexus. All rights reserved.</p>
       <div class="foot-plat">
         <span>Supported Platforms:</span>
         <span class="b">Xero</span>
@@ -2409,10 +2378,10 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
 const nav = document.getElementById('nav');
 /* Pricing currency switcher */
 const pricingCurrencyData = {
-  GBP:{symbol:'£', finance:[70,50], cfo23:[120,90], cfo45:[160,120]},
+  GBP:{symbol:'Â£', finance:[70,50], cfo23:[120,90], cfo45:[160,120]},
   USD:{symbol:'$', finance:[95,65], cfo23:[170,115], cfo45:[215,160]},
   AUD:{symbol:'A$', finance:[145,105], cfo23:[260,190], cfo45:[335,250]},
-  EUR:{symbol:'€', finance:[80,60], cfo23:[145,110], cfo45:[190,140]},
+  EUR:{symbol:'â‚¬', finance:[80,60], cfo23:[145,110], cfo45:[190,140]},
   NZD:{symbol:'NZ$', finance:[155,110], cfo23:[280,200], cfo45:[360,270]},
   CAD:{symbol:'CA$', finance:[130,90], cfo23:[235,160], cfo45:[295,220]},
   ZAR:{symbol:'R', finance:[1700,1200], cfo23:[3000,2150], cfo45:[3900,2900]}
