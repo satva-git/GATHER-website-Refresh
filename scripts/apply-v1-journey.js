@@ -135,8 +135,8 @@ function buildJourneySection(images) {
               <ul class="checks journey-checks">
                 ${checkItem('Quadruple-entry posting framework')}
                 ${checkItem('Multi-currency support')}
-                ${checkItem('Recharge mark-ups, discounts and splits (highly configurable)')}
-                ${checkItem('Full transaction audit trail')}
+                ${checkItem('Highly configurable Recharge mark-ups, discounts and splits')}
+                ${checkItem('Automated intercompany reconciliation transaction matching')}
               </ul>
               <div class="wf-cta-row"><a href="modules/intercompany-control.html" class="btn btn--primary">Find out more <svg class="a" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
             </div>

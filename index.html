@@ -1579,8 +1579,8 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
               <ul class="checks journey-checks">
                 <li><div class="check-ic"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Quadruple-entry posting framework</li>
                 <li><div class="check-ic"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Multi-currency support</li>
-                <li><div class="check-ic"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Recharge mark-ups, discounts and splits (highly configurable)</li>
-                <li><div class="check-ic"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Full transaction audit trail</li>
+                <li><div class="check-ic"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Highly configurable Recharge mark-ups, discounts and splits</li>
+                <li><div class="check-ic"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Automated intercompany reconciliation transaction matching</li>
               </ul>
               <div class="wf-cta-row"><a href="modules/intercompany-control.html" class="btn btn--primary">Find out more <svg class="a" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
             </aside></div>
@@ -1679,42 +1679,85 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   <!-- THE GATHER DIFFERENCE -->
   <section class="wf-section wf-section--alt" id="gather-difference">
     <div class="wrap">
-      <h2 class="h2 gather-diff-title">The GATHER Difference</h2>
-
-      <!-- Tagline: Centered, prominent -->
-      <p class="gather-tagline">Continuous · real-time · one system of record</p>
-
-      <!-- 4-Column Grid Container -->
-      <div class="gather-cards-grid">
-
-        <!-- Card 01 -->
-        <div class="gather-card">
-          <div class="card-number">01</div>
-          <h3>Intercompany</h3>
-          <p>Quadruple-entry posting, matching, and balances across every entity pair.</p>
+      <div class="gather-diff">
+        <div class="gather-diff-intro sr in">
+          <div class="wf-pill">The GATHER Difference</div>
+          <h2 class="h2">One platform. One auditable path.</h2>
+          <p class="lead">Intercompany control, consolidation, and planning are not bolted together after the fact, they share one ledger path from posting through working papers to group variance.</p>
+          <div class="gather-diff-proofs">
+            <div class="gather-diff-proof sr sr-d1 in">
+              <h4>Audit-ready working papers</h4>
+              <p>FX in reserves, eliminations, and full transaction trails, built for review, not spreadsheet rebuilds.</p>
+            </div>
+            <div class="gather-diff-proof sr sr-d2 in">
+              <h4>Multi-entity, multi-currency</h4>
+              <p>Scale across groups and periods with three-level drill-down from consolidated result to ledger detail.</p>
+            </div>
+            <div class="gather-diff-proof sr sr-d3 in">
+              <h4>Native Xero &amp; QuickBooks sync</h4>
+              <p>One-click sync across mixed-entity groups, journals and actuals stay live in the same workflow.</p>
+            </div>
+          </div>
         </div>
-
-        <!-- Card 02 -->
-        <div class="gather-card">
-          <div class="card-number">02</div>
-          <h3>Working Papers</h3>
-          <p>The audit hub, eliminations, adjustments, and IC validated against consolidation.</p>
+        <div class="gather-diff-visual sr sr-d1 in">
+          <ol class="gather-diff-spine" aria-label="Connected workflow">
+            <li class="gather-diff-step">
+              <span class="gather-diff-step-num" aria-hidden="true">01</span>
+              <div class="gather-diff-step-body">
+                <span class="gather-diff-step-label">Intercompany Recharges</span>
+              </div>
+            </li>
+            <li class="gather-diff-step">
+              <span class="gather-diff-step-num" aria-hidden="true">02</span>
+              <div class="gather-diff-step-body">
+                <span class="gather-diff-step-label">Counterparty Balance Visibility</span>
+              </div>
+            </li>
+            <li class="gather-diff-step">
+              <span class="gather-diff-step-num" aria-hidden="true">03</span>
+              <div class="gather-diff-step-body">
+                <span class="gather-diff-step-label">Automated Reconciliations</span>
+              </div>
+            </li>
+            <li class="gather-diff-step">
+              <span class="gather-diff-step-num" aria-hidden="true">04</span>
+              <div class="gather-diff-step-body">
+                <span class="gather-diff-step-label">GRT Mapping</span>
+              </div>
+            </li>
+            <li class="gather-diff-step">
+              <span class="gather-diff-step-num" aria-hidden="true">05</span>
+              <div class="gather-diff-step-body">
+                <span class="gather-diff-step-label">Automated Journals</span>
+              </div>
+            </li>
+            <li class="gather-diff-step is-key">
+              <span class="gather-diff-step-num" aria-hidden="true">06</span>
+              <div class="gather-diff-step-body">
+                <span class="gather-diff-step-label">Working Papers</span>
+                <span class="gather-diff-step-note">Drill down for data validation and manual adjustments.</span>
+              </div>
+            </li>
+            <li class="gather-diff-step">
+              <span class="gather-diff-step-num" aria-hidden="true">07</span>
+              <div class="gather-diff-step-body">
+                <span class="gather-diff-step-label">Reports</span>
+                <span class="gather-diff-step-note">Drill down for variance analysis.</span>
+              </div>
+            </li>
+            <li class="gather-diff-step">
+              <span class="gather-diff-step-num" aria-hidden="true">08</span>
+              <div class="gather-diff-step-body">
+                <span class="gather-diff-step-label">Planning</span>
+                <span class="gather-diff-step-note">Divisional and functional budgets, roll-up to Group budget, variance analysis vs actuals with drill-down.</span>
+              </div>
+            </li>
+          </ol>
+          <p class="gather-diff-spine-foot" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+            Continuous · real-time · one system of record
+          </p>
         </div>
-
-        <!-- Card 03 -->
-        <div class="gather-card">
-          <div class="card-number">03</div>
-          <h3>Consolidation</h3>
-          <p>GRT, AI mapping, autojournals, and industry-ready group reports.</p>
-        </div>
-
-        <!-- Card 04 -->
-        <div class="gather-card">
-          <div class="card-number">04</div>
-          <h3>Planning</h3>
-          <p>Budgets roll up to the Group view and compare live against consolidated actuals.</p>
-        </div>
-
       </div>
     </div>
   </section>
