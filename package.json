@@ -17,7 +17,9 @@
     "share": "node scripts/share-public-link.mjs",
     "preview:static": "npm run sync && npx --yes serve . -l 3000",
     "figma:export": "node scripts/export-figma.js",
-    "test": "node --test server/test/review-api.test.js"
+    "test": "node --test server/test/review-api.test.js server/test/comment-restore.e2e.test.js",
+    "test:restore": "node --test server/test/comment-restore.e2e.test.js",
+    "stamp:anchors": "node scripts/stamp-rv-anchors.js"
   },
   "dependencies": {
     "express": "^4.21.2",

@@ -556,7 +556,7 @@ body.review-mode .subpage-nav {
 
 .rv-card-body {
   font-size: 13px;
-  color: #4a5569;
+  color: var(--rv-ink);
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -578,48 +578,59 @@ body.review-mode .subpage-nav {
   color: var(--rv-muted);
 }
 
-/* Pins on page */
+/* Pins on page — document-relative layer so element anchors track layout */
 .rv-pin-layer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
+  height: 0;
+  overflow: visible;
   pointer-events: none;
+  z-index: 99980;
 }
 
 .rv-pin {
   position: absolute;
-  width: 32px;
-  height: 32px;
-  margin: -16px 0 0 -16px;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
   border-radius: 50%;
   background: var(--rv-teal);
-  color: white;
+  color: #fff;
   font-size: 13px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(45, 114, 97, 0.25), 0 0 0 3px rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 4px 14px rgba(15, 23, 42, 0.22),
+    0 0 0 3px #ffffff,
+    0 0 0 5px rgba(95, 168, 149, 0.45);
   pointer-events: auto;
   cursor: pointer;
-  border: 2px solid white;
-  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+  border: 2px solid #fff;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
   z-index: 99980;
 }
 
 .rv-pin:hover,
 .rv-pin.active {
-  transform: scale(1.15);
-  box-shadow: 0 6px 16px rgba(45, 114, 97, 0.35), 0 0 0 3px rgba(255, 255, 255, 0.9);
-  filter: brightness(1.1);
-  z-index: 99981;
+  transform: scale(1.18);
+  box-shadow:
+    0 8px 22px rgba(15, 23, 42, 0.28),
+    0 0 0 3px #ffffff,
+    0 0 0 6px rgba(95, 168, 149, 0.65);
+  z-index: 100002;
 }
 
 .rv-pin.resolved {
-  background: #cbd5e1;
-  color: #64748b;
-  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.8);
+  background: #94a3b8;
+  color: #fff;
+  box-shadow:
+    0 4px 12px rgba(15, 23, 42, 0.18),
+    0 0 0 3px #ffffff,
+    0 0 0 5px rgba(148, 163, 184, 0.45);
 }
 
 /* Point-and-comment mode */
@@ -789,7 +800,7 @@ body.rv-add-mode select {
 
 .rv-thread-comment {
   font-size: 14px;
-  color: #42526a;
+  color: var(--rv-ink);
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
@@ -844,26 +855,17 @@ body.rv-add-mode select {
   cursor: not-allowed;
 }
 
+/* Kept for cleanup of legacy nodes; no visual dimming (Figma-style). */
 .rv-thread-backdrop {
-  position: fixed;
-  inset: 52px 0 0 0;
-  background: rgba(10, 27, 48, 0.55);
-  z-index: 100000;
-  animation: rv-fade-in 0.2s ease both;
-  backdrop-filter: blur(3px);
+  display: none !important;
 }
 
 #rv-thread-popover {
   z-index: 100001 !important;
-  box-shadow: 0 20px 60px rgba(10, 27, 48, 0.3);
-}
-
-/* Hide comments panel when thread popover is open */
-#rv-thread-backdrop ~ #rv-panel {
-  transform: translateX(100%);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  box-shadow:
+    0 18px 48px rgba(15, 23, 42, 0.16),
+    0 4px 14px rgba(15, 23, 42, 0.08),
+    0 0 0 1px rgba(15, 23, 42, 0.06);
 }
 
 .rv-confirm-title {
@@ -1691,8 +1693,106 @@ body.rv-add-mode select {
   background: #5fd4a4;
 }
 
+.rv-status-dot.live,
+.rv-status-dot.syncing {
+  background: #22c55e; /* Green = syncing/live */
+}
+
 .rv-status-dot.offline {
-  background: #f59e0b;
+  background: #eab308; /* Yellow = offline */
+}
+
+.rv-status-dot.error {
+  background: #ef4444; /* Red = error */
+}
+
+.rv-bar-dot--live,
+.rv-bar-dot--syncing { background: #22c55e; }
+.rv-bar-dot--offline { background: #eab308; }
+.rv-bar-dot--error { background: #ef4444; }
+
+.rv-sync-live { color: #bbf7d0; }
+.rv-sync-syncing { color: #bbf7d0; }
+.rv-sync-offline { color: #fde68a; }
+.rv-sync-error { color: #fecaca; }
+
+.rv-owner-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: rgba(95, 168, 149, 0.2);
+  color: #b8e6d6;
+  vertical-align: middle;
+}
+
+.rv-panel-head .rv-owner-badge {
+  background: var(--rv-teal-tint);
+  color: var(--rv-teal-2);
+}
+
+.rv-tab-filter-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #f4f7f9;
+  font-size: 12px;
+  color: var(--rv-ink);
+}
+
+.rv-tab-filter-indicator .rv-btn {
+  padding: 6px 10px;
+  font-size: 11px;
+  min-height: 28px;
+}
+
+.rv-tab-scope-icon {
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.rv-anchor-broken-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #fee2e2;
+  color: #b91c1c;
+  margin-right: 4px;
+}
+
+.rv-legacy-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #fef3c7;
+  color: #92400e;
+  margin-right: 4px;
+}
+
+.rv-anchor-broken-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
 }
 
 .rv-btn-long { display: inline; }
@@ -1701,7 +1801,7 @@ body.rv-add-mode select {
 .rv-panel-backdrop {
   position: fixed;
   inset: 52px 0 0 0;
-  background: rgba(10, 27, 48, 0.35);
+  background: rgba(15, 23, 42, 0.08);
   z-index: 99997;
   animation: rv-fade-in 0.2s ease both;
 }
@@ -1724,7 +1824,7 @@ body.rv-add-mode select {
 .rv-confirm {
   position: fixed;
   inset: 0;
-  background: rgba(10, 27, 48, 0.45);
+  background: rgba(15, 23, 42, 0.28);
   display: flex;
   align-items: center;
   justify-content: center;

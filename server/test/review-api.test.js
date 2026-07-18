@@ -229,9 +229,86 @@ describe('Review API integration', () => {
     assert.equal(createRes.json.comment.pagePath, '/modules/intercompany-control');
   });
 
+  it('persists element anchors for sticky pin placement', async () => {
+    const createRes = await request(baseUrl, 'POST', `/api/sessions/${sessionToken}/comments`, {
+      authorName: 'Anchor Reviewer',
+      body: 'This title needs more contrast',
+      sectionId: 'pricing',
+      sectionLabel: 'Pricing',
+      pinX: 0.5,
+      pinY: 0.4,
+      anchor: {
+        selector: '#pricing h2',
+        elementId: null,
+        textHint: 'Pricing',
+        tagName: 'H2',
+        sectionId: 'pricing',
+        offsetX: 0.12,
+        offsetY: 0.4
+      }
+    });
+    assert.equal(createRes.status, 201);
+    assert.ok(createRes.json.comment.anchor);
+    assert.equal(createRes.json.comment.anchor.selector, '#pricing h2');
+    assert.equal(createRes.json.comment.anchor.offsetX, 0.12);
+    assert.equal(createRes.json.comment.anchor.textHint, 'Pricing');
+
+    const listRes = await request(baseUrl, 'GET', `/api/sessions/${sessionToken}/comments`);
+    const saved = listRes.json.comments.find(c => c.id === createRes.json.comment.id);
+    assert.ok(saved);
+    assert.equal(saved.anchor.selector, '#pricing h2');
+  });
+
   it('redirects module pages to default review token', async () => {
     const res = await request(baseUrl, 'GET', '/modules/group-reporting');
     assert.equal(res.status, 302);
     assert.match(String(res.headers.location || ''), /review=/);
+  });
+
+  it('supports pin and reaction endpoints', async () => {
+    const createRes = await request(baseUrl, 'POST', `/api/sessions/${sessionToken}/comments`, {
+      authorName: 'Reactor',
+      body: 'Pin me',
+      pinX: 0.1,
+      pinY: 0.1
+    });
+    assert.equal(createRes.status, 201);
+    const id = createRes.json.comment.id;
+
+    const pinRes = await request(baseUrl, 'POST', `/api/comments/${id}/pin`, { pinned: true });
+    assert.equal(pinRes.status, 200);
+    assert.equal(pinRes.json.pinned, true);
+
+    const reactRes = await request(
+      baseUrl,
+      'POST',
+      `/api/comments/${id}/reactions/${encodeURIComponent('👍')}`,
+      {}
+    );
+    assert.equal(reactRes.status, 200);
+    assert.ok(reactRes.json.comment.reactions['👍'] >= 1);
+
+    const delRes = await request(
+      baseUrl,
+      'DELETE',
+      `/api/comments/${id}/reactions/${encodeURIComponent('👍')}`
+    );
+    assert.equal(delRes.status, 200);
+  });
+
+  it('claims first user as session owner', async () => {
+    const claim = await request(baseUrl, 'POST', `/api/sessions/${sessionToken}/claim-owner`, {
+      userId: 'owner-user-1'
+    });
+    assert.equal(claim.status, 200);
+    assert.equal(claim.json.session.ownerUserId, 'owner-user-1');
+    assert.equal(claim.json.isOwner, true);
+
+    const second = await request(baseUrl, 'POST', `/api/sessions/${sessionToken}/claim-owner`, {
+      userId: 'other-user'
+    });
+    assert.equal(second.status, 200);
+    assert.equal(second.json.session.ownerUserId, 'owner-user-1');
+    assert.equal(second.json.isOwner, false);
   });
 });

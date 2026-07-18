@@ -205,6 +205,13 @@ app.post('/api/comments/:id/replies', (req, res) => {
 app.patch('/api/comments/:id', (req, res) => {
   const result = db.updateComment(req.params.id, req.body || {});
   if (!result) return res.status(404).json({ error: 'Comment not found' });
+  if (result.error === 'conflict') {
+    return res.status(409).json({
+      error: 'conflict',
+      message: result.message,
+      comment: result.comment
+    });
+  }
   if (result.error) return res.status(400).json({ error: result.error });
 
   const comment = result;
@@ -216,12 +223,86 @@ app.patch('/api/comments/:id', (req, res) => {
   res.json({ comment });
 });
 
+app.post('/api/comments/:id/pin', (req, res) => {
+  const pinned = !!(req.body && req.body.pinned);
+  const result = db.setCommentPinned(req.params.id, pinned);
+  if (!result) return res.status(404).json({ error: 'Comment not found' });
+  if (result.error) return res.status(400).json({ error: result.error });
+
+  const session = db.listSessions().find(s => s.id === result.sessionId);
+  if (session) {
+    broadcast(session.token, 'comment_updated', { comment: result });
+    broadcastAll('comment_updated', { comment: result, sessionToken: session.token });
+  }
+  res.json({ comment: result, pinned: !!result.pinned });
+});
+
+// Support both PATCH (legacy client) and POST for pin.
+app.patch('/api/comments/:id/pin', (req, res) => {
+  const pinned = !!(req.body && req.body.pinned);
+  const result = db.setCommentPinned(req.params.id, pinned);
+  if (!result) return res.status(404).json({ error: 'Comment not found' });
+  if (result.error) return res.status(400).json({ error: result.error });
+  const session = db.listSessions().find(s => s.id === result.sessionId);
+  if (session) {
+    broadcast(session.token, 'comment_updated', { comment: result });
+  }
+  res.json({ comment: result, pinned: !!result.pinned });
+});
+
+app.post('/api/comments/:id/reactions/:emoji', (req, res) => {
+  const emoji = decodeURIComponent(req.params.emoji);
+  const result = db.addCommentReaction(req.params.id, emoji);
+  if (!result) return res.status(404).json({ error: 'Comment not found' });
+  if (result.error) return res.status(400).json({ error: result.error });
+  const session = db.listSessions().find(s => s.id === result.sessionId);
+  if (session) broadcast(session.token, 'comment_updated', { comment: result });
+  res.json({ comment: result, emoji });
+});
+
+// Legacy shape used by current review.js: POST /reactions { emoji }
+app.post('/api/comments/:id/reactions', (req, res) => {
+  const emoji = req.body && req.body.emoji;
+  const result = db.addCommentReaction(req.params.id, emoji);
+  if (!result) return res.status(404).json({ error: 'Comment not found' });
+  if (result.error) return res.status(400).json({ error: result.error });
+  const session = db.listSessions().find(s => s.id === result.sessionId);
+  if (session) broadcast(session.token, 'comment_updated', { comment: result });
+  res.json({ comment: result, emoji });
+});
+
+app.delete('/api/comments/:id/reactions/:emoji', (req, res) => {
+  const emoji = decodeURIComponent(req.params.emoji);
+  const result = db.removeCommentReaction(req.params.id, emoji);
+  if (!result) return res.status(404).json({ error: 'Comment not found' });
+  if (result.error) return res.status(400).json({ error: result.error });
+  const session = db.listSessions().find(s => s.id === result.sessionId);
+  if (session) broadcast(session.token, 'comment_updated', { comment: result });
+  res.json({ comment: result, emoji });
+});
+
+app.post('/api/sessions/:token/claim-owner', (req, res) => {
+  const userId = (req.body && req.body.userId) || req.get('x-review-user-id');
+  const result = db.claimSessionOwner(req.params.token, userId);
+  if (!result) return res.status(404).json({ error: 'Session not found' });
+  if (result.error) return res.status(400).json({ error: result.error });
+  res.json({ session: result, isOwner: result.ownerUserId === String(userId || '').trim() });
+});
+
+app.get('/api/audit-log', (req, res) => {
+  const limit = Number(req.query.limit) || 100;
+  res.json({ entries: db.listAuditLog(limit) });
+});
+
 app.delete('/api/comments/:id', (req, res) => {
   const existing = db.getComment(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Comment not found' });
 
   const session = db.listSessions().find(s => s.id === existing.sessionId);
-  db.deleteComment(req.params.id);
+  db.deleteComment(req.params.id, {
+    userId: req.get('x-review-user-id') || (req.body && req.body.userId) || null,
+    reason: (req.body && req.body.reason) || 'single_delete'
+  });
 
   if (session) {
     broadcast(session.token, 'comment_deleted', { commentId: req.params.id });

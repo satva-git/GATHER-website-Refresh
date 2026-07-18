@@ -213,9 +213,12 @@
   function apiFetch(url, options) {
     options = options || {};
     options.cache = 'no-store';
+    var userId = '';
+    try { userId = localStorage.getItem('rv-user-id') || ''; } catch (e) {}
     options.headers = Object.assign({
       'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache'
+      'Pragma': 'no-cache',
+      'X-Review-User-Id': userId
     }, options.headers || {});
     return fetch(url, options);
   }
@@ -236,32 +239,313 @@
     editingCommentId: null,
     contextMenu: null,
     connected: false,
+    syncError: false,
     eventSource: null,
     submitting: false,
     confirmOpen: false,
     allPinsVisible: true,
     panelFilter: 'all',
-    panelSearch: ''
+    panelSearch: '',
+    showAllTabs: false,
+    userId: null,
+    isOwner: false,
+    editLocks: {}
   };
 
   var isOfflineMode = false;
   var LS_KEY = 'rv-offline-' + reviewToken;
+  var LS_BAK_KEY = 'rv-offline-bak-' + reviewToken;
+  var LS_DELETED_KEY = 'rv-deleted-' + reviewToken;
+  var LS_USER_KEY = 'rv-user-id';
+  var flushInFlight = false;
+  var restoredFromBackupNotice = false;
+  var beforeUnloadBound = false;
+
+  function getOrCreateUserId() {
+    try {
+      var existing = localStorage.getItem(LS_USER_KEY);
+      if (existing) return existing;
+      var id = 'user-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+      localStorage.setItem(LS_USER_KEY, id);
+      return id;
+    } catch (e) {
+      return 'user-ephemeral-' + Math.random().toString(36).slice(2, 10);
+    }
+  }
+
+  state.userId = getOrCreateUserId();
+
+  function syncStatus() {
+    // Green = live/syncing, Yellow = offline, Red = error
+    if (state.syncError) return { level: 'error', label: 'Error', className: 'error' };
+    if (isOfflineMode) return { level: 'offline', label: 'Offline', className: 'offline' };
+    if (state.connected) return { level: 'live', label: 'Synced', className: 'live' };
+    return { level: 'syncing', label: 'Syncing', className: 'syncing' };
+  }
+
+  function bindBeforeUnloadWarning() {
+    if (beforeUnloadBound) return;
+    beforeUnloadBound = true;
+    window.addEventListener('beforeunload', function (e) {
+      if (!isOfflineMode) return;
+      if (!state.comments || !state.comments.length) return;
+      var message = 'Only saved locally. Comments may be lost if you close this tab.';
+      e.preventDefault();
+      e.returnValue = message;
+      return message;
+    });
+  }
 
   function lsLoad() {
     try {
       var raw = localStorage.getItem(LS_KEY);
-      return raw ? JSON.parse(raw) : { comments: [] };
-    } catch (e) { return { comments: [] }; }
+      if (!raw) return tryBackupLoad();
+      var parsed = JSON.parse(raw);
+      return {
+        comments: Array.isArray(parsed.comments) ? parsed.comments : [],
+        savedAt: parsed.savedAt || null,
+        source: 'primary'
+      };
+    } catch (e) {
+      console.warn('[review] Primary comment backup corrupted, trying secondary…');
+      return tryBackupLoad(true);
+    }
   }
 
-  function lsSave() {
+  function tryBackupLoad(fromCorrupt) {
     try {
-      localStorage.setItem(LS_KEY, JSON.stringify({ comments: state.comments }));
+      var raw = localStorage.getItem(LS_BAK_KEY);
+      if (!raw) {
+        if (fromCorrupt) state._corruptBackup = true;
+        return { comments: [], corrupted: !!fromCorrupt };
+      }
+      var parsed = JSON.parse(raw);
+      return {
+        comments: Array.isArray(parsed.comments) ? parsed.comments : [],
+        savedAt: parsed.savedAt || null,
+        source: 'backup',
+        recoveredFromCorrupt: !!fromCorrupt
+      };
+    } catch (e2) {
+      state._corruptBackup = true;
+      return { comments: [], corrupted: true };
+    }
+  }
+
+  function lsLoadDeleted() {
+    try {
+      var raw = localStorage.getItem(LS_DELETED_KEY);
+      var ids = raw ? JSON.parse(raw) : [];
+      return Array.isArray(ids) ? ids : [];
+    } catch (e) { return []; }
+  }
+
+  function lsRememberDeleted(commentId) {
+    if (!commentId) return;
+    try {
+      var ids = lsLoadDeleted();
+      if (ids.indexOf(commentId) === -1) ids.push(commentId);
+      if (ids.length > 500) ids = ids.slice(-500);
+      localStorage.setItem(LS_DELETED_KEY, JSON.stringify(ids));
     } catch (e) {}
   }
 
+  function stripLocalMeta(comment) {
+    if (!comment) return comment;
+    var copy = Object.assign({}, comment);
+    delete copy._pendingSync;
+    return copy;
+  }
+
+  function persistLocalBackup() {
+    try {
+      var payload = JSON.stringify({
+        comments: state.comments.map(function (c) {
+          var copy = stripLocalMeta(c);
+          // Nested replies stay with the comment for wipe-restore durability.
+          copy.replies = Array.isArray(c.replies) ? c.replies.slice() : [];
+          return copy;
+        }),
+        savedAt: new Date().toISOString(),
+        replyCount: countAllReplies(state.comments)
+      });
+      // Rotate previous good snapshot into secondary backup first.
+      var prev = localStorage.getItem(LS_KEY);
+      if (prev) localStorage.setItem(LS_BAK_KEY, prev);
+      localStorage.setItem(LS_KEY, payload);
+    } catch (e) {}
+  }
+
+  function countAllReplies(comments) {
+    var total = 0;
+    (comments || []).forEach(function (c) {
+      total += (c.replies || []).length;
+    });
+    return total;
+  }
+
+  // Alias used by existing offline paths.
+  function lsSave() {
+    persistLocalBackup();
+  }
+
+  function mergeCommentLists(serverList, localList, deletedIds) {
+    var deleted = {};
+    (deletedIds || []).forEach(function (id) { deleted[id] = true; });
+
+    var byId = {};
+    var serverIds = {};
+
+    (localList || []).forEach(function (c) {
+      if (!c || !c.id || deleted[c.id]) return;
+      byId[c.id] = Object.assign({}, c);
+    });
+
+    (serverList || []).forEach(function (c) {
+      if (!c || !c.id || deleted[c.id]) return;
+      serverIds[c.id] = true;
+      var local = byId[c.id];
+      if (!local) {
+        byId[c.id] = Object.assign({}, c, { _pendingSync: false });
+        return;
+      }
+      var serverTime = c.updatedAt || c.createdAt || '';
+      var localTime = local.updatedAt || local.createdAt || '';
+      if (serverTime >= localTime) {
+        byId[c.id] = Object.assign({}, c, {
+          replies: (c.replies && c.replies.length) ? c.replies : (local.replies || []),
+          _pendingSync: false
+        });
+      } else {
+        byId[c.id] = Object.assign({}, local, {
+          replies: (local.replies && local.replies.length) ? local.replies : (c.replies || []),
+          _pendingSync: 'update'
+        });
+      }
+    });
+
+    var serverEmpty = !serverList || serverList.length === 0;
+    Object.keys(byId).forEach(function (id) {
+      if (serverIds[id]) return;
+      var comment = byId[id];
+      if (comment._pendingSync === 'create' || comment._pendingSync === 'update') return;
+      if (isLocalCommentId(id) || comment._pendingSync) {
+        comment._pendingSync = 'create';
+      } else if (serverEmpty) {
+        // Full server wipe recovery: re-upload durable copies from this browser.
+        comment._pendingSync = 'create';
+      } else {
+        // Likely brief sync lag after create — keep visible, do not duplicate.
+        comment._pendingSync = false;
+      }
+    });
+
+    return Object.keys(byId).map(function (key) { return byId[key]; }).sort(function (a, b) {
+      return String(a.createdAt || '').localeCompare(String(b.createdAt || ''));
+    });
+  }
+
+  function applyRemoteComments(serverComments) {
+    var backup = lsLoad().comments || [];
+    var memory = state.comments || [];
+    var localSeed = backup.length >= memory.length ? backup : memory;
+    var deletedIds = lsLoadDeleted();
+    var serverList = Array.isArray(serverComments) ? serverComments : [];
+    var merged = mergeCommentLists(serverList, localSeed, deletedIds);
+
+    // Never accept a sudden empty server wipe while this browser still has comments.
+    if (serverList.length === 0 && localSeed.length > 0 && merged.length > 0) {
+      if (!restoredFromBackupNotice) {
+        restoredFromBackupNotice = true;
+        var replyN = countAllReplies(merged);
+        showToast(
+          'Restored ' + merged.length + ' comment' + (merged.length === 1 ? '' : 's') +
+          ', ' + replyN + ' repl' + (replyN === 1 ? 'y' : 'ies') + ' from local backup.'
+        );
+        console.log(
+          '[review] Restored ' + merged.length + ' comments, ' + replyN + ' replies from backup'
+        );
+      }
+    }
+
+    state.comments = merged;
+    persistLocalBackup();
+    return flushPendingComments();
+  }
+
+  function flushPendingComments() {
+    if (isOfflineMode || flushInFlight) return Promise.resolve();
+    var pending = state.comments.filter(function (c) { return c && c._pendingSync; });
+    if (!pending.length) return Promise.resolve();
+
+    flushInFlight = true;
+    var chain = Promise.resolve();
+
+    pending.forEach(function (comment) {
+      chain = chain.then(function () {
+        var current = getComment(comment.id);
+        if (!current || !current._pendingSync) return;
+
+        if (current._pendingSync === 'update') {
+          return apiJson('/api/comments/' + encodeURIComponent(current.id), {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              body: current.body,
+              status: current.status
+            })
+          }).then(function (data) {
+            if (data && data.comment) {
+              data.comment.replies = data.comment.replies || current.replies || [];
+              data.comment._pendingSync = false;
+              upsertComment(data.comment);
+            } else {
+              current._pendingSync = false;
+            }
+          }).catch(function () {});
+        }
+
+        return apiJson('/api/sessions/' + encodeURIComponent(state.token) + '/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            authorName: current.authorName,
+            body: current.body,
+            pagePath: current.pagePath || PAGE_PATH,
+            sectionId: current.sectionId,
+            sectionLabel: current.sectionLabel,
+            tabId: current.tabId || 'default',
+            scrollY: current.scrollY,
+            pinX: current.pinX,
+            pinY: current.pinY,
+            anchor: current.anchor || null
+          })
+        }).then(function (data) {
+          if (!data || !data.comment) return;
+          var wasActive = state.activeCommentId === current.id;
+          removeComment(current.id);
+          lsRememberDeleted(current.id);
+          data.comment.replies = data.comment.replies || current.replies || [];
+          data.comment.anchor = data.comment.anchor || current.anchor || null;
+          data.comment._pendingSync = false;
+          upsertComment(data.comment);
+          if (wasActive) state.activeCommentId = data.comment.id;
+        }).catch(function () {});
+      });
+    });
+
+    return chain.finally(function () {
+      flushInFlight = false;
+      persistLocalBackup();
+    });
+  }
+
   function genId() {
-    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+    return 'local-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  }
+
+  function isLocalCommentId(id) {
+    return String(id || '').indexOf('local-') === 0;
   }
 
   var root = document.createElement('div');
@@ -467,6 +751,363 @@
     return !!target.closest(REVIEW_UI_SELECTOR);
   }
 
+  function cssEscape(value) {
+    if (window.CSS && typeof CSS.escape === 'function') return CSS.escape(value);
+    return String(value).replace(/([^a-zA-Z0-9_-])/g, '\\$1');
+  }
+
+  function isIgnorableAnchorNode(el) {
+    if (!el || el.nodeType !== 1) return true;
+    if (isReviewUiTarget(el)) return true;
+    var tag = el.tagName;
+    return tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT' ||
+      tag === 'SVG' || tag === 'PATH' || tag === 'BR' || tag === 'HR';
+  }
+
+  function prefersAsAnchor(el) {
+    if (!el || isIgnorableAnchorNode(el)) return false;
+    if (el.getAttribute && el.getAttribute('data-rv-anchor')) return true;
+    if (el.id) return true;
+    if (el.matches && el.matches(
+      'h1,h2,h3,h4,h5,h6,img,button,a,label,li,figcaption,section,article,' +
+      '[data-journey-panel],[data-pillar-panel],[data-tab],[role="heading"],[role="button"]'
+    )) return true;
+    return false;
+  }
+
+  function resolveAnchorTarget(clientX, clientY) {
+    var stack = [];
+    if (document.elementsFromPoint) {
+      stack = document.elementsFromPoint(clientX, clientY) || [];
+    } else {
+      var hit = document.elementFromPoint(clientX, clientY);
+      if (hit) stack = [hit];
+    }
+
+    var start = null;
+    for (var i = 0; i < stack.length; i++) {
+      if (!isIgnorableAnchorNode(stack[i])) {
+        start = stack[i];
+        break;
+      }
+    }
+    if (!start) return null;
+
+    var el = start;
+    var fallback = start;
+    while (el && el !== document.body && el !== document.documentElement) {
+      if (!isIgnorableAnchorNode(el)) {
+        fallback = el;
+        if (prefersAsAnchor(el)) return el;
+      }
+      el = el.parentElement;
+    }
+    return fallback;
+  }
+
+  function buildStableSelector(el) {
+    if (!el || el.nodeType !== 1) return null;
+
+    if (el.id) {
+      var idSel = '#' + cssEscape(el.id);
+      try {
+        if (document.querySelectorAll(idSel).length === 1) return idSel;
+      } catch (e) {}
+    }
+
+    var uniqueAttrs = [
+      'data-journey-panel',
+      'data-pillar-panel',
+      'data-tab',
+      'data-section',
+      'name',
+      'aria-label'
+    ];
+    for (var a = 0; a < uniqueAttrs.length; a++) {
+      var attr = uniqueAttrs[a];
+      var val = el.getAttribute(attr);
+      if (!val) continue;
+      var attrSel = el.tagName.toLowerCase() + '[' + attr + '="' +
+        String(val).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]';
+      try {
+        if (document.querySelectorAll(attrSel).length === 1) return attrSel;
+      } catch (e) {}
+    }
+
+    var parts = [];
+    var cur = el;
+    while (cur && cur.nodeType === 1 && cur !== document.body && cur !== document.documentElement) {
+      if (cur.id) {
+        parts.unshift('#' + cssEscape(cur.id));
+        break;
+      }
+      var tag = cur.tagName.toLowerCase();
+      var parent = cur.parentElement;
+      if (!parent) {
+        parts.unshift(tag);
+        break;
+      }
+      var sameTag = Array.prototype.filter.call(parent.children, function (child) {
+        return child.tagName === cur.tagName;
+      });
+      if (sameTag.length === 1) {
+        parts.unshift(tag);
+      } else {
+        parts.unshift(tag + ':nth-of-type(' + (sameTag.indexOf(cur) + 1) + ')');
+      }
+      cur = parent;
+      if (parts.length > 8) break;
+    }
+    var selector = parts.join(' > ');
+    try {
+      if (selector && document.querySelector(selector)) return selector;
+    } catch (e) {}
+    return selector || null;
+  }
+
+  function elementTextHint(el) {
+    if (!el) return '';
+    var text = '';
+    if (el.alt) text = el.alt;
+    else if (el.getAttribute && el.getAttribute('aria-label')) text = el.getAttribute('aria-label');
+    else text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    return text.slice(0, 120);
+  }
+
+  function createAnchorFromPoint(clientX, clientY, sectionId) {
+    var el = resolveAnchorTarget(clientX, clientY);
+    if (!el) return null;
+
+    var rect = el.getBoundingClientRect();
+    var width = Math.max(rect.width, 1);
+    var height = Math.max(rect.height, 1);
+    var offsetX = (clientX - rect.left) / width;
+    var offsetY = (clientY - rect.top) / height;
+    offsetX = Math.min(1, Math.max(0, offsetX));
+    offsetY = Math.min(1, Math.max(0, offsetY));
+
+    var dataRvAnchor = ensureDataRvAnchor(el);
+
+    return {
+      dataRvAnchor: dataRvAnchor,
+      selector: buildStableSelector(el),
+      elementId: el.id || null,
+      tagName: el.tagName,
+      textHint: elementTextHint(el),
+      sectionId: sectionId || null,
+      offsetX: offsetX,
+      offsetY: offsetY
+    };
+  }
+
+  function findByTextHint(anchor, sectionId) {
+    if (!anchor || !anchor.textHint) return null;
+    var hint = anchor.textHint.replace(/\s+/g, ' ').trim().toLowerCase();
+    if (!hint || hint.length < 3) return null;
+
+    var roots = [];
+    var sid = sectionId || anchor.sectionId;
+    if (sid) {
+      var section = document.getElementById(sid);
+      if (section) roots.push(section);
+    }
+    roots.push(document.body);
+
+    var selector = 'h1,h2,h3,h4,h5,h6,p,li,button,a,label,figcaption,img,span,div';
+    for (var r = 0; r < roots.length; r++) {
+      var nodes = roots[r].querySelectorAll(selector);
+      var best = null;
+      var bestScore = 0;
+      for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        if (isIgnorableAnchorNode(node)) continue;
+        var text = elementTextHint(node).toLowerCase();
+        if (!text) continue;
+        if (text === hint) return node;
+        if (text.indexOf(hint) !== -1 || hint.indexOf(text.slice(0, 40)) !== -1) {
+          var score = Math.min(text.length, hint.length);
+          if (score > bestScore) {
+            bestScore = score;
+            best = node;
+          }
+        }
+      }
+      if (best) return best;
+    }
+    return null;
+  }
+
+  function resolveAnchorElement(anchor, sectionId) {
+    if (!anchor) return null;
+
+    // 1) data-rv-anchor (most stable stamped id)
+    var rvId = anchor.dataRvAnchor || anchor.rvAnchor;
+    if (rvId) {
+      try {
+        var byRv = document.querySelector('[data-rv-anchor="' + cssEscape(rvId).replace(/\\/g, '') + '"]');
+        // cssEscape may over-escape attribute values; try raw too
+        if (!byRv) byRv = document.querySelector('[data-rv-anchor="' + String(rvId).replace(/"/g, '\\"') + '"]');
+        if (byRv && !isIgnorableAnchorNode(byRv)) return byRv;
+      } catch (e) {
+        try {
+          var nodes = document.querySelectorAll('[data-rv-anchor]');
+          for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].getAttribute('data-rv-anchor') === rvId) return nodes[i];
+          }
+        } catch (e2) {}
+      }
+    }
+
+    // 2) element id
+    if (anchor.elementId) {
+      var byId = document.getElementById(anchor.elementId);
+      if (byId && !isIgnorableAnchorNode(byId)) return byId;
+    }
+
+    // 3) CSS selector (may include :nth-of-type)
+    if (anchor.selector) {
+      try {
+        var bySel = document.querySelector(anchor.selector);
+        if (bySel && !isIgnorableAnchorNode(bySel)) return bySel;
+      } catch (e) {}
+    }
+
+    // 4) text hint fallback
+    return findByTextHint(anchor, sectionId);
+  }
+
+  function ensureDataRvAnchor(el) {
+    if (!el || el.nodeType !== 1) return null;
+    var existing = el.getAttribute('data-rv-anchor');
+    if (existing) return existing;
+    var generated = 'rv_dyn_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+    try { el.setAttribute('data-rv-anchor', generated); } catch (e) {}
+    return generated;
+  }
+
+  function isAnchorBroken(comment) {
+    if (!comment) return false;
+    if (comment.legacy && !comment.anchor) return false;
+    if (!comment.anchor) return false;
+    return !resolveAnchorElement(comment.anchor, comment.sectionId);
+  }
+
+  function verifyAnchors() {
+    var broken = [];
+    pageComments().forEach(function (c) {
+      if (c.anchor && !resolveAnchorElement(c.anchor, c.sectionId)) {
+        broken.push(c);
+        c.anchorBroken = true;
+      } else if (c.anchor) {
+        c.anchorBroken = false;
+      }
+    });
+    if (broken.length) {
+      console.warn(
+        '[review] Broken anchors:',
+        broken.length,
+        broken.map(function (c) {
+          return { id: c.id, selector: c.anchor && c.anchor.selector, text: (c.body || '').slice(0, 40) };
+        })
+      );
+    } else {
+      console.log('[review] verifyAnchors: all anchored comments OK');
+    }
+    return broken;
+  }
+
+  function migrateAllComments() {
+    var total = 0;
+    var success = 0;
+    var failed = 0;
+
+    state.comments.forEach(function (comment) {
+      var hasLegacyPins = comment.pinX != null && comment.pinY != null;
+      var needsMigration = hasLegacyPins && (!comment.anchor || !comment.anchor.selector && !comment.anchor.dataRvAnchor);
+      if (!needsMigration) {
+        if (comment.anchor && resolveAnchorElement(comment.anchor, comment.sectionId)) return;
+        if (!hasLegacyPins) return;
+      }
+      if (comment.anchor && resolveAnchorElement(comment.anchor, comment.sectionId)) return;
+
+      total += 1;
+      var docW = document.documentElement.clientWidth || window.innerWidth;
+      var height = docHeight();
+      var clientX = (comment.pinX || 0.5) * docW;
+      var clientY = (comment.pinY || 0) * height - window.scrollY;
+      // Clamp into viewport for elementsFromPoint
+      clientX = Math.min(Math.max(clientX, 8), docW - 8);
+      clientY = Math.min(Math.max(clientY, 8), window.innerHeight - 8);
+
+      var anchor = createAnchorFromPoint(clientX, clientY, comment.sectionId);
+      if (anchor && (anchor.selector || anchor.dataRvAnchor || anchor.elementId)) {
+        comment.anchor = anchor;
+        comment.legacy = false;
+        comment.anchorBroken = false;
+        success += 1;
+
+        if (!isOfflineMode) {
+          apiJson('/api/comments/' + encodeURIComponent(comment.id), {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              anchor: anchor,
+              legacy: false,
+              lastEditedBy: getStoredName() || 'migration'
+            })
+          }).catch(function () {});
+        }
+      } else {
+        comment.legacy = true;
+        comment.anchorBroken = true;
+        failed += 1;
+      }
+    });
+
+    persistLocalBackup();
+    console.log(
+      'Migrated ' + total + ', success ' + success + ', failed ' + failed
+    );
+    return { total: total, success: success, failed: failed };
+  }
+
+  function getCommentPinPosition(comment) {
+    var anchor = comment && comment.anchor;
+    var el = resolveAnchorElement(anchor, comment && comment.sectionId);
+    if (el && anchor) {
+      var rect = el.getBoundingClientRect();
+      var ox = typeof anchor.offsetX === 'number' ? anchor.offsetX : 0.5;
+      var oy = typeof anchor.offsetY === 'number' ? anchor.offsetY : 0.15;
+      var clientX = rect.left + rect.width * ox;
+      var clientY = rect.top + rect.height * oy;
+      return {
+        leftPx: window.scrollX + clientX,
+        topPx: window.scrollY + clientY,
+        clientX: clientX,
+        clientY: clientY,
+        anchored: true,
+        element: el
+      };
+    }
+
+    // Legacy fallback: absolute page percentages (pre-anchor comments).
+    if (comment && comment.pinX != null && comment.pinY != null) {
+      var height = docHeight();
+      var leftPx = comment.pinX * document.documentElement.clientWidth;
+      var topPx = comment.pinY * height;
+      return {
+        leftPx: leftPx,
+        topPx: topPx,
+        clientX: leftPx - window.scrollX,
+        clientY: topPx - window.scrollY,
+        anchored: false,
+        element: null
+      };
+    }
+
+    return null;
+  }
+
   function getJourneyTabId() {
     var journeyRoot = document.getElementById('product-journey');
     if (!journeyRoot) return null;
@@ -561,13 +1202,29 @@
   }
 
   function visibleComments() {
-    var comments = pageComments().filter(isCommentOnActiveTab);
-    
+    var comments = state.showAllTabs
+      ? pageComments()
+      : pageComments().filter(isCommentOnActiveTab);
+
     return comments.sort(function (a, b) {
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
       return b.createdAt.localeCompare(a.createdAt);
     });
+  }
+
+  function tabScopedCount(tabId) {
+    return pageComments().filter(function (c) {
+      return (c.tabId || 'default') === tabId;
+    }).length;
+  }
+
+  function otherTabCommentCount() {
+    var active = getCurrentTabId();
+    return pageComments().filter(function (c) {
+      var tid = c.tabId || 'default';
+      return tid !== 'default' && tid !== active;
+    }).length;
   }
 
   function getComment(commentId) {
@@ -580,29 +1237,32 @@
 
   function renderBar() {
     var title = state.session ? state.session.title : 'Review mode';
-    var statusClass = isOfflineMode ? ' offline' : (state.connected ? '' : ' offline');
-    var statusLabel = isOfflineMode ? 'Offline' : (state.connected ? 'Live' : 'Syncing');
+    var sync = syncStatus();
     var subLabel = isMobileView()
       ? 'Tap + Add, then tap the page · Pin = view comment'
       : (isOfflineMode
-          ? 'Right-click to add · Comments saved in this browser'
+          ? 'Right-click to add · Only saved locally'
           : 'Right-click to add · Click a pin to view or edit');
+    var ownerBadge = state.isOwner
+      ? '<span class="rv-owner-badge" title="You are the session owner">Owner</span>'
+      : '';
 
     root.innerHTML =
       '<div class="rv-bar rv-interactive">' +
         '<div class="rv-bar-brand">' +
-          '<span class="rv-bar-dot"></span>' +
+          '<span class="rv-bar-dot rv-bar-dot--' + sync.className + '"></span>' +
           '<div>' +
-            '<div class="rv-bar-title">' + escapeHtml(title) + '</div>' +
+            '<div class="rv-bar-title">' + escapeHtml(title) + ' ' + ownerBadge + '</div>' +
             '<div class="rv-bar-sub">' + subLabel + '</div>' +
           '</div>' +
         '</div>' +
         '<div class="rv-bar-actions">' +
-          '<span class="rv-status rv-status--desktop"><span class="rv-status-dot' + statusClass + '"></span>' +
-            statusLabel + '</span>' +
-          (isOfflineMode && pageComments().length
-            ? '<button type="button" class="rv-btn rv-btn-ghost" id="rv-export-btn">' +
-                '<span class="rv-btn-long">Copy Feedback</span><span class="rv-btn-short">Copy</span>' +
+          '<span class="rv-status rv-status--desktop rv-sync-indicator rv-sync-' + sync.className + '" title="Sync status">' +
+            '<span class="rv-status-dot ' + sync.className + '"></span>' + sync.label +
+          '</span>' +
+          (pageComments().length
+            ? '<button type="button" class="rv-btn rv-btn-ghost" id="rv-export-btn" title="Export comments as JSON">' +
+                '<span class="rv-btn-long">Export</span><span class="rv-btn-short">Export</span>' +
               '</button>'
             : '') +
           (visibleComments().length > 0
@@ -629,8 +1289,9 @@
     var visibilityBtn = root.querySelector('#rv-visibility-btn');
     if (visibilityBtn) visibilityBtn.addEventListener('click', togglePinsVisibility);
     var exportBtn = root.querySelector('#rv-export-btn');
-    if (exportBtn) exportBtn.addEventListener('click', exportFeedback);
+    if (exportBtn) exportBtn.addEventListener('click', exportCommentsJson);
     document.body.classList.toggle('rv-add-mode', state.tapMode);
+    bindBeforeUnloadWarning();
   }
 
   function filteredPanelComments() {
@@ -700,6 +1361,13 @@
           '<div class="rv-card-top">' +
             '<span class="rv-card-num" style="color:' + color.hex + '">#' + commentNum + '</span>' +
             (comment.pinned ? '<span class="rv-priority-badge">📌 Pinned</span>' : '') +
+            (comment.tabId && comment.tabId !== 'default'
+              ? '<span class="rv-tab-scope-icon" title="Tab-scoped: ' + escapeHtml(humanizeTabId(comment.tabId)) + '">🗂</span>'
+              : '') +
+            (isAnchorBroken(comment) || comment.anchorBroken
+              ? '<span class="rv-anchor-broken-badge" title="Target element not found.">Anchor broken</span>'
+              : '') +
+            (comment.legacy ? '<span class="rv-legacy-badge" title="Legacy position (not element-anchored)">Legacy</span>' : '') +
             '<span class="rv-card-author">' + escapeHtml(comment.authorName) + 
             (isOwner ? '<span class="rv-card-owner-badge" aria-label="Your comment">You</span>' : '') + '</span>' +
               (comment.sectionLabel || comment.sectionId ?
@@ -745,6 +1413,10 @@
     var openN = all.filter(function (c) { return c.status !== 'resolved'; }).length;
     var resolvedN = all.length - openN;
     var filter = state.panelFilter;
+    var activeTab = getCurrentTabId();
+    var activeTabLabel = humanizeTabId(activeTab);
+    var pageTotal = pageComments().length;
+    var otherTabs = otherTabCommentCount();
 
     function tab(key, label, count) {
       return '<button type="button" class="rv-filter-tab' + (filter === key ? ' active' : '') + '" ' +
@@ -756,11 +1428,26 @@
       '</button>';
     }
 
+    var deleteLabel = state.isOwner || isOfflineMode
+      ? 'Delete all'
+      : 'Delete my comments only';
+
     panel.innerHTML =
       '<div class="rv-panel-head">' +
         '<div class="rv-panel-head-row">' +
-          '<h2>Comments <span class="rv-panel-total">' + all.length + '</span></h2>' +
+          '<h2>Comments <span class="rv-panel-total">' + all.length + '</span>' +
+            (state.isOwner ? ' <span class="rv-owner-badge">Owner</span>' : '') +
+          '</h2>' +
           '<button type="button" class="rv-panel-close" aria-label="Close comments panel">&times;</button>' +
+        '</div>' +
+        '<div class="rv-tab-filter-indicator">' +
+          (state.showAllTabs
+            ? '<span>Showing: <strong>All tabs</strong> (' + pageTotal + ')</span>'
+            : '<span>Filtered to: <strong>' + escapeHtml(activeTabLabel) + '</strong>' +
+                (otherTabs ? ' · ' + otherTabs + ' on other tabs' : '') + '</span>') +
+          '<button type="button" class="rv-btn rv-btn-ghost-dark rv-toggle-all-tabs" id="rv-toggle-all-tabs">' +
+            (state.showAllTabs ? 'Filter to this tab' : 'Show all tabs') +
+          '</button>' +
         '</div>' +
         '<div class="rv-search-wrap">' +
           '<label for="rv-panel-search" class="rv-sr-only">Search comments</label>' +
@@ -774,7 +1461,7 @@
         (all.length > 0 ?
           '<div class="rv-panel-actions">' +
             '<button type="button" class="rv-panel-resolve-all" title="Mark all open comments as resolved" onclick="markAllResolved()">Mark all resolved</button>' +
-            '<button type="button" class="rv-panel-delete-all" title="Delete all comments on this tab">Delete all</button>' +
+            '<button type="button" class="rv-panel-delete-all" title="' + deleteLabel + '">' + deleteLabel + '</button>' +
           '</div>' : '') +
       '</div>' +
       '<div class="rv-list" id="rv-list" role="region" aria-label="Comments list" aria-live="polite">' + renderCommentCards() + '</div>';
@@ -786,9 +1473,20 @@
       renderAll();
     });
 
+    var toggleTabsBtn = panel.querySelector('#rv-toggle-all-tabs');
+    if (toggleTabsBtn) {
+      toggleTabsBtn.addEventListener('click', function () {
+        state.showAllTabs = !state.showAllTabs;
+        renderAll();
+      });
+    }
+
     var deleteAllBtn = panel.querySelector('.rv-panel-delete-all');
     if (deleteAllBtn) {
-      deleteAllBtn.addEventListener('click', deleteAllComments);
+      deleteAllBtn.addEventListener('click', function () {
+        if (state.isOwner || isOfflineMode) deleteAllComments();
+        else deleteMyCommentsOnly();
+      });
     }
 
     panel.querySelectorAll('.rv-filter-tab').forEach(function (btn) {
@@ -829,19 +1527,8 @@
   }
 
   function openThreadBackdrop() {
+    // Intentionally unused: Figma-style commenting has no page-dimming overlay.
     closeThreadBackdrop();
-    var backdrop = document.createElement('div');
-    backdrop.id = 'rv-thread-backdrop';
-    backdrop.className = 'rv-thread-backdrop rv-interactive';
-    backdrop.addEventListener('click', function () {
-      state.activeCommentId = null;
-      state.editingCommentId = null;
-      closeThreadPopover();
-      closeThreadBackdrop();
-      renderPins();
-      renderPanel();
-    });
-    document.body.appendChild(backdrop);
   }
 
   function hideTooltip() {
@@ -874,13 +1561,13 @@
   function renderPins() {
     pinLayer.innerHTML = '';
     if (!state.allPinsVisible) return;
-    
-    var height = docHeight();
+
     var visibleCommentsList = visibleComments();
     var pinNumber = 0;
 
     visibleCommentsList.forEach(function (comment) {
-      if (comment.pinX == null || comment.pinY == null) return;
+      var pos = getCommentPinPosition(comment);
+      if (!pos) return;
       pinNumber += 1;
 
       var color = getCommentColor(visibleCommentsList.indexOf(comment));
@@ -888,14 +1575,20 @@
       pin.type = 'button';
       pin.className = 'rv-pin' +
         (comment.status === 'resolved' ? ' resolved' : '') +
-        (comment.id === state.activeCommentId ? ' active' : '');
-      pin.style.top = (comment.pinY * height) + 'px';
-      pin.style.left = (comment.pinX * 100) + 'vw';
+        (comment.id === state.activeCommentId ? ' active' : '') +
+        (pos.anchored ? ' anchored' : ' legacy');
+      pin.style.top = pos.topPx + 'px';
+      pin.style.left = pos.leftPx + 'px';
       pin.style.backgroundColor = color.hex;
       pin.style.borderColor = '#fff';
       pin.textContent = String(pinNumber);
-      pin.setAttribute('aria-label', 'Comment #' + pinNumber + ' by ' + comment.authorName);
+      pin.setAttribute(
+        'aria-label',
+        'Comment #' + pinNumber + ' by ' + comment.authorName +
+          (pos.anchored ? ' (anchored to element)' : '')
+      );
       pin.setAttribute('data-comment-id', comment.id);
+      if (pos.anchored) pin.setAttribute('data-anchored', 'true');
 
       pin.addEventListener('mouseenter', function (e) {
         showTooltip(comment, e.clientX, e.clientY);
@@ -918,11 +1611,27 @@
     if (existing) existing.remove();
     if (!state.draft) return;
 
+    var pos = null;
+    if (state.draft.anchor) {
+      pos = getCommentPinPosition({
+        anchor: state.draft.anchor,
+        sectionId: state.draft.sectionId,
+        pinX: state.draft.pinX,
+        pinY: state.draft.pinY
+      });
+    }
+    if (!pos) {
+      pos = {
+        topPx: state.draft.pinY * docHeight(),
+        leftPx: state.draft.pinX * document.documentElement.clientWidth
+      };
+    }
+
     var marker = document.createElement('div');
     marker.id = 'rv-pending-pin';
     marker.className = 'rv-pending-pin';
-    marker.style.top = (state.draft.pinY * docHeight()) + 'px';
-    marker.style.left = (state.draft.pinX * 100) + 'vw';
+    marker.style.top = pos.topPx + 'px';
+    marker.style.left = pos.leftPx + 'px';
     marker.setAttribute('aria-hidden', 'true');
     document.body.appendChild(marker);
   }
@@ -1063,7 +1772,30 @@
     if (existing) existing.remove();
   }
 
+  function onThreadOutsideClick(e) {
+    var pop = document.getElementById('rv-thread-popover');
+    if (!pop) {
+      document.removeEventListener('mousedown', onThreadOutsideClick, true);
+      return;
+    }
+    if (pop.contains(e.target)) return;
+    if (e.target.closest && (
+      e.target.closest('.rv-pin') ||
+      e.target.closest('#rv-panel') ||
+      e.target.closest('#rv-confirm') ||
+      e.target.closest('.rv-context-menu') ||
+      e.target.closest('#rv-root')
+    )) return;
+
+    state.activeCommentId = null;
+    state.editingCommentId = null;
+    closeThreadPopover();
+    renderPins();
+    if (state.panelOpen) renderPanel();
+  }
+
   function closeThreadPopover() {
+    document.removeEventListener('mousedown', onThreadOutsideClick, true);
     removeThreadPopoverEl();
     closeThreadBackdrop();
     threadPopoverPos = null;
@@ -1102,6 +1834,7 @@
     var height = docHeight();
     var section = nearestSection(clientY);
     var tabId = getTabIdForPoint(clientX, clientY);
+    var anchor = createAnchorFromPoint(clientX, clientY, section.id);
 
     state.draft = {
       clientX: clientX,
@@ -1111,7 +1844,9 @@
       tabId: tabId,
       scrollY: window.scrollY,
       pinX: clientX / docWidth,
-      pinY: (window.scrollY + clientY) / height
+      pinY: (window.scrollY + clientY) / height,
+      // Element anchor is the source of truth for pin placement.
+      anchor: anchor
     };
 
     state.activeCommentId = null;
@@ -1226,14 +1961,13 @@
     closeDraftPopover();
     closeContextMenu();
     removeThreadPopoverEl();
+    closeThreadBackdrop();
     hideTooltip();
 
     state.activeCommentId = comment.id;
-    if (!isMobileView()) state.panelOpen = true;
+    // Keep the comments drawer closed — Figma-style: pin click opens only the popover.
     renderBar();
-    renderPanel();
     renderPins();
-    openThreadBackdrop();
 
     var visibleCommentsList = visibleComments();
     var commentIndex = visibleCommentsList.findIndex(function (c) { return c.id === comment.id; });
@@ -1278,6 +2012,11 @@
           '<div class="rv-card-section">' + escapeHtml(comment.sectionLabel) + '</div>' : '') +
         (comment.tabId && comment.tabId !== 'default' ?
           '<div class="rv-card-section" style="margin-top:2px;"><span class="rv-badge rv-badge-tab">' + humanizeTabId(comment.tabId) + '</span></div>' : '') +
+        (isAnchorBroken(comment) || comment.anchorBroken ?
+          '<div class="rv-anchor-broken-row">' +
+            '<span class="rv-anchor-broken-badge" title="Target element not found.">Anchor broken</span>' +
+            '<button type="button" class="rv-btn rv-btn-ghost-dark rv-convert-general">Convert to general feedback</button>' +
+          '</div>' : '') +
         (editing ?
           '<form class="rv-edit-form">' +
             '<label class="rv-field"><span>Edit comment</span>' +
@@ -1335,8 +2074,14 @@
       state.editingCommentId = null;
       closeThreadPopover();
       renderPins();
-      renderPanel();
+      if (state.panelOpen) renderPanel();
     });
+
+    // Close when clicking the page canvas (not the popover / pins / review chrome).
+    document.removeEventListener('mousedown', onThreadOutsideClick, true);
+    setTimeout(function () {
+      document.addEventListener('mousedown', onThreadOutsideClick, true);
+    }, 0);
 
     var toggleBtn = popover.querySelector('.rv-toggle-status');
     if (toggleBtn) {
@@ -1369,6 +2114,30 @@
     if (deleteBtn) {
       deleteBtn.addEventListener('click', function () {
         deleteComment(comment.id);
+      });
+    }
+
+    var convertBtn = popover.querySelector('.rv-convert-general');
+    if (convertBtn) {
+      convertBtn.addEventListener('click', function () {
+        var c = getComment(comment.id);
+        if (!c) return;
+        c.anchor = null;
+        c.legacy = true;
+        c.anchorBroken = false;
+        c.sectionId = c.sectionId || 'general';
+        c.sectionLabel = c.sectionLabel || 'General feedback';
+        upsertComment(c);
+        if (!isOfflineMode) {
+          apiJson('/api/comments/' + encodeURIComponent(c.id), {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ legacy: true, anchor: null, lastEditedBy: getStoredName() || 'Guest' })
+          }).catch(function () {});
+        }
+        showToast('Converted to general feedback.');
+        openThreadPopover(c, clientX, clientY);
+        renderPins();
       });
     }
 
@@ -1446,20 +2215,22 @@
 
     state.activeCommentId = commentId;
     state.draft = null;
-    state.panelOpen = true;
+    // Do not force-open the drawer; panel stays as the user left it.
 
-    var height = docHeight();
-    var targetY = comment.pinY != null ? (comment.pinY * height - 120) : comment.scrollY - 80;
+    var pos = getCommentPinPosition(comment);
+    var targetY = pos
+      ? pos.topPx - 120
+      : (comment.scrollY != null ? comment.scrollY - 80 : 0);
     window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
 
-    renderAll();
+    renderBar();
+    renderPins();
+    if (state.panelOpen) renderPanel();
 
     setTimeout(function () {
-      if (comment.pinX != null && comment.pinY != null) {
-        var x = comment.pinX * document.documentElement.clientWidth;
-        var y = comment.pinY * height - window.scrollY;
-        openThreadPopover(comment, x, y);
-      }
+      var latest = getCommentPinPosition(comment);
+      if (!latest) return;
+      openThreadPopover(comment, latest.clientX, latest.clientY);
     }, 350);
   }
 
@@ -1476,6 +2247,7 @@
     state.comments.sort(function (a, b) {
       return a.createdAt.localeCompare(b.createdAt);
     });
+    persistLocalBackup();
   }
 
   function addReplyToComment(commentId, reply) {
@@ -1491,6 +2263,7 @@
   function removeComment(commentId) {
     state.comments = state.comments.filter(function (c) { return c.id !== commentId; });
     if (state.activeCommentId === commentId) state.activeCommentId = null;
+    persistLocalBackup();
   }
 
   function toggleCommentStatus(commentId, status) {
@@ -1541,6 +2314,37 @@
       });
   }
 
+  function showConflictModal(editorName) {
+    var existing = document.getElementById('rv-conflict-modal');
+    if (existing) existing.remove();
+    var modal = document.createElement('div');
+    modal.id = 'rv-conflict-modal';
+    modal.className = 'rv-confirm rv-interactive';
+    modal.innerHTML =
+      '<div class="rv-confirm-box">' +
+        '<h3 class="rv-confirm-title">Comment was edited elsewhere</h3>' +
+        '<p>' + escapeHtml(editorName || 'Another user') +
+          ' is editing / saved changes. Reload to see the latest version. Your draft was not auto-merged.</p>' +
+        '<div class="rv-confirm-actions">' +
+          '<button type="button" class="rv-btn rv-btn-ghost-dark" id="rv-conflict-dismiss">Keep editing</button>' +
+          '<button type="button" class="rv-btn rv-btn-primary" id="rv-conflict-reload">Reload</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    modal.querySelector('#rv-conflict-dismiss').addEventListener('click', function () {
+      modal.remove();
+    });
+    modal.querySelector('#rv-conflict-reload').addEventListener('click', function () {
+      modal.remove();
+      syncComments(true).then(function () {
+        state.editingCommentId = null;
+        closeThreadPopover();
+        renderAll();
+        showToast('Comments reloaded.');
+      });
+    });
+  }
+
   function updateCommentBody(e, commentId, clientX, clientY) {
     e.preventDefault();
     if (state.submitting) return;
@@ -1551,12 +2355,24 @@
       return;
     }
 
+    var existing = getComment(commentId);
+    if (existing && existing.lastEditedAt && existing.lastEditedBy &&
+        existing.lastEditedBy !== getStoredName()) {
+      var editedMs = Date.parse(existing.lastEditedAt);
+      if (!isNaN(editedMs) && Date.now() - editedMs < 5000) {
+        showConflictModal(existing.lastEditedBy);
+        return;
+      }
+    }
+
     state.submitting = true;
 
     if (isOfflineMode) {
       var c = getComment(commentId);
       if (c) {
         trackCommentEdit(commentId, body);
+        c.lastEditedBy = getStoredName() || c.authorName;
+        c.lastEditedAt = new Date().toISOString();
         upsertComment(c);
         lsSave();
       }
@@ -1569,11 +2385,26 @@
       return;
     }
 
-    apiJson('/api/comments/' + encodeURIComponent(commentId), {
+    apiFetch('/api/comments/' + encodeURIComponent(commentId), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ body: body })
+      body: JSON.stringify({
+        body: body,
+        baseUpdatedAt: existing && existing.updatedAt,
+        lastEditedBy: getStoredName() || 'Guest'
+      })
     })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          if (res.status === 409 || data.error === 'conflict') {
+            showConflictModal((data.comment && data.comment.lastEditedBy) || data.message);
+            if (data.comment) upsertComment(data.comment);
+            throw new Error('conflict');
+          }
+          if (!res.ok) throw new Error(data.error || 'Could not update comment.');
+          return data;
+        });
+      })
       .then(function (data) {
         trackCommentEdit(commentId, body);
         upsertComment(data.comment);
@@ -1584,6 +2415,7 @@
         showToast('Comment updated.');
       })
       .catch(function (err) {
+        if (err && err.message === 'conflict') return;
         showToast(err.message || 'Could not update comment.', true);
       })
       .finally(function () {
@@ -1608,6 +2440,7 @@
 
       if (isOfflineMode) {
         closeConfirm();
+        lsRememberDeleted(commentId);
         removeComment(commentId);
         lsSave();
         state.editingCommentId = null;
@@ -1621,6 +2454,7 @@
       apiJson('/api/comments/' + encodeURIComponent(commentId), { method: 'DELETE' })
         .then(function () {
           closeConfirm();
+          lsRememberDeleted(commentId);
           removeComment(commentId);
           state.editingCommentId = null;
           closeThreadPopover();
@@ -1639,6 +2473,10 @@
 
   function deleteAllComments() {
     if (state.submitting || state.confirmOpen) return;
+    if (!state.isOwner && !isOfflineMode) {
+      showToast('Only the session owner can delete all comments.', true);
+      return;
+    }
     var comments = visibleComments();
     if (!comments.length) {
       showToast('No comments to delete on this tab.', true);
@@ -1648,7 +2486,8 @@
     confirmAction({
       title: 'Delete all comments on this tab?',
       message: 'This will permanently delete ' + comments.length + ' comment' + (comments.length === 1 ? '' : 's') +
-        (isOfflineMode ? ' from this browser.' : ' for everyone on this link.'),
+        (isOfflineMode ? ' from this browser.' : ' for everyone on this link.') +
+        ' This action is audited.',
       confirmLabel: 'Yes, delete all',
       loadingLabel: 'Deleting…'
     }, function (closeConfirm, restoreConfirm) {
@@ -1656,7 +2495,10 @@
 
       if (isOfflineMode) {
         closeConfirm();
-        comments.forEach(function (c) { removeComment(c.id); });
+        comments.forEach(function (c) {
+          lsRememberDeleted(c.id);
+          removeComment(c.id);
+        });
         lsSave();
         state.editingCommentId = null;
         state.panelFilter = 'all';
@@ -1664,27 +2506,35 @@
         closeThreadPopover();
         renderAll();
         showToast('All comments deleted.');
+        console.log('[review] audit delete_all', { count: comments.length, userId: state.userId });
         return;
       }
 
       var deletePromises = comments.map(function (c) {
-        return apiJson('/api/comments/' + encodeURIComponent(c.id), { method: 'DELETE' })
-          .catch(function (err) {
-            console.warn('Failed to delete comment ' + c.id + ':', err.message);
-            return Promise.resolve(); // continue even if one fails
-          });
+        return apiJson('/api/comments/' + encodeURIComponent(c.id), {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason: 'delete_all', userId: state.userId })
+        }).catch(function (err) {
+          console.warn('Failed to delete comment ' + c.id + ':', err.message);
+          return Promise.resolve();
+        });
       });
 
       Promise.all(deletePromises)
         .then(function () {
           closeConfirm();
-          comments.forEach(function (c) { removeComment(c.id); });
+          comments.forEach(function (c) {
+            lsRememberDeleted(c.id);
+            removeComment(c.id);
+          });
           state.editingCommentId = null;
           state.panelFilter = 'all';
           state.panelSearch = '';
           closeThreadPopover();
           renderAll();
           showToast('All comments deleted.');
+          console.log('[review] audit delete_all', { count: comments.length, userId: state.userId });
         })
         .catch(function (err) {
           restoreConfirm();
@@ -1694,6 +2544,100 @@
           state.submitting = false;
         });
     });
+  }
+
+  function deleteMyCommentsOnly() {
+    if (state.submitting || state.confirmOpen) return;
+    var myName = getStoredName();
+    var comments = visibleComments().filter(function (c) {
+      return (c.authorUserId && c.authorUserId === state.userId) ||
+        (myName && c.authorName === myName);
+    });
+    if (!comments.length) {
+      showToast('No comments of yours to delete on this view.', true);
+      return;
+    }
+
+    confirmAction({
+      title: 'Delete your comments only?',
+      message: 'This deletes ' + comments.length + ' of your comment' +
+        (comments.length === 1 ? '' : 's') + '. Other people’s feedback stays.',
+      confirmLabel: 'Delete mine',
+      loadingLabel: 'Deleting…'
+    }, function (closeConfirm, restoreConfirm) {
+      state.submitting = true;
+      var finish = function () {
+        closeConfirm();
+        comments.forEach(function (c) {
+          lsRememberDeleted(c.id);
+          removeComment(c.id);
+        });
+        closeThreadPopover();
+        renderAll();
+        showToast('Your comments were deleted.');
+        console.log('[review] audit delete_mine', { count: comments.length, userId: state.userId });
+        state.submitting = false;
+      };
+
+      if (isOfflineMode) {
+        finish();
+        return;
+      }
+
+      Promise.all(comments.map(function (c) {
+        return apiJson('/api/comments/' + encodeURIComponent(c.id), {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason: 'delete_mine', userId: state.userId })
+        }).catch(function () { return null; });
+      })).then(finish).catch(function (err) {
+        restoreConfirm();
+        state.submitting = false;
+        showToast(err.message || 'Could not delete comments.', true);
+      });
+    });
+  }
+
+  function exportCommentsJson() {
+    var comments = pageComments().map(function (c) {
+      return {
+        id: c.id,
+        body: c.body,
+        author: c.authorName,
+        status: c.status,
+        pagePath: c.pagePath,
+        sectionId: c.sectionId,
+        tabId: c.tabId,
+        anchor: c.anchor || null,
+        createdAt: c.createdAt,
+        replies: (c.replies || []).map(function (r) {
+          return {
+            id: r.id,
+            body: r.body,
+            author: r.authorName,
+            createdAt: r.createdAt
+          };
+        })
+      };
+    });
+    if (!comments.length) {
+      showToast('No comments to export.', true);
+      return;
+    }
+    var blob = new Blob([JSON.stringify({
+      sessionId: state.token,
+      exportedAt: new Date().toISOString(),
+      comments: comments
+    }, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = state.token + '_comments.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    showToast('Exported ' + comments.length + ' comment' + (comments.length === 1 ? '' : 's') + '.');
   }
 
   function exportFeedback() {
@@ -1760,12 +2704,24 @@
 
     es.addEventListener('comment_updated', function (event) {
       var data = JSON.parse(event.data);
-      if (data.comment) upsertComment(data.comment);
+      if (data.comment) {
+        var incoming = data.comment;
+        var local = getComment(incoming.id);
+        if (state.editingCommentId === incoming.id && local &&
+            incoming.lastEditedBy && incoming.lastEditedBy !== getStoredName()) {
+          var incomingMs = Date.parse(incoming.lastEditedAt || incoming.updatedAt || '');
+          if (!isNaN(incomingMs) && Date.now() - incomingMs < 5000) {
+            showConflictModal(incoming.lastEditedBy);
+          }
+        }
+        upsertComment(incoming);
+      }
       renderAll();
     });
 
     es.addEventListener('comment_deleted', function (event) {
       var data = JSON.parse(event.data);
+      if (data.commentId) lsRememberDeleted(data.commentId);
       removeComment(data.commentId);
       closeThreadPopover();
       renderAll();
@@ -1799,6 +2755,7 @@
   function syncComments(silent) {
     if (isOfflineMode || state.confirmOpen) return Promise.resolve();
     return loadComments().then(function () {
+      state.syncError = false;
       var fp = commentsFingerprint(state.comments);
       if (fp !== lastSyncFingerprint) {
         lastSyncFingerprint = fp;
@@ -1809,6 +2766,7 @@
       }
     }).catch(function () {
       state.connected = false;
+      state.syncError = true;
       renderBar();
     });
   }
@@ -1824,7 +2782,9 @@
   function loadComments() {
     if (isOfflineMode) {
       var stored = lsLoad();
-      state.comments = stored.comments || [];
+      var merged = mergeCommentLists([], stored.comments || state.comments || [], lsLoadDeleted());
+      state.comments = merged.length ? merged : (stored.comments || state.comments || []);
+      persistLocalBackup();
       lastSyncFingerprint = commentsFingerprint(state.comments);
       return Promise.resolve();
     }
@@ -1836,13 +2796,23 @@
         return res.json();
       })
       .then(function (data) {
-        state.comments = data.comments || [];
-        lastSyncFingerprint = commentsFingerprint(state.comments);
+        return applyRemoteComments(data.comments || []).then(function () {
+          lastSyncFingerprint = commentsFingerprint(state.comments);
+        });
       })
       .catch(function () {
-        isOfflineMode = true;
+        // Keep any in-memory comments and merge with local backup — never wipe.
+        // Do not permanently latch offline here; a brief API blip should recover
+        // on the next poll. Hard offline is set only when the session itself fails.
+        state.connected = false;
         var stored = lsLoad();
-        state.comments = stored.comments || [];
+        var merged = mergeCommentLists(
+          state.comments || [],
+          stored.comments || [],
+          lsLoadDeleted()
+        );
+        state.comments = merged;
+        persistLocalBackup();
         lastSyncFingerprint = commentsFingerprint(state.comments);
       });
   }
@@ -1855,10 +2825,35 @@
       })
       .then(function (data) {
         state.session = data.session;
+        state.syncError = false;
+        return apiJson('/api/sessions/' + encodeURIComponent(state.token) + '/claim-owner', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: state.userId })
+        }).then(function (claim) {
+          if (claim && claim.session) state.session = claim.session;
+          state.isOwner = !!(claim && claim.isOwner) ||
+            !!(state.session && state.session.ownerUserId === state.userId);
+        }).catch(function () {
+          state.isOwner = !!(state.session && state.session.ownerUserId === state.userId);
+        });
       })
       .catch(function () {
         isOfflineMode = true;
         state.session = { title: 'Design Review', token: state.token };
+        // Offline: first browser visitor becomes local owner for this token.
+        try {
+          var ownerKey = 'rv-owner-' + state.token;
+          var owner = localStorage.getItem(ownerKey);
+          if (!owner) {
+            localStorage.setItem(ownerKey, state.userId);
+            state.isOwner = true;
+          } else {
+            state.isOwner = owner === state.userId;
+          }
+        } catch (e) {
+          state.isOwner = true;
+        }
       });
   }
 
@@ -1879,33 +2874,43 @@
     state.submitting = true;
     renderDraftPopover();
 
-    if (isOfflineMode) {
+    var draftSnapshot = state.draft;
+
+    function finishLocalSave(message, isError) {
       var now = new Date().toISOString();
       var newComment = {
         id: genId(),
         authorName: authorName,
         body: body,
         pagePath: PAGE_PATH,
-        sectionId: state.draft.sectionId,
-        sectionLabel: state.draft.sectionLabel,
-        tabId: state.draft.tabId,
-        scrollY: state.draft.scrollY,
-        pinX: state.draft.pinX,
-        pinY: state.draft.pinY,
+        sectionId: draftSnapshot.sectionId,
+        sectionLabel: draftSnapshot.sectionLabel,
+        tabId: draftSnapshot.tabId,
+        scrollY: draftSnapshot.scrollY,
+        pinX: draftSnapshot.pinX,
+        pinY: draftSnapshot.pinY,
+        anchor: draftSnapshot.anchor || null,
+        authorUserId: state.userId,
         status: 'open',
         createdAt: now,
         updatedAt: now,
-        replies: []
+        lastEditedBy: authorName,
+        lastEditedAt: now,
+        replies: [],
+        _pendingSync: isOfflineMode ? false : 'create'
       };
       upsertComment(newComment);
       lsSave();
       state.draft = null;
       state.activeCommentId = newComment.id;
-      state.panelOpen = true;
       state.submitting = false;
       renderAll();
-      showToast('Comment saved, visible only in this browser.');
-      renderDraftPopover();
+      showToast(message, !!isError);
+      openThreadPopover(newComment, draftSnapshot.clientX, draftSnapshot.clientY);
+    }
+
+    if (isOfflineMode) {
+      finishLocalSave('Comment saved in this browser.');
       return;
     }
 
@@ -1916,25 +2921,30 @@
         authorName: authorName,
         body: body,
         pagePath: PAGE_PATH,
-        sectionId: state.draft.sectionId,
-        sectionLabel: state.draft.sectionLabel,
-        tabId: state.draft.tabId,
-        scrollY: state.draft.scrollY,
-        pinX: state.draft.pinX,
-        pinY: state.draft.pinY
+        sectionId: draftSnapshot.sectionId,
+        sectionLabel: draftSnapshot.sectionLabel,
+        tabId: draftSnapshot.tabId,
+        scrollY: draftSnapshot.scrollY,
+        pinX: draftSnapshot.pinX,
+        pinY: draftSnapshot.pinY,
+        anchor: draftSnapshot.anchor || null,
+        authorUserId: state.userId
       })
     })
       .then(function (data) {
         data.comment.replies = data.comment.replies || [];
+        data.comment.anchor = data.comment.anchor || draftSnapshot.anchor || null;
+        data.comment._pendingSync = false;
         upsertComment(data.comment);
         state.draft = null;
         state.activeCommentId = data.comment.id;
-        state.panelOpen = true;
         renderAll();
-        showToast('Comment saved, visible to everyone on this link.');
+        showToast('Comment saved.');
+        openThreadPopover(data.comment, draftSnapshot.clientX, draftSnapshot.clientY);
       })
-      .catch(function (err) {
-        showToast(err.message || 'Could not submit comment.', true);
+      .catch(function () {
+        // Never lose the comment — persist locally and retry on next sync.
+        finishLocalSave('Saved locally — will sync when connection returns.', true);
       })
       .finally(function () {
         state.submitting = false;
@@ -2125,12 +3135,20 @@
     upsertComment(comment);
 
     if (!isOfflineMode) {
-      apiJson('/api/comments/' + encodeURIComponent(commentId) + '/reactions', {
+      apiJson('/api/comments/' + encodeURIComponent(commentId) + '/reactions/' + encodeURIComponent(emoji), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emoji: emoji })
+      }).then(function (data) {
+        if (data && data.comment) upsertComment(data.comment);
+        refreshOpenThread();
       }).catch(function (err) {
-        showToast('Could not add reaction: ' + err.message, true);
+        // Roll back optimistic bump
+        comment.reactions[emoji] = Math.max(0, (comment.reactions[emoji] || 1) - 1);
+        if (!comment.reactions[emoji]) delete comment.reactions[emoji];
+        upsertComment(comment);
+        showToast('Could not add reaction: ' + (err.message || 'request failed'), true);
+        refreshOpenThread();
       });
     }
 
@@ -2317,17 +3335,27 @@
     var comment = getComment(commentId);
     if (!comment) return;
 
-    comment.pinned = !comment.pinned;
+    var nextPinned = !comment.pinned;
+    comment.pinned = nextPinned;
     upsertComment(comment);
 
     if (!isOfflineMode) {
       apiJson('/api/comments/' + encodeURIComponent(commentId) + '/pin', {
-        method: 'PATCH',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pinned: comment.pinned })
+        body: JSON.stringify({ pinned: nextPinned })
+      }).then(function (data) {
+        if (data && data.comment) upsertComment(data.comment);
+        refreshOpenThread();
+        renderAll();
       }).catch(function (err) {
-        showToast('Could not update pin status: ' + err.message, true);
+        comment.pinned = !nextPinned;
+        upsertComment(comment);
+        showToast('Could not update pin status: ' + (err.message || 'request failed'), true);
+        refreshOpenThread();
+        renderAll();
       });
+      return;
     }
 
     refreshOpenThread();
@@ -2386,62 +3414,6 @@
       })
       .catch(function (err) {
         showToast('Error marking comments resolved: ' + err.message, true);
-      })
-      .finally(function () {
-        state.submitting = false;
-      });
-  }
-
-  function deleteAllComments() {
-    var comments = visibleComments();
-    if (!comments.length) {
-      showToast('No comments to delete.', true);
-      return;
-    }
-
-    if (!confirm('Delete all ' + comments.length + ' comment(s)? This cannot be undone.')) {
-      return;
-    }
-
-    if (state.submitting) return;
-    state.submitting = true;
-
-    if (isOfflineMode) {
-      comments.forEach(function (c) {
-        removeComment(c.id);
-      });
-      lsSave();
-      state.submitting = false;
-      state.panelFilter = 'all';
-      state.panelSearch = '';
-      closeThreadPopover();
-      renderAll();
-      showToast('All comments deleted.');
-      return;
-    }
-
-    var deletePromises = comments.map(function (c) {
-      return apiJson('/api/comments/' + encodeURIComponent(c.id), {
-        method: 'DELETE'
-      }).catch(function (err) {
-        console.warn('Failed to delete comment ' + c.id + ':', err.message);
-        return Promise.resolve();
-      });
-    });
-
-    Promise.all(deletePromises)
-      .then(function () {
-        comments.forEach(function (c) {
-          removeComment(c.id);
-        });
-        state.panelFilter = 'all';
-        state.panelSearch = '';
-        closeThreadPopover();
-        renderAll();
-        showToast('All comments deleted.');
-      })
-      .catch(function (err) {
-        showToast('Error deleting comments: ' + err.message, true);
       })
       .finally(function () {
         state.submitting = false;
@@ -2563,13 +3535,103 @@
 
   window.addEventListener('hashchange', handleDeepLink);
 
+  function showCorruptRecoveryModal() {
+    var existing = document.getElementById('rv-corrupt-modal');
+    if (existing) existing.remove();
+    var modal = document.createElement('div');
+    modal.id = 'rv-corrupt-modal';
+    modal.className = 'rv-confirm rv-interactive';
+    modal.innerHTML =
+      '<div class="rv-confirm-box">' +
+        '<h3 class="rv-confirm-title">Comment storage corrupted</h3>' +
+        '<p>Local comment data looks corrupted. Restore from backup, or start fresh?</p>' +
+        '<div class="rv-confirm-actions">' +
+          '<button type="button" class="rv-btn rv-btn-ghost-dark" id="rv-corrupt-fresh">Start fresh</button>' +
+          '<button type="button" class="rv-btn rv-btn-primary" id="rv-corrupt-restore">Restore</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    modal.querySelector('#rv-corrupt-fresh').addEventListener('click', function () {
+      try {
+        localStorage.removeItem(LS_KEY);
+        localStorage.removeItem(LS_BAK_KEY);
+      } catch (e) {}
+      state.comments = [];
+      persistLocalBackup();
+      modal.remove();
+      renderAll();
+      showToast('Started with an empty comment list.');
+    });
+    modal.querySelector('#rv-corrupt-restore').addEventListener('click', function () {
+      var bak = tryBackupLoad(false);
+      if (bak.comments && bak.comments.length) {
+        state.comments = bak.comments;
+        persistLocalBackup();
+        modal.remove();
+        renderAll();
+        showToast('Restored ' + bak.comments.length + ' comments from backup.');
+      } else {
+        modal.remove();
+        showToast('No usable backup found. Start fresh?', true);
+        showCorruptRecoveryModal();
+      }
+    });
+  }
+
+  // Hydrate immediately from local backup so a slow/failed API never blanks the UI.
+  (function hydrateFromBackup() {
+    var stored = lsLoad();
+    if (stored.corrupted && !(stored.comments && stored.comments.length)) {
+      setTimeout(showCorruptRecoveryModal, 300);
+      return;
+    }
+    if (stored.recoveredFromCorrupt && stored.comments && stored.comments.length) {
+      setTimeout(function () {
+        confirmAction({
+          title: 'Corrupted. Restore?',
+          message: 'Primary storage was corrupted. Restore ' + stored.comments.length +
+            ' comment(s) from backup?',
+          confirmLabel: 'Restore',
+          loadingLabel: 'Restoring…'
+        }, function (closeConfirm) {
+          closeConfirm();
+          state.comments = stored.comments.slice();
+          persistLocalBackup();
+          renderAll();
+          showToast('Restored from backup.');
+        });
+      }, 300);
+    }
+    if (stored.comments && stored.comments.length) {
+      state.comments = stored.comments.slice();
+      lastSyncFingerprint = commentsFingerprint(state.comments);
+      renderAll();
+    }
+  })();
+
   loadSession()
     .then(function () { return loadComments(); })
     .then(function () {
       if (isMobileView()) state.tapMode = true;
+      var migration = migrateAllComments();
+      var broken = verifyAnchors();
+      if (migration.total) {
+        showToast(
+          'Migrated ' + migration.success + '/' + migration.total +
+          ' legacy comment anchors' +
+          (migration.failed ? ' (' + migration.failed + ' failed)' : '') + '.'
+        );
+      }
+      if (broken.length) {
+        showToast(broken.length + ' comment(s) have broken anchors.', true);
+      }
       renderAll();
       startSyncLoop();
       connectEvents();
+      if (!isOfflineMode) flushPendingComments();
+      if (isOfflineMode && state.comments.length) {
+        showToast('Only saved locally — keep this tab open until you reconnect.', true);
+      }
       
       handleDeepLink();
       showWelcomeTip();
@@ -2605,28 +3667,105 @@
     }, 600);
   }
 
-  window.addEventListener('resize', function () {
-    renderPins();
-    renderPendingPin();
-    if (state.draft) renderDraftPopover();
-    var openThread = document.getElementById('rv-thread-popover');
-    if (openThread && threadPopoverPos) {
-      threadPopoverPos = positionPopover(openThread, threadPopoverPos, 0, 0, 420) || threadPopoverPos;
-    }
-  });
+  var pinRelayoutTimer = null;
+  function schedulePinRelayout() {
+    if (pinRelayoutTimer) clearTimeout(pinRelayoutTimer);
+    pinRelayoutTimer = setTimeout(function () {
+      pinRelayoutTimer = null;
+      renderPins();
+      renderPendingPin();
+    }, 50);
+  }
 
-  window.addEventListener('scroll', function () {
-    renderPins();
-    renderPendingPin();
-    hideTooltip();
-  }, { passive: true });
+  function startAnchorLayoutObservers() {
+    window.addEventListener('resize', function () {
+      schedulePinRelayout();
+      if (state.draft) renderDraftPopover();
+      var openThread = document.getElementById('rv-thread-popover');
+      if (openThread && threadPopoverPos) {
+        threadPopoverPos = positionPopover(openThread, threadPopoverPos, 0, 0, 420) || threadPopoverPos;
+      }
+    });
+
+    window.addEventListener('scroll', function () {
+      // Anchored pins use document coordinates, so scroll alone does not
+      // require a full rebuild — but pending pins / tooltips still need care.
+      renderPendingPin();
+      hideTooltip();
+    }, { passive: true });
+
+    if (typeof ResizeObserver !== 'undefined') {
+      try {
+        var resizeObserver = new ResizeObserver(function () {
+          schedulePinRelayout();
+        });
+        resizeObserver.observe(document.documentElement);
+        if (document.body) resizeObserver.observe(document.body);
+      } catch (e) {}
+    }
+
+    if (typeof MutationObserver !== 'undefined' && document.body) {
+      try {
+        var mutationObserver = new MutationObserver(function (mutations) {
+          for (var i = 0; i < mutations.length; i++) {
+            var m = mutations[i];
+            if (m.type === 'attributes' && m.target && m.target.closest &&
+                m.target.closest(REVIEW_UI_SELECTOR)) {
+              continue;
+            }
+            if (m.type === 'childList') {
+              var nodes = [];
+              if (m.addedNodes && m.addedNodes.length) {
+                for (var a = 0; a < m.addedNodes.length; a++) nodes.push(m.addedNodes[a]);
+              }
+              if (m.removedNodes && m.removedNodes.length) {
+                for (var r = 0; r < m.removedNodes.length; r++) nodes.push(m.removedNodes[r]);
+              }
+              var onlyReviewUi = nodes.length > 0 && nodes.every(function (node) {
+                return node.nodeType === 1 && (
+                  (node.id && String(node.id).indexOf('rv-') === 0) ||
+                  (node.classList && (
+                    node.classList.contains('rv-pin') ||
+                    node.classList.contains('rv-interactive') ||
+                    node.classList.contains('rv-pin-layer')
+                  )) ||
+                  (node.closest && node.closest(REVIEW_UI_SELECTOR))
+                );
+              });
+              if (onlyReviewUi) continue;
+            }
+            schedulePinRelayout();
+            return;
+          }
+        });
+        mutationObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['class', 'style', 'hidden', 'aria-hidden']
+        });
+      } catch (e) {}
+    }
+
+    // Fonts / late images can shift layout after first paint.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(schedulePinRelayout).catch(function () {});
+    }
+    window.addEventListener('load', schedulePinRelayout);
+  }
+
+  startAnchorLayoutObservers();
 
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) syncComments(true);
+    if (!document.hidden) {
+      syncComments(true);
+      schedulePinRelayout();
+    }
   });
 
   window.addEventListener('focus', function () {
     syncComments(true);
+    schedulePinRelayout();
   });
 
   } /* initReviewMode */
