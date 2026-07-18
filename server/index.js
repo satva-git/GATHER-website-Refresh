@@ -418,8 +418,23 @@ app.get('/api/admin/events', (req, res) => {
   });
 });
 
-app.use('/review', express.static(path.join(ROOT, 'review')));
-app.use('/admin', express.static(path.join(ROOT, 'admin')));
+// Always serve fresh review assets so pin/UX fixes are not stuck behind CDN/browser cache.
+app.use('/review', express.static(path.join(ROOT, 'review'), {
+  etag: false,
+  lastModified: false,
+  setHeaders(res) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+  }
+}));
+app.use('/admin', express.static(path.join(ROOT, 'admin'), {
+  etag: false,
+  lastModified: false,
+  setHeaders(res) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+  }
+}));
 
 app.get('/', redirectToDefaultReview, (_req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
