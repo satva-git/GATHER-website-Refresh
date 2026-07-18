@@ -100,9 +100,19 @@ function load() {
     data = normalizeData(JSON.parse(raw));
   } catch (err) {
     const backup = DB_PATH + '.corrupt-' + Date.now();
-    fs.copyFileSync(DB_PATH, backup);
+    try {
+      fs.copyFileSync(DB_PATH, backup);
+      console.error(
+        '[db] Corrupt review DB preserved at',
+        backup,
+        '- NOT overwriting with empty data. Fix/restore the file or Postgres backup.'
+      );
+    } catch (copyErr) {
+      console.error('[db] Could not preserve corrupt DB:', copyErr.message);
+    }
+    // Keep an empty in-memory DB for this process, but do not wipe the on-disk file.
+    // bootstrap() may still restore from Postgres.
     data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-    persistSync();
   }
 }
 

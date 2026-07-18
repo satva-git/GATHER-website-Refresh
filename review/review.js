@@ -246,7 +246,8 @@
     allPinsVisible: true,
     panelFilter: 'all',
     panelSearch: '',
-    showAllTabs: false,
+    // Default ON so tab filtering never makes comments look "missing".
+    showAllTabs: true,
     userId: null,
     isOwner: false,
     editLocks: {}
@@ -357,8 +358,51 @@
     return copy;
   }
 
-  function persistLocalBackup() {
+  function countStoredComments(raw) {
+    if (!raw) return 0;
     try {
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed.comments) ? parsed.comments.length : 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function persistLocalBackup(options) {
+    options = options || {};
+    try {
+      var nextCount = (state.comments || []).length;
+      var prev = localStorage.getItem(LS_KEY);
+      var existingCount = countStoredComments(prev);
+
+      // Safety: never silently wipe a non-empty backup with an empty list.
+      // Intentional clears (delete / start fresh) pass { force: true }.
+      if (!options.force && existingCount > 0 && nextCount === 0) {
+        console.warn(
+          '[review] Blocked empty backup overwrite — keeping',
+          existingCount,
+          'stored comment(s)'
+        );
+        return false;
+      }
+
+      // Safety: sudden large drop during sync is treated as data loss — restore from backup.
+      if (!options.force && existingCount >= 3 && nextCount < existingCount &&
+          nextCount <= Math.floor(existingCount * 0.5)) {
+        var existingComments = lsLoad().comments || [];
+        var rescued = mergeCommentLists(state.comments || [], existingComments, lsLoadDeleted());
+        if (rescued.length > nextCount) {
+          console.warn(
+            '[review] Prevented accidental comment loss:',
+            existingCount, '→', nextCount,
+            '; restored to', rescued.length
+          );
+          state.comments = rescued;
+          nextCount = rescued.length;
+          showToast('Protected ' + rescued.length + ' comment(s) from accidental loss.', true);
+        }
+      }
+
       var payload = JSON.stringify({
         comments: state.comments.map(function (c) {
           var copy = stripLocalMeta(c);
@@ -367,13 +411,45 @@
           return copy;
         }),
         savedAt: new Date().toISOString(),
-        replyCount: countAllReplies(state.comments)
+        replyCount: countAllReplies(state.comments),
+        token: state.token,
+        pagePath: PAGE_PATH
       });
       // Rotate previous good snapshot into secondary backup first.
-      var prev = localStorage.getItem(LS_KEY);
-      if (prev) localStorage.setItem(LS_BAK_KEY, prev);
+      if (prev && existingCount > 0) localStorage.setItem(LS_BAK_KEY, prev);
       localStorage.setItem(LS_KEY, payload);
+      return true;
+    } catch (e) {
+      console.warn('[review] Could not persist local backup:', e && e.message);
+      return false;
+    }
+  }
+
+  // Recover comments saved under other review-token keys in this browser.
+  function recoverCommentsFromAnyLocalStore() {
+    var recovered = [];
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (!key || key.indexOf('rv-offline-') !== 0) continue;
+        if (key.indexOf('rv-offline-bak-') === 0) continue;
+        try {
+          var parsed = JSON.parse(localStorage.getItem(key) || '{}');
+          var list = Array.isArray(parsed.comments) ? parsed.comments : [];
+          list.forEach(function (c) {
+            if (!c || !c.id) return;
+            // Prefer same page; still keep others so they are not lost from backup.
+            recovered.push(c);
+          });
+        } catch (e) {}
+      }
+      // Include secondary backup for current token.
+      var bak = tryBackupLoad(false).comments || [];
+      bak.forEach(function (c) {
+        if (c && c.id) recovered.push(c);
+      });
     } catch (e) {}
+    return recovered;
   }
 
   function countAllReplies(comments) {
@@ -448,10 +524,19 @@
   function applyRemoteComments(serverComments) {
     var backup = lsLoad().comments || [];
     var memory = state.comments || [];
-    var localSeed = backup.length >= memory.length ? backup : memory;
+    var anyLocal = recoverCommentsFromAnyLocalStore();
+    var localSeed = backup;
+    if (memory.length > localSeed.length) localSeed = memory;
+    if (anyLocal.length > localSeed.length) localSeed = anyLocal;
+
     var deletedIds = lsLoadDeleted();
     var serverList = Array.isArray(serverComments) ? serverComments : [];
     var merged = mergeCommentLists(serverList, localSeed, deletedIds);
+
+    // Absolute safety: never replace known local comments with an empty set.
+    if (merged.length === 0 && localSeed.length > 0) {
+      merged = mergeCommentLists([], localSeed, deletedIds);
+    }
 
     // Never accept a sudden empty server wipe while this browser still has comments.
     if (serverList.length === 0 && localSeed.length > 0 && merged.length > 0) {
@@ -469,7 +554,7 @@
     }
 
     state.comments = merged;
-    persistLocalBackup();
+    persistLocalBackup({ force: false });
     return flushPendingComments();
   }
 
@@ -1649,8 +1734,8 @@
   }
 
   function clampPopoverPosition(clientX, clientY, heightEstimate) {
-    var width = Math.min(360, window.innerWidth - 24);
-    var height = heightEstimate || 300;
+    var width = Math.min(310, window.innerWidth - 24);
+    var height = heightEstimate || 260;
 
     if (isMobileView()) {
       return {
@@ -1687,8 +1772,8 @@
   function positionPopover(popover, savedPos, clientX, clientY, heightEstimate) {
     if (isMobileView()) return null;
     var rect = popover.getBoundingClientRect();
-    var width = rect.width || Math.min(360, window.innerWidth - 24);
-    var height = rect.height || heightEstimate || 300;
+    var width = rect.width || Math.min(310, window.innerWidth - 24);
+    var height = rect.height || heightEstimate || 260;
     var pos;
     if (savedPos) {
       pos = clampToViewport(savedPos.left, savedPos.top, width, height);
@@ -1975,7 +2060,7 @@
     var color = commentIndex >= 0 ? getCommentColor(commentIndex) : COMMENT_COLORS[0];
     var resolved = comment.status === 'resolved';
     var editing = state.editingCommentId === comment.id;
-    var heightEstimate = editing ? 360 : 420;
+    var heightEstimate = editing ? 310 : 360;
     var popover = document.createElement('div');
     popover.id = 'rv-thread-popover';
     popover.className = 'rv-popover rv-thread rv-interactive' + (isMobileView() ? ' rv-popover--sheet' : '');
@@ -2263,7 +2348,8 @@
   function removeComment(commentId) {
     state.comments = state.comments.filter(function (c) { return c.id !== commentId; });
     if (state.activeCommentId === commentId) state.activeCommentId = null;
-    persistLocalBackup();
+    // Intentional deletion — allow backup to shrink / become empty.
+    persistLocalBackup({ force: true });
   }
 
   function toggleCommentStatus(commentId, status) {
@@ -3557,19 +3643,21 @@
         localStorage.removeItem(LS_BAK_KEY);
       } catch (e) {}
       state.comments = [];
-      persistLocalBackup();
+      persistLocalBackup({ force: true });
       modal.remove();
       renderAll();
       showToast('Started with an empty comment list.');
     });
     modal.querySelector('#rv-corrupt-restore').addEventListener('click', function () {
       var bak = tryBackupLoad(false);
-      if (bak.comments && bak.comments.length) {
-        state.comments = bak.comments;
-        persistLocalBackup();
+      var any = recoverCommentsFromAnyLocalStore();
+      var source = (bak.comments && bak.comments.length) ? bak.comments : any;
+      if (source && source.length) {
+        state.comments = mergeCommentLists([], source, lsLoadDeleted());
+        persistLocalBackup({ force: true });
         modal.remove();
         renderAll();
-        showToast('Restored ' + bak.comments.length + ' comments from backup.');
+        showToast('Restored ' + state.comments.length + ' comments from backup.');
       } else {
         modal.remove();
         showToast('No usable backup found. Start fresh?', true);
@@ -3581,7 +3669,8 @@
   // Hydrate immediately from local backup so a slow/failed API never blanks the UI.
   (function hydrateFromBackup() {
     var stored = lsLoad();
-    if (stored.corrupted && !(stored.comments && stored.comments.length)) {
+    var any = recoverCommentsFromAnyLocalStore();
+    if (stored.corrupted && !(stored.comments && stored.comments.length) && !any.length) {
       setTimeout(showCorruptRecoveryModal, 300);
       return;
     }
@@ -3596,22 +3685,36 @@
         }, function (closeConfirm) {
           closeConfirm();
           state.comments = stored.comments.slice();
-          persistLocalBackup();
+          persistLocalBackup({ force: true });
           renderAll();
           showToast('Restored from backup.');
         });
       }, 300);
     }
-    if (stored.comments && stored.comments.length) {
-      state.comments = stored.comments.slice();
+    var seed = stored.comments && stored.comments.length ? stored.comments : any;
+    if (seed && seed.length) {
+      state.comments = mergeCommentLists(state.comments || [], seed, lsLoadDeleted());
       lastSyncFingerprint = commentsFingerprint(state.comments);
+      persistLocalBackup({ force: false });
       renderAll();
+      console.log('[review] Hydrated', state.comments.length, 'comment(s) from local storage');
     }
   })();
 
   loadSession()
     .then(function () { return loadComments(); })
     .then(function () {
+      // Final safety net: never end startup with fewer comments than local backup.
+      var safetySeed = recoverCommentsFromAnyLocalStore();
+      if (safetySeed.length > state.comments.length) {
+        state.comments = mergeCommentLists(state.comments, safetySeed, lsLoadDeleted());
+        console.warn(
+          '[review] Startup safety merge restored comments to',
+          state.comments.length
+        );
+      }
+      persistLocalBackup({ force: false });
+
       if (isMobileView()) state.tapMode = true;
       var migration = migrateAllComments();
       var broken = verifyAnchors();
@@ -3629,6 +3732,10 @@
       startSyncLoop();
       connectEvents();
       if (!isOfflineMode) flushPendingComments();
+      // Keep writing backups while the tab is open.
+      setInterval(function () {
+        if (state.comments && state.comments.length) persistLocalBackup({ force: false });
+      }, 15000);
       if (isOfflineMode && state.comments.length) {
         showToast('Only saved locally — keep this tab open until you reconnect.', true);
       }
