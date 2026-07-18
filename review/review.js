@@ -1163,15 +1163,24 @@
       var rect = el.getBoundingClientRect();
       var ox = typeof anchor.offsetX === 'number' ? anchor.offsetX : 0.5;
       var oy = typeof anchor.offsetY === 'number' ? anchor.offsetY : 0.15;
-      var clientX = rect.left + rect.width * ox;
-      var clientY = rect.top + rect.height * oy;
+      // Keep offsets inside the element; tiny id-based jitter reduces exact stacks
+      // before the dedicated overlap spreader runs.
+      var jitter = 0;
+      if (comment && comment.id) {
+        for (var ji = 0; ji < comment.id.length; ji++) jitter += comment.id.charCodeAt(ji);
+        jitter = (jitter % 7) - 3; // -3..+3 px
+      }
+      var clientX = rect.left + rect.width * Math.min(1, Math.max(0, ox)) + jitter;
+      var clientY = rect.top + rect.height * Math.min(1, Math.max(0, oy));
       return {
         leftPx: window.scrollX + clientX,
         topPx: window.scrollY + clientY,
         clientX: clientX,
         clientY: clientY,
         anchored: true,
-        element: el
+        element: el,
+        anchorKey: (anchor.dataRvAnchor || anchor.selector || el.id || '') +
+          ':' + Math.round(ox * 20) + ':' + Math.round(oy * 20)
       };
     }
 
@@ -1286,16 +1295,86 @@
     return state.comments.filter(isCommentOnCurrentPage);
   }
 
-  function visibleComments() {
-    var comments = state.showAllTabs
-      ? pageComments()
-      : pageComments().filter(isCommentOnActiveTab);
-
-    return comments.sort(function (a, b) {
+  function sortCommentsForDisplay(comments) {
+    return comments.slice().sort(function (a, b) {
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
       return b.createdAt.localeCompare(a.createdAt);
     });
+  }
+
+  function visibleComments() {
+    // Panel list can optionally show every tab; pins always use pinComments().
+    var comments = state.showAllTabs
+      ? pageComments()
+      : pageComments().filter(isCommentOnActiveTab);
+    return sortCommentsForDisplay(comments);
+  }
+
+  // Pins must only show comments for the active tab — otherwise markers from
+  // hidden journey/pillars panels stack on the same visible headings.
+  function pinComments() {
+    return sortCommentsForDisplay(pageComments().filter(isCommentOnActiveTab));
+  }
+
+  function spreadOverlappingPins(entries) {
+    if (!entries || entries.length < 2) return entries;
+    var MIN = 38; // px between pin centers
+
+    // Group near-identical positions (same element / same legacy spot).
+    var clusters = {};
+    entries.forEach(function (entry, idx) {
+      var key = Math.round(entry.pos.leftPx / 24) + ':' + Math.round(entry.pos.topPx / 24);
+      if (!clusters[key]) clusters[key] = [];
+      clusters[key].push(idx);
+    });
+
+    Object.keys(clusters).forEach(function (key) {
+      var idxs = clusters[key];
+      if (idxs.length < 2) return;
+      idxs.forEach(function (entryIdx, i) {
+        var entry = entries[entryIdx];
+        if (idxs.length <= 8) {
+          // Horizontal/vertical stagger for small piles
+          var col = i % 4;
+          var row = Math.floor(i / 4);
+          entry.pos.leftPx += (col - Math.min(idxs.length - 1, 3) / 2) * MIN;
+          entry.pos.topPx += row * (MIN - 6);
+        } else {
+          // Spiral fan for large piles
+          var angle = (i / idxs.length) * Math.PI * 2;
+          var radius = 22 + Math.floor(i / 10) * 30;
+          entry.pos.leftPx += Math.cos(angle) * radius;
+          entry.pos.topPx += Math.sin(angle) * radius;
+        }
+      });
+    });
+
+    // Iterative repulsion so remaining near-misses also separate.
+    var pass, a, b, dx, dy, dist, push, ux, uy;
+    for (pass = 0; pass < 6; pass++) {
+      for (a = 0; a < entries.length; a++) {
+        for (b = a + 1; b < entries.length; b++) {
+          dx = entries[b].pos.leftPx - entries[a].pos.leftPx;
+          dy = entries[b].pos.topPx - entries[a].pos.topPx;
+          dist = Math.sqrt(dx * dx + dy * dy) || 0.01;
+          if (dist >= MIN) continue;
+          push = (MIN - dist) / 2 + 0.5;
+          ux = dx / dist;
+          uy = dy / dist;
+          entries[a].pos.leftPx -= ux * push;
+          entries[a].pos.topPx -= uy * push;
+          entries[b].pos.leftPx += ux * push;
+          entries[b].pos.topPx += uy * push;
+        }
+      }
+    }
+
+    entries.forEach(function (entry) {
+      entry.pos.clientX = entry.pos.leftPx - window.scrollX;
+      entry.pos.clientY = entry.pos.topPx - window.scrollY;
+    });
+    return entries;
   }
 
   function tabScopedCount(tabId) {
@@ -1647,15 +1726,27 @@
     pinLayer.innerHTML = '';
     if (!state.allPinsVisible) return;
 
-    var visibleCommentsList = visibleComments();
-    var pinNumber = 0;
+    // Active-tab pins only — prevents cross-tab markers piling on one heading.
+    var pinList = pinComments();
+    var entries = [];
 
-    visibleCommentsList.forEach(function (comment) {
+    pinList.forEach(function (comment, index) {
       var pos = getCommentPinPosition(comment);
       if (!pos) return;
-      pinNumber += 1;
+      entries.push({
+        comment: comment,
+        pos: pos,
+        index: index
+      });
+    });
 
-      var color = getCommentColor(visibleCommentsList.indexOf(comment));
+    spreadOverlappingPins(entries);
+
+    entries.forEach(function (entry, i) {
+      var comment = entry.comment;
+      var pos = entry.pos;
+      var pinNumber = i + 1;
+      var color = getCommentColor(entry.index);
       var pin = document.createElement('button');
       pin.type = 'button';
       pin.className = 'rv-pin' +
@@ -1684,7 +1775,7 @@
       pin.addEventListener('mouseleave', hideTooltip);
       pin.addEventListener('click', function (e) {
         e.stopPropagation();
-        openThreadPopover(comment, e.clientX, e.clientY);
+        openThreadPopover(comment, pos.clientX, pos.clientY);
       });
 
       pinLayer.appendChild(pin);
