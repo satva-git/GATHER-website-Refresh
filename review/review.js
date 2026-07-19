@@ -1317,8 +1317,62 @@
     return sortCommentsForDisplay(pageComments().filter(isCommentOnActiveTab));
   }
 
+  // Stable spread cache — prevents pins from “shaking” when re-rendered.
+  var pinSpreadCache = {};
+  var pinSpreadCacheKey = '';
+  var pinRelayoutPaused = false;
+  var pinRelayoutResumeTimer = null;
+
+  function pausePinRelayout(ms) {
+    pinRelayoutPaused = true;
+    if (pinRelayoutResumeTimer) clearTimeout(pinRelayoutResumeTimer);
+    pinRelayoutResumeTimer = setTimeout(function () {
+      pinRelayoutPaused = false;
+      pinRelayoutResumeTimer = null;
+    }, typeof ms === 'number' ? ms : 150);
+  }
+
+  function pinSpreadSignature(entries) {
+    return entries.map(function (entry) {
+      return entry.comment.id;
+    }).join('|') + '::' + Math.round(docHeight() / 40) + 'x' + Math.round(window.innerWidth / 40);
+  }
+
   function spreadOverlappingPins(entries) {
-    if (!entries || entries.length < 2) return entries;
+    if (!entries || !entries.length) return entries;
+
+    var cacheKey = pinSpreadSignature(entries);
+    if (cacheKey === pinSpreadCacheKey && pinSpreadCache) {
+      var allCached = true;
+      entries.forEach(function (entry) {
+        var cached = pinSpreadCache[entry.comment.id];
+        if (!cached) {
+          allCached = false;
+          return;
+        }
+        // Reuse the last stable spread result (document coordinates).
+        entry.pos.leftPx = cached.leftPx;
+        entry.pos.topPx = cached.topPx;
+        entry.pos.clientX = cached.leftPx - window.scrollX;
+        entry.pos.clientY = cached.topPx - window.scrollY;
+      });
+      if (allCached) return entries;
+    }
+
+    if (entries.length < 2) {
+      pinSpreadCacheKey = cacheKey;
+      pinSpreadCache = {};
+      entries.forEach(function (entry) {
+        pinSpreadCache[entry.comment.id] = {
+          leftPx: entry.pos.leftPx,
+          topPx: entry.pos.topPx
+        };
+        entry.pos.clientX = entry.pos.leftPx - window.scrollX;
+        entry.pos.clientY = entry.pos.topPx - window.scrollY;
+      });
+      return entries;
+    }
+
     var MIN = 38; // px between pin centers
 
     // Group near-identical positions (same element / same legacy spot).
@@ -1335,13 +1389,11 @@
       idxs.forEach(function (entryIdx, i) {
         var entry = entries[entryIdx];
         if (idxs.length <= 8) {
-          // Horizontal/vertical stagger for small piles
           var col = i % 4;
           var row = Math.floor(i / 4);
           entry.pos.leftPx += (col - Math.min(idxs.length - 1, 3) / 2) * MIN;
           entry.pos.topPx += row * (MIN - 6);
         } else {
-          // Spiral fan for large piles
           var angle = (i / idxs.length) * Math.PI * 2;
           var radius = 22 + Math.floor(i / 10) * 30;
           entry.pos.leftPx += Math.cos(angle) * radius;
@@ -1370,9 +1422,18 @@
       }
     }
 
+    pinSpreadCacheKey = cacheKey;
+    pinSpreadCache = {};
     entries.forEach(function (entry) {
+      // Snap to whole pixels for stability across re-renders.
+      entry.pos.leftPx = Math.round(entry.pos.leftPx);
+      entry.pos.topPx = Math.round(entry.pos.topPx);
       entry.pos.clientX = entry.pos.leftPx - window.scrollX;
       entry.pos.clientY = entry.pos.topPx - window.scrollY;
+      pinSpreadCache[entry.comment.id] = {
+        leftPx: entry.pos.leftPx,
+        topPx: entry.pos.topPx
+      };
     });
     return entries;
   }
@@ -1723,6 +1784,8 @@
   }
 
   function renderPins() {
+    // Prevent MutationObserver/ResizeObserver from re-entering while we rebuild pins.
+    pausePinRelayout(200);
     pinLayer.innerHTML = '';
     if (!state.allPinsVisible) return;
 
@@ -1735,7 +1798,14 @@
       if (!pos) return;
       entries.push({
         comment: comment,
-        pos: pos,
+        pos: {
+          leftPx: pos.leftPx,
+          topPx: pos.topPx,
+          clientX: pos.clientX,
+          clientY: pos.clientY,
+          anchored: pos.anchored,
+          element: pos.element
+        },
         index: index
       });
     });
@@ -1767,15 +1837,23 @@
       if (pos.anchored) pin.setAttribute('data-anchored', 'true');
 
       pin.addEventListener('mouseenter', function (e) {
+        if (pinRelayoutPaused) return;
         showTooltip(comment, e.clientX, e.clientY);
       });
       pin.addEventListener('mousemove', function (e) {
+        if (pinRelayoutPaused) return;
         showTooltip(comment, e.clientX, e.clientY);
       });
       pin.addEventListener('mouseleave', hideTooltip);
-      pin.addEventListener('click', function (e) {
+      // Use pointerdown so the popover opens before any delayed relayout can
+      // destroy the pin mid-click (which previously looked like continuous shaking).
+      pin.addEventListener('pointerdown', function (e) {
+        if (e.button != null && e.button !== 0) return;
+        e.preventDefault();
         e.stopPropagation();
-        openThreadPopover(comment, pos.clientX, pos.clientY);
+        hideTooltip();
+        pausePinRelayout(500);
+        openThreadPopover(comment, e.clientX, e.clientY);
       });
 
       pinLayer.appendChild(pin);
@@ -1951,9 +2029,10 @@
   function onThreadOutsideClick(e) {
     var pop = document.getElementById('rv-thread-popover');
     if (!pop) {
-      document.removeEventListener('mousedown', onThreadOutsideClick, true);
+      document.removeEventListener('pointerdown', onThreadOutsideClick, true);
       return;
     }
+    if (e.button != null && e.button !== 0) return;
     if (pop.contains(e.target)) return;
     if (e.target.closest && (
       e.target.closest('.rv-pin') ||
@@ -1971,6 +2050,8 @@
   }
 
   function closeThreadPopover() {
+    document.removeEventListener('pointerdown', onThreadOutsideClick, true);
+    // Also clear legacy mousedown listener if an older build left one attached.
     document.removeEventListener('mousedown', onThreadOutsideClick, true);
     removeThreadPopoverEl();
     closeThreadBackdrop();
@@ -2134,6 +2215,7 @@
   }
 
   function openThreadPopover(comment, clientX, clientY) {
+    pausePinRelayout(600);
     closeDraftPopover();
     closeContextMenu();
     removeThreadPopoverEl();
@@ -2142,8 +2224,13 @@
 
     state.activeCommentId = comment.id;
     // Keep the comments drawer closed — Figma-style: pin click opens only the popover.
+    // Avoid full pin rebuild here (it caused shake loops); only refresh active styling.
     renderBar();
-    renderPins();
+    try {
+      pinLayer.querySelectorAll('.rv-pin').forEach(function (el) {
+        el.classList.toggle('active', el.getAttribute('data-comment-id') === comment.id);
+      });
+    } catch (e) {}
 
     var visibleCommentsList = visibleComments();
     var commentIndex = visibleCommentsList.findIndex(function (c) { return c.id === comment.id; });
@@ -2254,9 +2341,11 @@
     });
 
     // Close when clicking the page canvas (not the popover / pins / review chrome).
+    // Deferred so the same pointerdown that opened the popover does not immediately close it.
+    document.removeEventListener('pointerdown', onThreadOutsideClick, true);
     document.removeEventListener('mousedown', onThreadOutsideClick, true);
     setTimeout(function () {
-      document.addEventListener('mousedown', onThreadOutsideClick, true);
+      document.addEventListener('pointerdown', onThreadOutsideClick, true);
     }, 0);
 
     var toggleBtn = popover.querySelector('.rv-toggle-status');
@@ -2936,11 +3025,16 @@
       var fp = commentsFingerprint(state.comments);
       if (fp !== lastSyncFingerprint) {
         lastSyncFingerprint = fp;
-        renderAll();
-        refreshOpenThread();
-      } else {
-        renderPins();
+        // While a comment is open, refresh the thread only — do not rebuild pins
+        // (rebuilds were causing continuous pin shaking).
+        if (state.activeCommentId) {
+          renderBar();
+          refreshOpenThread();
+        } else {
+          renderAll();
+        }
       }
+      // No-op when fingerprint is unchanged — avoids pointless pin churn every 2s.
     }).catch(function () {
       state.connected = false;
       state.syncError = true;
@@ -3866,22 +3960,62 @@
   }
 
   var pinRelayoutTimer = null;
-  function schedulePinRelayout() {
+  function schedulePinRelayout(force) {
+    if (pinRelayoutPaused && !force) return;
+    // Never reshuffle pins while a comment popover is open — that caused the
+    // continuous shaking and blocked clicks from opening the box.
+    if (state.activeCommentId && !force) return;
+    if (document.getElementById('rv-thread-popover') && !force) return;
+
     if (pinRelayoutTimer) clearTimeout(pinRelayoutTimer);
     pinRelayoutTimer = setTimeout(function () {
       pinRelayoutTimer = null;
+      if (pinRelayoutPaused && !force) return;
+      if (state.activeCommentId && !force) return;
       renderPins();
       renderPendingPin();
-    }, 50);
+    }, 120);
+  }
+
+  function isReviewMutationNode(node) {
+    if (!node) return true;
+    if (node.nodeType === 3) node = node.parentElement;
+    if (!node || node.nodeType !== 1) return true;
+    if (node === pinLayer || node === root) return true;
+    if (node.classList && (
+      node.classList.contains('rv-pin') ||
+      node.classList.contains('rv-pin-layer') ||
+      node.classList.contains('rv-popover') ||
+      node.classList.contains('rv-interactive') ||
+      node.classList.contains('rv-toast') ||
+      node.classList.contains('rv-tooltip') ||
+      node.classList.contains('rv-context-menu') ||
+      node.classList.contains('rv-confirm') ||
+      node.classList.contains('rv-panel') ||
+      node.classList.contains('rv-panel-backdrop')
+    )) return true;
+    if (node.id && String(node.id).indexOf('rv-') === 0) return true;
+    if (node.closest && (
+      node.closest(REVIEW_UI_SELECTOR) ||
+      node.closest('.rv-pin-layer') ||
+      node.closest('#rv-thread-popover') ||
+      node.closest('#rv-popover') ||
+      node.closest('#rv-panel') ||
+      node.closest('#rv-root')
+    )) return true;
+    return false;
   }
 
   function startAnchorLayoutObservers() {
     window.addEventListener('resize', function () {
-      schedulePinRelayout();
+      // Viewport change invalidates spread cache.
+      pinSpreadCacheKey = '';
+      pinSpreadCache = {};
+      schedulePinRelayout(true);
       if (state.draft) renderDraftPopover();
       var openThread = document.getElementById('rv-thread-popover');
       if (openThread && threadPopoverPos) {
-        threadPopoverPos = positionPopover(openThread, threadPopoverPos, 0, 0, 420) || threadPopoverPos;
+        threadPopoverPos = positionPopover(openThread, threadPopoverPos, 0, 0, 360) || threadPopoverPos;
       }
     });
 
@@ -3895,61 +4029,70 @@
     if (typeof ResizeObserver !== 'undefined') {
       try {
         var resizeObserver = new ResizeObserver(function () {
+          // Ignore resize noise while interacting with comments.
+          if (pinRelayoutPaused || state.activeCommentId) return;
           schedulePinRelayout();
         });
+        // Observe documentElement only — observing body caused feedback when
+        // review UI nodes were added/removed.
         resizeObserver.observe(document.documentElement);
-        if (document.body) resizeObserver.observe(document.body);
       } catch (e) {}
     }
 
     if (typeof MutationObserver !== 'undefined' && document.body) {
       try {
         var mutationObserver = new MutationObserver(function (mutations) {
+          if (pinRelayoutPaused || state.activeCommentId) return;
           for (var i = 0; i < mutations.length; i++) {
             var m = mutations[i];
-            if (m.type === 'attributes' && m.target && m.target.closest &&
-                m.target.closest(REVIEW_UI_SELECTOR)) {
-              continue;
+            if (m.type === 'attributes') {
+              if (isReviewMutationNode(m.target)) continue;
+              schedulePinRelayout();
+              return;
             }
             if (m.type === 'childList') {
+              if (isReviewMutationNode(m.target)) continue;
               var nodes = [];
+              var a, r;
               if (m.addedNodes && m.addedNodes.length) {
-                for (var a = 0; a < m.addedNodes.length; a++) nodes.push(m.addedNodes[a]);
+                for (a = 0; a < m.addedNodes.length; a++) nodes.push(m.addedNodes[a]);
               }
               if (m.removedNodes && m.removedNodes.length) {
-                for (var r = 0; r < m.removedNodes.length; r++) nodes.push(m.removedNodes[r]);
+                for (r = 0; r < m.removedNodes.length; r++) nodes.push(m.removedNodes[r]);
               }
-              var onlyReviewUi = nodes.length > 0 && nodes.every(function (node) {
-                return node.nodeType === 1 && (
-                  (node.id && String(node.id).indexOf('rv-') === 0) ||
-                  (node.classList && (
-                    node.classList.contains('rv-pin') ||
-                    node.classList.contains('rv-interactive') ||
-                    node.classList.contains('rv-pin-layer')
-                  )) ||
-                  (node.closest && node.closest(REVIEW_UI_SELECTOR))
-                );
-              });
+              if (!nodes.length) continue;
+              var onlyReviewUi = nodes.every(isReviewMutationNode);
               if (onlyReviewUi) continue;
+              // Real page content changed — invalidate spread cache.
+              pinSpreadCacheKey = '';
+              pinSpreadCache = {};
+              schedulePinRelayout();
+              return;
             }
-            schedulePinRelayout();
-            return;
           }
         });
         mutationObserver.observe(document.body, {
           childList: true,
           subtree: true,
           attributes: true,
-          attributeFilter: ['class', 'style', 'hidden', 'aria-hidden']
+          attributeFilter: ['class', 'hidden', 'aria-hidden']
         });
       } catch (e) {}
     }
 
     // Fonts / late images can shift layout after first paint.
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(schedulePinRelayout).catch(function () {});
+      document.fonts.ready.then(function () {
+        pinSpreadCacheKey = '';
+        pinSpreadCache = {};
+        schedulePinRelayout(true);
+      }).catch(function () {});
     }
-    window.addEventListener('load', schedulePinRelayout);
+    window.addEventListener('load', function () {
+      pinSpreadCacheKey = '';
+      pinSpreadCache = {};
+      schedulePinRelayout(true);
+    });
   }
 
   startAnchorLayoutObservers();
@@ -3957,13 +4100,13 @@
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) {
       syncComments(true);
-      schedulePinRelayout();
+      if (!state.activeCommentId) schedulePinRelayout();
     }
   });
 
   window.addEventListener('focus', function () {
     syncComments(true);
-    schedulePinRelayout();
+    if (!state.activeCommentId) schedulePinRelayout();
   });
 
   } /* initReviewMode */
