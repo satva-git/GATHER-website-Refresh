@@ -1,6 +1,14 @@
 (function () {
   'use strict';
 
+  // Bump this whenever review.js changes — lets us confirm in the browser
+  // console (or via `fetch('/review/review.js').then(r=>r.text())`) exactly
+  // which build a given deployment is actually serving.
+  var REVIEW_JS_BUILD = '2026-07-19-0050-pin-shake-hardening';
+  if (window.console && console.info) {
+    console.info('[review.js] build ' + REVIEW_JS_BUILD);
+  }
+
   var SECTIONS_V1 = [
     { id: 'top', label: 'Hero / Top' },
     { id: 'product-journey', label: 'Product Journey' },
@@ -1332,6 +1340,53 @@
     }, typeof ms === 'number' ? ms : 150);
   }
 
+  // True whenever any comment UI overlay is open/in-progress. Pin rebuilds must
+  // never run while true — that is what caused the "shaking pin, click never
+  // opens the box" bug (a rebuild mid-click destroys the element being clicked
+  // and can tear down the popover that was just opened).
+  function isCommentUiBusy() {
+    return !!(
+      state.activeCommentId ||
+      state.draft ||
+      state.contextMenu ||
+      state.confirmOpen ||
+      document.getElementById('rv-thread-popover') ||
+      document.getElementById('rv-popover')
+    );
+  }
+
+  // Circuit breaker: renderPins() should never legitimately run twice within
+  // ~100ms of itself — the debounce below always spaces real relayouts out
+  // by at least 120ms. If it ever does happen (e.g. a future regression
+  // reintroduces a feedback loop, or calls renderPins() directly bypassing
+  // the debounce entirely), that is the exact signature of the "shaking pin"
+  // bug, so detect a short streak of unnaturally-fast renders and force a
+  // cool-down instead of shaking indefinitely. This lives inside renderPins()
+  // itself (not just the scheduler) so it applies no matter how a future
+  // code path ends up calling it. Safety net on top of the root-cause fixes,
+  // not a replacement for them.
+  var lastPinRenderAt = 0;
+  var fastRenderStreak = 0;
+  function tripBurstBreaker() {
+    var now = Date.now();
+    var delta = now - lastPinRenderAt;
+    lastPinRenderAt = now;
+    if (delta < 100) {
+      fastRenderStreak++;
+    } else {
+      fastRenderStreak = 0;
+    }
+    if (fastRenderStreak >= 3) {
+      fastRenderStreak = 0;
+      if (window.console && console.warn) {
+        console.warn('[review] pin relayout loop detected — pausing for 4s.');
+      }
+      pausePinRelayout(4000);
+      return true;
+    }
+    return false;
+  }
+
   function pinSpreadSignature(entries) {
     return entries.map(function (entry) {
       return entry.comment.id;
@@ -1784,6 +1839,9 @@
   }
 
   function renderPins() {
+    // Circuit breaker first: refuses to rebuild pins if that has somehow
+    // already happened in an unnaturally tight loop, regardless of call site.
+    if (tripBurstBreaker()) return;
     // Prevent MutationObserver/ResizeObserver from re-entering while we rebuild pins.
     pausePinRelayout(200);
     pinLayer.innerHTML = '';
@@ -3025,11 +3083,13 @@
       var fp = commentsFingerprint(state.comments);
       if (fp !== lastSyncFingerprint) {
         lastSyncFingerprint = fp;
-        // While a comment is open, refresh the thread only — do not rebuild pins
-        // (rebuilds were causing continuous pin shaking).
+        // While a comment/draft/menu is open, avoid a full pin rebuild — that is
+        // what caused continuous pin shaking and lost clicks.
         if (state.activeCommentId) {
           renderBar();
           refreshOpenThread();
+        } else if (isCommentUiBusy()) {
+          renderBar();
         } else {
           renderAll();
         }
@@ -3341,12 +3401,22 @@
   });
 
   var lastTabId = getCurrentTabId();
+  var pendingTabId = lastTabId;
   setInterval(function () {
     var currentTabId = getCurrentTabId();
+    // Require the same value on two consecutive ticks before acting, so a
+    // one-off flicker in which tab/panel looks "active" (e.g. mid-transition)
+    // can never force-close an open comment or trigger a render loop.
+    if (currentTabId !== pendingTabId) {
+      pendingTabId = currentTabId;
+      return;
+    }
     if (currentTabId !== lastTabId) {
       lastTabId = currentTabId;
       state.activeCommentId = null;
+      state.draft = null;
       closeThreadPopover();
+      closeDraftPopover();
       renderAll();
     }
   }, 300);
@@ -3962,16 +4032,15 @@
   var pinRelayoutTimer = null;
   function schedulePinRelayout(force) {
     if (pinRelayoutPaused && !force) return;
-    // Never reshuffle pins while a comment popover is open — that caused the
-    // continuous shaking and blocked clicks from opening the box.
-    if (state.activeCommentId && !force) return;
-    if (document.getElementById('rv-thread-popover') && !force) return;
+    // Never reshuffle pins while a comment popover/draft/menu is open — that
+    // caused the continuous shaking and blocked clicks from opening the box.
+    if (isCommentUiBusy() && !force) return;
 
     if (pinRelayoutTimer) clearTimeout(pinRelayoutTimer);
     pinRelayoutTimer = setTimeout(function () {
       pinRelayoutTimer = null;
       if (pinRelayoutPaused && !force) return;
-      if (state.activeCommentId && !force) return;
+      if (isCommentUiBusy() && !force) return;
       renderPins();
       renderPendingPin();
     }, 120);
@@ -4030,7 +4099,7 @@
       try {
         var resizeObserver = new ResizeObserver(function () {
           // Ignore resize noise while interacting with comments.
-          if (pinRelayoutPaused || state.activeCommentId) return;
+          if (pinRelayoutPaused || isCommentUiBusy()) return;
           schedulePinRelayout();
         });
         // Observe documentElement only — observing body caused feedback when
@@ -4042,7 +4111,7 @@
     if (typeof MutationObserver !== 'undefined' && document.body) {
       try {
         var mutationObserver = new MutationObserver(function (mutations) {
-          if (pinRelayoutPaused || state.activeCommentId) return;
+          if (pinRelayoutPaused || isCommentUiBusy()) return;
           for (var i = 0; i < mutations.length; i++) {
             var m = mutations[i];
             if (m.type === 'attributes') {
@@ -4097,16 +4166,26 @@
 
   startAnchorLayoutObservers();
 
+  // Test-only introspection hook. Inert unless a test harness pre-sets
+  // `window.__RV_TEST_HOOKS__` (an object) *before* this script runs — the
+  // production site never does this, so this has zero effect there.
+  if (window.__RV_TEST_HOOKS__) {
+    window.__RV_TEST_HOOKS__.renderPins = renderPins;
+    window.__RV_TEST_HOOKS__.schedulePinRelayout = schedulePinRelayout;
+    window.__RV_TEST_HOOKS__.isCommentUiBusy = isCommentUiBusy;
+    window.__RV_TEST_HOOKS__.getState = function () { return state; };
+  }
+
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) {
       syncComments(true);
-      if (!state.activeCommentId) schedulePinRelayout();
+      if (!isCommentUiBusy()) schedulePinRelayout();
     }
   });
 
   window.addEventListener('focus', function () {
     syncComments(true);
-    if (!state.activeCommentId) schedulePinRelayout();
+    if (!isCommentUiBusy()) schedulePinRelayout();
   });
 
   } /* initReviewMode */
