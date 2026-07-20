@@ -908,3 +908,107 @@ ul { list-style: none; }
   line-height: 1.55;
 }
 #integrations .sec-head .lead .lead-line { display: block; }
+
+/* Journey visual — click to zoom */
+.journey-visual-frame img.journey-zoomable {
+  cursor: zoom-in;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.journey-visual-frame img.journey-zoomable:hover {
+  opacity: 0.92;
+}
+.journey-visual-frame img.journey-zoomable:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+}
+
+.journey-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(10, 27, 48, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s var(--ease), visibility 0.22s var(--ease);
+}
+.journey-lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.journey-lightbox-dialog {
+  position: relative;
+  max-width: min(1288px, 98vw);
+  max-height: 98vh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  transform: scale(0.96);
+  transition: transform 0.22s var(--ease);
+}
+.journey-lightbox.is-open .journey-lightbox-dialog {
+  transform: scale(1);
+}
+.journey-lightbox-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(1288px, 98vw);
+  max-height: 96vh;
+  object-fit: contain;
+  border-radius: var(--r-md);
+  background: #fff;
+  box-shadow: 0 24px 64px rgba(10, 27, 48, 0.35);
+  cursor: zoom-out;
+}
+.journey-lightbox-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(10, 27, 48, 0.2);
+  transition: background-color 0.15s var(--ease), transform 0.15s var(--ease);
+  z-index: 1;
+}
+.journey-lightbox-close:hover {
+  background: var(--teal-tint);
+  transform: scale(1.05);
+}
+.journey-lightbox-close:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+body.journey-lightbox-open {
+  overflow: hidden;
+}
+@media (max-width: 640px) {
+  .journey-lightbox {
+    padding: 16px;
+  }
+  .journey-lightbox-close {
+    top: -10px;
+    right: -6px;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+}

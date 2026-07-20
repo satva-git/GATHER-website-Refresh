@@ -1,0 +1,29 @@
+{
+  "generated": "2026-07-20T10:08:40.103Z",
+  "base": "https://gather-nexus-review.onrender.com",
+  "width": 1440,
+  "scale": 2,
+  "quality": 92,
+  "files": [
+    {
+      "label": "Homepage",
+      "file": "01-homepage@1440w-2x.jpg",
+      "scrollHeight": 10120
+    },
+    {
+      "label": "Intercompany Control",
+      "file": "02-intercompany-control@1440w-2x.jpg",
+      "scrollHeight": 4488
+    },
+    {
+      "label": "Group Financial Reporting",
+      "file": "03-group-reporting@1440w-2x.jpg",
+      "scrollHeight": 5776
+    },
+    {
+      "label": "Group Financial Planning",
+      "file": "04-group-planning@1440w-2x.jpg",
+      "scrollHeight": 3717
+    }
+  ]
+}

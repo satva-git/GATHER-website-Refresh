@@ -17,6 +17,7 @@
     "share": "node scripts/share-public-link.mjs",
     "preview:static": "npm run sync && npx --yes serve . -l 3000",
     "figma:export": "node scripts/export-figma.js",
+    "screenshots:fullpage": "node scripts/export-fullpage-jpgs.mjs",
     "test": "node --test server/test/review-api.test.js server/test/comment-restore.e2e.test.js server/test/pin-shake.dom.test.js",
     "test:restore": "node --test server/test/comment-restore.e2e.test.js",
     "test:pins": "node --test server/test/pin-shake.dom.test.js",
