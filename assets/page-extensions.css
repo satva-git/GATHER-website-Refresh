@@ -81,6 +81,14 @@ ul { list-style: none; }
 .sec-head .eyebrow { justify-content: center; margin-bottom: 16px; }
 .sec-head .h2 { margin-bottom: 14px; }
 .sec-head .lead { max-width: 600px; margin: 0 auto; }
+.sec-head .lead a {
+  color: var(--teal-deep);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s var(--ease);
+}
+.sec-head .lead a:hover { color: var(--teal); }
 .sr { opacity: 0; transform: translateY(16px); transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
 .sr.in { opacity: 1; transform: none; }
 
@@ -260,6 +268,13 @@ ul { list-style: none; }
 #data-integrity .sec-head .h2 .h2-title-line {
   display: block;
 }
+
+#data-integrity .sec-head .lead {
+  max-width: 720px;
+  font-size: 17px;
+  line-height: 1.55;
+}
+#data-integrity .sec-head .lead .lead-line { display: block; }
 
 .unrivaled-data-integrity-box {
   margin: 0 auto;
@@ -564,6 +579,26 @@ ul { list-style: none; }
 .mod-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
 .mod-overview { padding: 72px 0; background: var(--paper); }
+.mod-overview .sec-head {
+  max-width: none;
+  width: 100%;
+  container-type: inline-size;
+  container-name: mod-overview-head;
+}
+.mod-overview .sec-head .lead.mod-overview-lead {
+  max-width: none;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.55;
+}
+.mod-overview .sec-head .lead.mod-overview-lead .lead-line {
+  display: block;
+}
+@container mod-overview-head (min-width: 1000px) {
+  .lead.mod-overview-lead .lead-line {
+    white-space: nowrap;
+  }
+}
 .mod-overview-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
 }
@@ -702,6 +737,14 @@ ul { list-style: none; }
 .gather-diff-proof p{
   font-size:13.5px;line-height:1.55;color:var(--text-mid);margin:0;
 }
+.gather-diff-proof p a{
+  color:var(--teal-deep);
+  font-weight:600;
+  text-decoration:underline;
+  text-underline-offset:2px;
+  transition:color 0.15s var(--ease);
+}
+.gather-diff-proof p a:hover{color:var(--teal)}
 .gather-diff-visual{
   background:#fff;
   border:1px solid var(--line);
@@ -852,3 +895,16 @@ ul { list-style: none; }
 /* Platform section styling */
 #platform { padding: 96px 0 !important; }
 #platform .wrap { padding-bottom: 80px !important; }
+
+/* Integrations section heading — keep to 2 lines */
+#integrations .sec-head .h2 {
+  font-size: clamp(28px, 3.1vw, 33px);
+  line-height: 1.15;
+}
+#integrations .sec-head .h2 .h2-title-line { display: block; }
+#integrations .sec-head .lead {
+  max-width: 720px;
+  font-size: 17px;
+  line-height: 1.55;
+}
+#integrations .sec-head .lead .lead-line { display: block; }

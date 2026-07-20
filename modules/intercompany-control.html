@@ -8,6 +8,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../assets/page-extensions.css"/>
+<style>
+  /* Overview lead: use full wrap width and lock to exactly 2 lines when space allows */
+  .mod-overview .sec-head {
+    max-width: none;
+    width: 100%;
+    container-type: inline-size;
+    container-name: mod-overview-head;
+  }
+  .mod-overview .sec-head .lead.mod-overview-lead {
+    max-width: none;
+    width: 100%;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .mod-overview .sec-head .lead.mod-overview-lead .lead-line { display: block; }
+  @container mod-overview-head (min-width: 1000px) {
+    .lead.mod-overview-lead .lead-line { white-space: nowrap; }
+  }
+</style>
 </head>
 <body>
 
@@ -29,8 +48,8 @@
   <div class="wrap mod-hero-grid">
     <div class="mod-hero-content sr">
       <div class="wf-pill">Module 01: Intercompany Control</div>
-      <h1 class="h1" data-rv-anchor="rv_fccba66e8e">Total intercompany visibility and control Across Your Group</h1>
-      <p class="lead">A central hub for managing intercompany activity across all Group entities. Eliminate manual reconciliation work, maintain full visibility of counterparty balances, and ensure intercompany relationships are always accurate and under control with our quadruple entry recharge engine.</p>
+      <h1 class="h1" data-rv-anchor="rv_fccba66e8e">Total intercompany visibility and control</h1>
+      <p class="lead">A central hub for managing intercompany activity. Eliminate manual reconciliation work, maintain full visibility of counterparty balances, and ensure intercompany relationships remain in balance with our quadruple entry recharge engine.</p>
       <div class="mod-hero-actions">
         <a href="../index.html#top" class="btn btn--primary">Start 30-Day Free Trial
           <svg class="a" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -55,13 +74,13 @@
   <div class="wrap">
     <div class="sec-head sr">
       <div class="eyebrow">Workflow Overview</div>
-      <h2 class="h2" data-rv-anchor="rv_21164f9136">Four Integrated Steps to Full Intercompany Control Confidence</h2>
-      <p class="lead">From centralised counterparty posting through real-time visibility and<br/>automated reconciliation to Validation of Consolidation Working Papers</p>
+      <h2 class="h2" data-rv-anchor="rv_21164f9136">Four integrated steps to total intercompany control</h2>
+      <p class="lead mod-overview-lead"><span class="lead-line">Centralised counterparty transaction posting and intercompany reconciliations with automatching; real time visibility</span><span class="lead-line">throughout the reporting period and consolidation working papers integration and validation</span></p>
     </div>
     <div class="mod-overview-grid">
       <div class="mod-overview-card sr sr-d1">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--teal);margin-bottom:12px"><path d="M12 2v20M2 12h20"/></svg>
-        <h4 data-rv-anchor="rv_03191f8599">Central Posting</h4>
+        <h4 data-rv-anchor="rv_03191f8599">Central Posting Hub</h4>
         <p>Quadruple entry posting engine to keep counterparties in balance. Syncs with Xero and QuickBooks in real time.</p>
       </div>
       <div class="mod-overview-card sr sr-d2">
@@ -72,12 +91,12 @@
       <div class="mod-overview-card sr sr-d3">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--teal);margin-bottom:12px"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
         <h4 data-rv-anchor="rv_bf98824740">Continuous Reconciliation</h4>
-        <p>Autoreconcile matching intercompany transactions, leaving errors, omissions and mismatches for further review and central correction.</p>
+        <p>Autoreconcile matching intercompany transactions, leaving errors, omissions and FX issues for further review and central correction.</p>
       </div>
       <div class="mod-overview-card sr sr-d4">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--teal);margin-bottom:12px"><path d="M9 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/><polyline points="13 2 13 9 20 9"/><polyline points="9 13 12 16 15 13"/></svg>
         <h4 data-rv-anchor="rv_a907f98c89">Working Papers Validation</h4>
-        <p>Validate reconciliation against consolidation working papers.</p>
+        <p>Validate intercompany reconciliation data against your consolidation working papers.</p>
       </div>
     </div>
   </div>
@@ -95,6 +114,7 @@
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Bulk approve proposed intercompany transactions</div>
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Handles 158 currencies with ease</div>
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Recharge by General Ledger code, vendor, customer, or tracking category</div>
+        <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Split Recharges and add flexible mark-ups and discounts</div>
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Full transaction audit trail and documentation</div>
       </div>
     </div>
@@ -125,9 +145,9 @@
 <section class="mod-step" id="step-visibility" data-rv-anchor="rv_474c3ba6cc">
   <div class="wrap mod-step-grid mod-step-grid--reverse">
     <div class="mod-step-content sr">
-      <div class="mod-step-badge"><span class="mod-step-badge-num">2</span> Step 2: Real Time In Month Visibility</div>
+      <div class="mod-step-badge"><span class="mod-step-badge-num">2</span> Step 2: Real Time Visibility of Counterparty Pairs</div>
       <h2 class="h2" data-rv-anchor="rv_963cc35223">Counterparty balance tracking</h2>
-      <p class="body">Keep track of intercompany balances across all entity with counterparty pairs in real time, not just at month end. Matrix and timeline views give finance teams instant visibility of in-month activity and outstanding balances.</p>
+      <p class="body">Keep track of the status of counterparty pairs in real time, not just at month end. Matrix and timeline views give finance teams instant visibility of in-month activity and outstanding balances.</p>
       <div class="mod-step-features">
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Matrix view - keep track of all the counterparty pairs in a Group by period</div>
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Timeline view: Keep track of individual counterparty balances across a series of time periods</div>
@@ -162,8 +182,8 @@
   <div class="wrap mod-step-grid">
     <div class="mod-step-content sr">
       <div class="mod-step-badge"><span class="mod-step-badge-num">3</span> Step 3: Continuous Reconciliation</div>
-      <h2 class="h2" data-rv-anchor="rv_65073e5afb">Continuous Intercompany Reconciliations with centralised correction posting</h2>
-      <p class="body">Automated intercompany reconciliation that runs continuously, not just at period close. Identify between counterparty pairs with full visibility of matched and unmatched items. Resolve errors, omissions or FX issues within GATHER and sync to Xero or QuickBooks.</p>
+      <h2 class="h2" data-rv-anchor="rv_65073e5afb">Continuous Reconciliations with centralised correction posting</h2>
+      <p class="body">Automated intercompany reconciliation that runs continuously, not just at period close. Identify issues arising between counterparty pairs with full visibility of matched and unmatched items. Resolve errors, omissions or FX issues within GATHER and sync to Xero or QuickBooks.</p>
       <div class="mod-step-features">
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Continuous automatching throughout the period</div>
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Full Matched and unmatched item visibility</div>
@@ -190,7 +210,7 @@
   <div class="wrap mod-step-grid mod-step-grid--reverse">
     <div class="mod-step-content sr">
       <div class="mod-step-badge"><span class="mod-step-badge-num">4</span> Step 4: Working Papers Validation</div>
-      <h2 class="h2" data-rv-anchor="rv_3f8551edaa">Validate your work with your Consolidation Working Papers</h2>
+      <h2 class="h2" data-rv-anchor="rv_3f8551edaa">Compare with your Consolidation Working Papers</h2>
       <p class="body">Validate intercompany reconciliation results against consolidation working papers, ensuring total alignment between intercompany counterparty status and group financial reporting before sign-off.</p>
       <div class="mod-step-features">
         <div class="mod-step-feature"><div class="check-ic" style="width:20px;height:20px;flex-shrink:0;background:var(--teal-tint);border:1px solid var(--teal-line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--teal)"><svg width="10" height="10" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Consolidation Working Papers cross-validation</div>

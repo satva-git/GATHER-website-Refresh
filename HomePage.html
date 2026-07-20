@@ -127,6 +127,8 @@ ul{list-style:none}
 .sec-head .eyebrow{justify-content:center;margin-bottom:16px}
 .sec-head .h2{margin-bottom:14px}
 .sec-head .lead{max-width:600px;margin:0 auto}
+.sec-head .lead a{color:var(--teal-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px;transition:color .15s var(--ease)}
+.sec-head .lead a:hover{color:var(--teal)}
 
 /* ============================================================
    BUTTONS
@@ -930,9 +932,11 @@ ul{list-style:none}
    PRICING
 ============================================================ */
 .pri-head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;margin-bottom:48px;flex-wrap:wrap}
-.pri-head-l{max-width:480px}
+.pri-head-l{flex:1 1 560px;max-width:min(780px,calc(100% - 180px))}
 .pri-head-l .lead{font-size:17px;line-height:1.5}
 .pri-head-l .h2{margin-bottom:10px;margin-top:14px}
+#pricing .pri-head-l .h2{font-size:clamp(30px,3.2vw,40px);line-height:1.14;letter-spacing:-.02em}
+#pricing .pri-head-l .h2 .h2-title-line{display:block}
 .pri-cta-row{display:flex;gap:10px;flex-wrap:wrap}
 
 .pri-currency-row{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:16px}
@@ -1192,6 +1196,10 @@ ul{list-style:none}
 }
 /* Integrations content section top padding tweak */
 #integrations .sec-head{margin-bottom:40px}
+#integrations .sec-head .h2{font-size:clamp(28px,3.1vw,33px);line-height:1.15}
+#integrations .sec-head .h2 .h2-title-line{display:block}
+#integrations .sec-head .lead{max-width:720px;font-size:17px;line-height:1.55}
+#integrations .sec-head .lead .lead-line{display:block}
 #integrations .int-content .h2{font-size:clamp(26px,3.2vw,40px)}
 /* Pricing section eyebrow-to-integrations connector */
 #pricing .sec-head{margin-bottom:40px}
@@ -1677,16 +1685,16 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
       <div class="gather-diff">
         <div class="gather-diff-intro sr in">
           <div class="wf-pill">The GATHER Difference</div>
-          <h2 class="h2" data-rv-anchor="rv_2d20fda694">A single structured, unified multi-entity workflow</h2>
-          <p class="lead">From Intercompany Control through Group Financial Reporting and Planning — fully integrated and underpinned by deep data validation and audit traceability at every step.</p>
+          <h2 class="h2" data-rv-anchor="rv_2d20fda694">A structured and unified workflow</h2>
+          <p class="lead">From Intercompany Control to Group Financial Reporting and Planning fully integrated and underpinned by deep data validation and audit traceability at every step.</p>
           <div class="gather-diff-proofs">
             <div class="gather-diff-proof sr sr-d1 in">
               <h4 data-rv-anchor="rv_703dba3b2d">Deep data validation built into every step</h4>
-              <p>FX in reserves calculations, intercompany elimination journals and full audit trails for review, not spreadsheet rebuilds.</p>
+              <p>FX in reserves backing calculations, intercompany elimination journals and manual topside journals - providing a permanent audit trail</p>
             </div>
             <div class="gather-diff-proof sr sr-d2 in">
-              <h4 data-rv-anchor="rv_6af77e27c9">Multi-entity, multi-currency</h4>
-              <p>Multi-level drill down for data validation and analysis built into our Working Papers and Reports</p>
+              <h4 data-rv-anchor="rv_6af77e27c9">Multi-level drill down right to the transaction level</h4>
+              <p>Multi-level drill down for data validation and analysis - built into our Working Papers and Reports</p>
             </div>
             <div class="gather-diff-proof sr sr-d3 in">
               <h4 data-rv-anchor="rv_9aa96a80d2">Multiple Groups from a single interface</h4>
@@ -1698,7 +1706,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
             </div>
             <div class="gather-diff-proof sr sr-d3 in">
               <h4>Native handling of complex consolidation scenarios</h4>
-              <p>No need to upload and download spreadsheets - GATHER handles the most complex consolidation scenarios natively. GATHER.nexus is your trusted System of Record - not a spreadsheet.</p>
+              <p>No need to upload and download spreadsheets - GATHER handles the most complex consolidation scenarios natively - meaning <a href="https://gather.nexus/">GATHER.nexus</a> is your trusted System of Record - not a spreadsheet.</p>
             </div>
           </div>
         </div>
@@ -1712,7 +1720,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                     <span class="gather-diff-step-num" aria-hidden="true">01</span>
                     <span class="gather-diff-step-body">
                       <span class="gather-diff-step-label">Intercompany Recharges</span>
-                      <span class="gather-diff-step-note">Our Central quadruple entry posting hub</span>
+                      <span class="gather-diff-step-note">Our Central quadruple entry posting hub, for Recharges with splits, mark-ups and discounts</span>
                     </span>
                   </a>
                 </li>
@@ -1729,7 +1737,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                   <a class="gather-diff-step-link" href="modules/intercompany-control.html#step-reconciliation">
                     <span class="gather-diff-step-num" aria-hidden="true">03</span>
                     <span class="gather-diff-step-body">
-                      <span class="gather-diff-step-label">Automated Intercompany Reconciliations</span>
+                      <span class="gather-diff-step-label">Intercompany Reconciliations with Automatching</span>
                       <span class="gather-diff-step-note">Identify and fix errors and omissions in real time</span>
                     </span>
                   </a>
@@ -1744,7 +1752,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                     <span class="gather-diff-step-num" aria-hidden="true">04</span>
                     <span class="gather-diff-step-body">
                       <span class="gather-diff-step-label">Group Reporting Template Mapping</span>
-                      <span class="gather-diff-step-note">Use industry standard templates or create your own!</span>
+                      <span class="gather-diff-step-note">Tailor our industry standard templates or create your own!</span>
                     </span>
                   </a>
                 </li>
@@ -1753,7 +1761,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                     <span class="gather-diff-step-num" aria-hidden="true">05</span>
                     <span class="gather-diff-step-body">
                       <span class="gather-diff-step-label">Automated Elimination Journals</span>
-                      <span class="gather-diff-step-note">Group level journals with full audit traceability, including backing calculations of FX differences in reserves</span>
+                      <span class="gather-diff-step-note">Group level consolidation journals with full audit traceability, including backing calculations of FX differences in reserves</span>
                     </span>
                   </a>
                 </li>
@@ -1761,8 +1769,8 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                   <a class="gather-diff-step-link" href="modules/group-reporting.html#step-working-papers">
                     <span class="gather-diff-step-num" aria-hidden="true">06</span>
                     <span class="gather-diff-step-body">
-                      <span class="gather-diff-step-label">Working Papers</span>
-                      <span class="gather-diff-step-note">Drill down for data validation</span>
+                      <span class="gather-diff-step-label">Working Papers Hub</span>
+                      <span class="gather-diff-step-note">Review your consolidation Working Papers, with multi-level drill down to transaction level</span>
                     </span>
                   </a>
                 </li>
@@ -1793,8 +1801,8 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                   <a class="gather-diff-step-link" href="modules/group-planning.html">
                     <span class="gather-diff-step-num" aria-hidden="true">09</span>
                     <span class="gather-diff-step-body">
-                      <span class="gather-diff-step-label">Planning</span>
-                      <span class="gather-diff-step-note">Divisional and functional budgets, with Group level roll-ups and Actuals vs Budget Reporting - with multi-level drill down</span>
+                      <span class="gather-diff-step-label">Collaborative Group Budgets</span>
+                      <span class="gather-diff-step-note">Divisional and functional budgets, with Group level roll-ups and Actuals vs Budget Reporting - with multi-level drill down for speedy variance analysis</span>
                     </span>
                   </a>
                 </li>
@@ -1803,7 +1811,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
           </div>
           <p class="gather-diff-spine-foot" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-            One single structured, unified workflow
+            A structured and unified workflow
           </p>
         </div>
       </div>
@@ -1816,9 +1824,9 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
       <div class="sec-head sr">
         <div class="eyebrow">Working Papers</div>
         <h2 class="h2" data-rv-anchor="rv_c025790e83">
-          <span class="h2-title-line">Unrivaled Data: From Group Financials to Individual Transactions</span>
+          <span class="h2-title-line">Unrivaled Data Integrity: From Group Financials to Individual Transactions</span>
         </h2>
-        <p class="lead">Don't settle for "black box" reports. GATHER.nexus features a unique rapid drill-down functionality that ensures total validation.</p>
+        <p class="lead"><span class="lead-line">Don't settle for "black box" reports. <a href="https://gather.nexus/">GATHER.nexus</a> features a unique rapid drill-down</span><span class="lead-line">functionality that ensures total validation and audit traceability.</span></p>
       </div>
 
       <div class="unrivaled-data-integrity-box">
@@ -1843,7 +1851,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
             <span class="step-arrow">→</span>
             <div class="step-item step-active">
               <span class="step-dot"></span>
-              <span>Full audit traceability</span>
+              <span>Individual transactions</span>
             </div>
           </div>
 
@@ -1897,7 +1905,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                 </span>
                 <div class="card-content">
                   <p class="card-title">Group Level Eliminations and Adjustments</p>
-                  <p class="card-desc">A permanent audit trail of consolidation journals for intercompany eliminations and topside adjustments such as reclassifications and GAAP adjustments.</p>
+                  <p class="card-desc">A permanent audit trail of intercompany elimination journals and topside adjustments such as reclassifications and GAAP adjustments.</p>
                 </div>
               </div>
               <span class="level-badge">ELIMINATIONS &amp; ADJUSTMENTS</span>
@@ -1995,7 +2003,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
           <!-- Summary Box -->
           <div class="summary-box">
             <div class="summary-stat">
-              <span class="stat-number">6 levels</span>
+              <span class="stat-number">5 levels</span>
               <span class="stat-sub">in seconds</span>
             </div>
             <div class="summary-text">
@@ -2022,8 +2030,11 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   <div class="wrap">
     <div class="sec-head sr">
       <div class="eyebrow">For Xero and QuickBooks</div>
-      <h2 class="h2" data-rv-anchor="rv_e415bfd562">Plug in your existing Accounting System<br><span class="accent">No migration needed.</span></h2>
-      <p class="lead">GATHER connects to Xero and QuickBooks with a single click, accounting software syncing data across all your legal entities into one system of record.</p>
+      <h2 class="h2" data-rv-anchor="rv_e415bfd562">
+        <span class="h2-title-line">Plug in your existing Accounting System</span>
+        <span class="h2-title-line"><span class="accent">No migration needed.</span></span>
+      </h2>
+      <p class="lead"><span class="lead-line">GATHER connects to Xero and QuickBooks accounting software with a single click,</span><span class="lead-line">syncing data across all your legal entities into one system of record.</span></p>
     </div>
   </div>
   <div class="wrap int-grid" id="intCarousel">
@@ -2081,11 +2092,8 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
     <div class="pri-head sr">
       <div class="pri-head-l">
         <div class="eyebrow">Pricing</div>
-        <h2 class="h2" style="margin-top:10px" data-rv-anchor="rv_72001af8f2">Only Pay for the Modules and Groups You Manage.</h2>
-        <p class="lead" style="margin-top:6px">Simple Monthly Pricing<br>Per-module subscription with unlimited companies per group. All plans include a 30-day free trial.</p>
-      </div>
-      <div class="pri-cta-row">
-        <a href="https://app.gather.nexus/auth/user/signup" class="btn btn--primary">Start free trial</a>
+        <h2 class="h2" style="margin-top:10px" data-rv-anchor="rv_72001af8f2"><span class="h2-title-line">Simple straightforward monthly pricing.</span><span class="h2-title-line">Only pay for the modules you use and the number of Groups you manage</span></h2>
+        <p class="lead" style="margin-top:6px">Per-module subscription with unlimited companies per Group. All plans include a 30-day free trial.</p>
       </div>
     </div>
 
@@ -2203,7 +2211,6 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
         <li><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>30-day free trial, no credit card required</li>
         <li><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>One-click Xero &amp; QuickBooks connection</li>
         <li><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Cancel anytime, 14 days notice</li>
-        <li><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Join Our Growing Group of Finance Teams and Fractional CFOs.</li>
       </ul>
       <div class="btns">
         <a href="#" class="btn btn--primary">Start 30-Day Free Trial
