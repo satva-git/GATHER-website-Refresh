@@ -20,11 +20,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'exports', 'fullpage-jpgs');
 
+/** Module / standalone pages (full page once each). */
 const PAGES = [
-  { slug: '01-homepage', path: '/index.html', label: 'Homepage' },
   { slug: '02-intercompany-control', path: '/modules/intercompany-control.html', label: 'Intercompany Control' },
   { slug: '03-group-reporting', path: '/modules/group-reporting.html', label: 'Group Financial Reporting' },
   { slug: '04-group-planning', path: '/modules/group-planning.html', label: 'Group Financial Planning' }
+];
+
+/**
+ * Homepage product-journey tabs — each captured as its own full-page JPG
+ * so every tab state is visible for review.
+ */
+const JOURNEY_TABS = [
+  { slug: '01-homepage-tab-01-overview', key: 'overview', label: 'Homepage — Tab 01 Platform overview' },
+  { slug: '01-homepage-tab-02-solution', key: 'solution', label: 'Homepage — Tab 02 One unified workflow' },
+  { slug: '01-homepage-tab-03-intercompany', key: 'intercompany', label: 'Homepage — Tab 03 Intercompany control' },
+  { slug: '01-homepage-tab-04-reporting', key: 'reporting', label: 'Homepage — Tab 04 Group Financial Reporting' },
+  { slug: '01-homepage-tab-05-planning', key: 'planning', label: 'Homepage — Tab 05 Planning & variance' }
 ];
 
 function parseArgs(argv) {
@@ -121,6 +133,17 @@ async function preparePage(page) {
   await new Promise((r) => setTimeout(r, 500));
 }
 
+async function activateJourneyTab(page, tabKey) {
+  const selector = `#journey-tab-${tabKey}, [data-journey="${tabKey}"]`;
+  await page.waitForSelector(selector, { timeout: 15000 });
+  await page.click(selector);
+  await page.waitForSelector(`#journey-panel-${tabKey}.is-active, [data-journey-panel="${tabKey}"].is-active`, {
+    timeout: 10000
+  });
+  // Let panel image / layout settle
+  await new Promise((r) => setTimeout(r, 400));
+}
+
 async function captureOne(browser, base, pageDef, opts) {
   const url = new URL(pageDef.path, base).toString();
   const context = await browser.newContext({
@@ -133,6 +156,11 @@ async function captureOne(browser, base, pageDef, opts) {
   console.log(`    ${url}`);
 
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
+
+  if (pageDef.journeyTab) {
+    await activateJourneyTab(page, pageDef.journeyTab);
+  }
+
   await preparePage(page);
 
   const metrics = await page.evaluate(() => ({
@@ -175,22 +203,28 @@ async function main() {
   const { chromium } = await loadPlaywright();
   const browser = await chromium.launch({ headless: true });
 
+  const homepageTabPages = JOURNEY_TABS.map((tab) => ({
+    slug: tab.slug,
+    path: '/index.html',
+    label: tab.label,
+    journeyTab: tab.key
+  }));
+  const allPages = [...homepageTabPages, ...PAGES];
+
   const results = [];
   try {
-    for (const pageDef of PAGES) {
+    for (const pageDef of allPages) {
       results.push(await captureOne(browser, args.base, pageDef, args));
     }
 
     if (args.mobile) {
       const mobileOpts = { ...args, width: 390, scale: Math.max(2, args.scale) };
-      for (const pageDef of PAGES) {
+      for (const pageDef of allPages) {
         const mobileDef = {
           ...pageDef,
-          slug: pageDef.slug.replace(/^\d+-/, (m) => m) + '-mobile',
+          slug: pageDef.slug + '-mobile',
           label: `${pageDef.label} (mobile)`
         };
-        // cleaner slug
-        mobileDef.slug = pageDef.slug + '-mobile';
         results.push(await captureOne(browser, args.base, mobileDef, mobileOpts));
       }
     }

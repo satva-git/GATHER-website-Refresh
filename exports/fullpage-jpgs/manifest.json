@@ -1,14 +1,34 @@
 {
-  "generated": "2026-07-20T10:08:40.103Z",
-  "base": "https://gather-nexus-review.onrender.com",
+  "generated": "2026-07-20T11:05:17.862Z",
+  "base": "http://127.0.0.1:3000",
   "width": 1440,
   "scale": 2,
   "quality": 92,
   "files": [
     {
-      "label": "Homepage",
-      "file": "01-homepage@1440w-2x.jpg",
-      "scrollHeight": 10120
+      "label": "Homepage — Tab 01 Platform overview",
+      "file": "01-homepage-tab-01-overview@1440w-2x.jpg",
+      "scrollHeight": 10068
+    },
+    {
+      "label": "Homepage — Tab 02 One unified workflow",
+      "file": "01-homepage-tab-02-solution@1440w-2x.jpg",
+      "scrollHeight": 10068
+    },
+    {
+      "label": "Homepage — Tab 03 Intercompany control",
+      "file": "01-homepage-tab-03-intercompany@1440w-2x.jpg",
+      "scrollHeight": 10068
+    },
+    {
+      "label": "Homepage — Tab 04 Group Financial Reporting",
+      "file": "01-homepage-tab-04-reporting@1440w-2x.jpg",
+      "scrollHeight": 10068
+    },
+    {
+      "label": "Homepage — Tab 05 Planning & variance",
+      "file": "01-homepage-tab-05-planning@1440w-2x.jpg",
+      "scrollHeight": 10068
     },
     {
       "label": "Intercompany Control",

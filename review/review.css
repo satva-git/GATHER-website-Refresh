@@ -678,23 +678,24 @@ body.rv-add-mode select {
 
 .rv-popover {
   position: fixed;
-  width: min(360px, calc(100vw - 24px));
+  width: min(288px, calc(100vw - 24px));
   max-height: calc(100vh - 84px);
   background: var(--rv-paper);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: 0 10px 32px rgba(10, 27, 48, 0.18), 0 2px 8px rgba(10, 27, 48, 0.08);
   z-index: 100001;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  animation: rv-pop-in 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: rv-pop-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-/* Compact controls inside the comment popover (~12–15% smaller) */
+/* Compact controls inside the comment popover */
 .rv-popover .rv-btn {
   font-size: 12px;
-  padding: 8px 12px;
+  padding: 7px 11px;
+  min-height: 32px;
 }
 
 .rv-popover.rv-dragging {
@@ -710,6 +711,362 @@ body.rv-add-mode select {
 
 .rv-popover.rv-dragging .rv-popover-head {
   cursor: grabbing;
+}
+
+/* Compact composer + thread chrome */
+.rv-popover--composer,
+.rv-popover--compact {
+  width: min(280px, calc(100vw - 20px));
+}
+
+.rv-composer-head,
+.rv-popover-head--compact {
+  padding: 8px 10px;
+  gap: 6px;
+  background: #f7faf9;
+  border-bottom: 1px solid rgba(51, 65, 90, 0.08);
+}
+
+.rv-composer-title {
+  min-width: 0;
+  flex: 1;
+}
+
+.rv-composer-title strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--rv-ink);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.rv-composer-meta {
+  display: block;
+  margin-top: 1px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rv-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rv-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.rv-icon-btn {
+  appearance: none;
+  border: none;
+  background: rgba(51, 65, 90, 0.07);
+  color: var(--rv-muted);
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.rv-icon-btn:hover {
+  background: rgba(51, 65, 90, 0.12);
+  color: var(--rv-ink);
+}
+
+.rv-icon-btn--resolve:hover,
+.rv-icon-btn--resolve.is-resolved {
+  background: var(--rv-teal-tint);
+  color: var(--rv-teal-2);
+}
+
+.rv-icon-btn--more[aria-expanded="true"],
+.rv-icon-btn--more:focus-visible {
+  background: rgba(51, 65, 90, 0.14);
+  color: var(--rv-ink);
+}
+
+.rv-composer-form {
+  padding: 8px 10px 10px !important;
+  overflow: visible !important;
+}
+
+.rv-composer-name {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.rv-composer-name input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 12.5px;
+  border: 1px solid var(--rv-line);
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: var(--rv-ink);
+  background: #fbfcfd;
+  min-height: 34px;
+}
+
+.rv-composer-name input:focus {
+  outline: none;
+  border-color: var(--rv-teal);
+  box-shadow: 0 0 0 3px var(--rv-teal-tint);
+  background: #fff;
+}
+
+.rv-composer-byline {
+  appearance: none;
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--rv-muted);
+  padding: 0 2px 6px;
+  cursor: pointer;
+}
+
+.rv-composer-byline strong {
+  color: var(--rv-ink);
+  font-weight: 650;
+}
+
+.rv-composer-byline:hover strong {
+  color: var(--rv-teal-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rv-composer-box {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  background: #f4f7f9;
+  border: 1px solid var(--rv-line);
+  border-radius: 18px;
+  padding: 4px 4px 4px 12px;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.rv-composer-box:focus-within {
+  background: #fff;
+  border-color: var(--rv-teal);
+  box-shadow: 0 0 0 3px var(--rv-teal-tint);
+}
+
+.rv-composer-box textarea {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  resize: none;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--rv-ink);
+  padding: 7px 8px 7px 0 !important;
+  min-height: 36px;
+  max-height: 120px;
+  border-radius: 0 !important;
+}
+
+.rv-composer-box textarea:disabled {
+  opacity: 0.65;
+}
+
+.rv-send-btn {
+  appearance: none;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: var(--rv-ink);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.15s ease;
+  padding: 0;
+}
+
+.rv-send-btn:hover:not(:disabled) {
+  background: var(--rv-teal-2);
+  transform: translateY(-1px);
+}
+
+.rv-send-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.rv-composer-hint {
+  margin-top: 6px;
+  font-size: 10.5px;
+  color: var(--rv-muted);
+  letter-spacing: 0.01em;
+}
+
+.rv-overflow-menu {
+  position: fixed;
+  min-width: 148px;
+  background: #1f2937;
+  color: #fff;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.28);
+  z-index: 100020;
+  animation: rv-pop-in 0.16s ease both;
+}
+
+.rv-overflow-item {
+  appearance: none;
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 550;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.rv-overflow-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rv-overflow-item--danger {
+  color: #fca5a5;
+}
+
+.rv-thread-author-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.rv-thread-author-meta {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.rv-thread-author-meta strong {
+  font-size: 12.5px;
+  color: var(--rv-ink);
+  line-height: 1.2;
+}
+
+.rv-thread-author-meta .rv-card-time {
+  margin: 0;
+  font-size: 11px;
+}
+
+.rv-popover-avatar--sm {
+  width: 24px;
+  height: 24px;
+  font-size: 10px;
+}
+
+.rv-edit-pill {
+  appearance: none;
+  border: none;
+  background: #111827;
+  color: #fff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  flex-shrink: 0;
+  min-height: 26px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+}
+
+.rv-edit-pill:hover {
+  background: #0f172a;
+}
+
+.rv-reply-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--rv-line);
+  padding-top: 8px !important;
+  margin-top: 2px;
+}
+
+.rv-reply-avatar {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--rv-accent, var(--rv-teal));
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.rv-reply-composer .rv-composer-box {
+  flex: 1;
+  min-width: 0;
+}
+
+.rv-reply-composer .rv-composer-box textarea {
+  min-height: 34px;
+  max-height: 96px;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+.rv-popover--compact .rv-thread-body {
+  padding: 8px 10px 10px;
+}
+
+.rv-popover--compact .rv-thread-comment {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.rv-popover--compact .rv-thread-replies {
+  padding-top: 6px;
+  margin-bottom: 6px;
+}
+
+.rv-popover--compact .rv-thread-actions,
+.rv-popover--compact .rv-thread-danger {
+  display: none;
 }
 
 @keyframes rv-pop-in {

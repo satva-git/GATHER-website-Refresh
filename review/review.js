@@ -4,7 +4,7 @@
   // Bump this whenever review.js changes — lets us confirm in the browser
   // console (or via `fetch('/review/review.js').then(r=>r.text())`) exactly
   // which build a given deployment is actually serving.
-  var REVIEW_JS_BUILD = '2026-07-19-0050-pin-shake-hardening';
+  var REVIEW_JS_BUILD = '2026-07-20-compact-composer';
   if (window.console && console.info) {
     console.info('[review.js] build ' + REVIEW_JS_BUILD);
   }
@@ -265,10 +265,14 @@
   var LS_KEY = 'rv-offline-' + reviewToken;
   var LS_BAK_KEY = 'rv-offline-bak-' + reviewToken;
   var LS_DELETED_KEY = 'rv-deleted-' + reviewToken;
+  var LS_COMPOSER_KEY = 'rv-composer-draft-' + reviewToken;
+  var LS_REPLY_DRAFT_KEY = 'rv-reply-drafts-' + reviewToken;
   var LS_USER_KEY = 'rv-user-id';
   var flushInFlight = false;
   var restoredFromBackupNotice = false;
   var beforeUnloadBound = false;
+  var composerDraftTimer = null;
+  var replyDraftTimer = null;
 
   function getOrCreateUserId() {
     try {
@@ -296,13 +300,142 @@
     if (beforeUnloadBound) return;
     beforeUnloadBound = true;
     window.addEventListener('beforeunload', function (e) {
-      if (!isOfflineMode) return;
-      if (!state.comments || !state.comments.length) return;
-      var message = 'Only saved locally. Comments may be lost if you close this tab.';
+      captureDraftFormValues();
+      persistComposerDraftNow();
+      captureOpenReplyDraft();
+      var hasUnsavedComposer = hasPersistedComposerText();
+      var offlineComments = isOfflineMode && state.comments && state.comments.length;
+      if (!hasUnsavedComposer && !offlineComments) return;
+      var message = hasUnsavedComposer
+        ? 'You have an unsaved comment draft. It is kept in this browser, but stay on the page until it is posted.'
+        : 'Only saved locally. Comments may be lost if you close this tab.';
       e.preventDefault();
       e.returnValue = message;
       return message;
     });
+  }
+
+  function hasPersistedComposerText() {
+    try {
+      var raw = localStorage.getItem(LS_COMPOSER_KEY);
+      if (!raw) return !!(state.draft && state.draft.body && String(state.draft.body).length);
+      var parsed = JSON.parse(raw);
+      return !!(parsed && parsed.draft && typeof parsed.draft.body === 'string' && parsed.draft.body.length);
+    } catch (err) {
+      return !!(state.draft && state.draft.body && String(state.draft.body).length);
+    }
+  }
+
+  function loadComposerDraft() {
+    try {
+      var raw = localStorage.getItem(LS_COMPOSER_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (!parsed || !parsed.draft) return null;
+      if (parsed.pagePath && parsed.pagePath !== PAGE_PATH) return null;
+      return parsed;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function persistComposerDraftNow() {
+    if (!state.draft) return;
+    var body = state.draft.body != null ? String(state.draft.body) : '';
+    var author = state.draft.author != null ? String(state.draft.author) : getStoredName();
+    if (!body.length && !author.length) {
+      clearComposerDraft();
+      return;
+    }
+    try {
+      localStorage.setItem(LS_COMPOSER_KEY, JSON.stringify({
+        savedAt: new Date().toISOString(),
+        pagePath: PAGE_PATH,
+        draft: {
+          clientX: state.draft.clientX,
+          clientY: state.draft.clientY,
+          sectionId: state.draft.sectionId,
+          sectionLabel: state.draft.sectionLabel,
+          tabId: state.draft.tabId,
+          scrollY: state.draft.scrollY,
+          pinX: state.draft.pinX,
+          pinY: state.draft.pinY,
+          anchor: state.draft.anchor || null,
+          author: author,
+          body: body
+        }
+      }));
+    } catch (err) {}
+  }
+
+  function scheduleComposerDraftPersist() {
+    clearTimeout(composerDraftTimer);
+    composerDraftTimer = setTimeout(persistComposerDraftNow, 120);
+  }
+
+  function clearComposerDraft() {
+    clearTimeout(composerDraftTimer);
+    composerDraftTimer = null;
+    try { localStorage.removeItem(LS_COMPOSER_KEY); } catch (err) {}
+  }
+
+  function loadReplyDrafts() {
+    try {
+      var raw = localStorage.getItem(LS_REPLY_DRAFT_KEY);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (err) {
+      return {};
+    }
+  }
+
+  function persistReplyDraft(commentId, text) {
+    if (!commentId) return;
+    try {
+      var all = loadReplyDrafts();
+      if (text && String(text).length) all[commentId] = String(text);
+      else delete all[commentId];
+      localStorage.setItem(LS_REPLY_DRAFT_KEY, JSON.stringify(all));
+    } catch (err) {}
+  }
+
+  function scheduleReplyDraftPersist(commentId, text) {
+    clearTimeout(replyDraftTimer);
+    replyDraftTimer = setTimeout(function () {
+      persistReplyDraft(commentId, text);
+    }, 120);
+  }
+
+  function captureDraftFormValues() {
+    var pop = document.getElementById('rv-popover');
+    if (!pop || !state.draft) return;
+    var authorEl = pop.querySelector('[name="author"]');
+    var bodyEl = pop.querySelector('[name="body"]');
+    if (authorEl) state.draft.author = authorEl.value;
+    if (bodyEl) state.draft.body = bodyEl.value;
+  }
+
+  function captureOpenReplyDraft() {
+    var pop = document.getElementById('rv-thread-popover');
+    if (!pop || !state.activeCommentId) return;
+    var replyEl = pop.querySelector('.rv-reply-form [name="body"], .rv-reply-composer [name="body"]');
+    if (replyEl) persistReplyDraft(state.activeCommentId, replyEl.value);
+  }
+
+  function isBlankCommentText(value) {
+    // Allow any non-whitespace character (including ".") — only reject empty / whitespace-only.
+    return !String(value == null ? '' : value).trim().length;
+  }
+
+  function composerIcons() {
+    return {
+      send: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5M12 5l-6 6M12 5l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      more: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>',
+      check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      close: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+      link: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2"/></svg>'
+    };
   }
 
   function lsLoad() {
@@ -569,7 +702,11 @@
   function flushPendingComments() {
     if (isOfflineMode || flushInFlight) return Promise.resolve();
     var pending = state.comments.filter(function (c) { return c && c._pendingSync; });
-    if (!pending.length) return Promise.resolve();
+    var pendingReplyParents = state.comments.filter(function (c) {
+      if (!c || c._pendingSync) return false;
+      return (c.replies || []).some(function (r) { return r && r._pendingSync === 'create'; });
+    });
+    if (!pending.length && !pendingReplyParents.length) return Promise.resolve();
 
     flushInFlight = true;
     var chain = Promise.resolve();
@@ -624,6 +761,34 @@
           upsertComment(data.comment);
           if (wasActive) state.activeCommentId = data.comment.id;
         }).catch(function () {});
+      });
+    });
+
+    pendingReplyParents.forEach(function (comment) {
+      chain = chain.then(function () {
+        var current = getComment(comment.id);
+        if (!current || !current.replies) return;
+        var replyChain = Promise.resolve();
+        current.replies.forEach(function (reply, idx) {
+          if (!reply || reply._pendingSync !== 'create') return;
+          replyChain = replyChain.then(function () {
+            return apiJson('/api/comments/' + encodeURIComponent(current.id) + '/replies', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ authorName: reply.authorName, body: reply.body })
+            }).then(function (data) {
+              var latest = getComment(current.id);
+              if (!latest || !latest.replies) return;
+              if (data && data.reply) {
+                latest.replies[idx] = data.reply;
+              } else if (latest.replies[idx]) {
+                delete latest.replies[idx]._pendingSync;
+              }
+              persistLocalBackup();
+            }).catch(function () {});
+          });
+        });
+        return replyChain;
       });
     });
 
@@ -2071,7 +2236,11 @@
     if (existing) existing.remove();
   }
 
-  function closeDraftPopover() {
+  function closeDraftPopover(options) {
+    options = options || {};
+    captureDraftFormValues();
+    if (options.discard) clearComposerDraft();
+    else persistComposerDraftNow();
     removeDraftPopoverEl();
     state.draft = null;
     draftPopoverPos = null;
@@ -2080,8 +2249,24 @@
   }
 
   function removeThreadPopoverEl() {
+    captureOpenReplyDraft();
+    closeThreadOverflowMenu();
     var existing = document.getElementById('rv-thread-popover');
     if (existing) existing.remove();
+  }
+
+  function closeThreadOverflowMenu() {
+    var menu = document.getElementById('rv-thread-menu');
+    if (menu) menu.remove();
+    document.removeEventListener('pointerdown', onThreadMenuOutside, true);
+  }
+
+  function onThreadMenuOutside(e) {
+    var menu = document.getElementById('rv-thread-menu');
+    if (!menu) return;
+    if (menu.contains(e.target)) return;
+    if (e.target.closest && e.target.closest('.rv-icon-btn--more')) return;
+    closeThreadOverflowMenu();
   }
 
   function onThreadOutsideClick(e) {
@@ -2097,6 +2282,7 @@
       e.target.closest('#rv-panel') ||
       e.target.closest('#rv-confirm') ||
       e.target.closest('.rv-context-menu') ||
+      e.target.closest('#rv-thread-menu') ||
       e.target.closest('#rv-root')
     )) return;
 
@@ -2150,6 +2336,26 @@
     var section = nearestSection(clientY);
     var tabId = getTabIdForPoint(clientX, clientY);
     var anchor = createAnchorFromPoint(clientX, clientY, section.id);
+    var saved = loadComposerDraft();
+    var restoredBody = '';
+    var restoredAuthor = getStoredName();
+    var restoredFromStorage = false;
+
+    // Never lose in-progress text: carry forward any stashed composer draft on this page.
+    if (saved && saved.draft) {
+      if (typeof saved.draft.body === 'string' && saved.draft.body.length) {
+        restoredBody = saved.draft.body;
+        restoredFromStorage = true;
+      }
+      if (typeof saved.draft.author === 'string' && saved.draft.author.length) {
+        restoredAuthor = saved.draft.author;
+      }
+    }
+    if (state.draft && typeof state.draft.body === 'string' && state.draft.body.length) {
+      restoredBody = state.draft.body;
+      if (state.draft.author) restoredAuthor = state.draft.author;
+      restoredFromStorage = false;
+    }
 
     state.draft = {
       clientX: clientX,
@@ -2161,63 +2367,139 @@
       pinX: clientX / docWidth,
       pinY: (window.scrollY + clientY) / height,
       // Element anchor is the source of truth for pin placement.
-      anchor: anchor
+      anchor: anchor,
+      author: restoredAuthor,
+      body: restoredBody
     };
 
     state.activeCommentId = null;
+    if (restoredFromStorage) {
+      showToast('Restored your unsaved draft.');
+    }
     renderAll();
   }
 
+  function bindComposerAutosave(form, bodyField, authorField) {
+    function syncAndPersist() {
+      if (!state.draft) return;
+      if (authorField) state.draft.author = authorField.value;
+      if (bodyField) state.draft.body = bodyField.value;
+      scheduleComposerDraftPersist();
+    }
+    if (bodyField) {
+      bodyField.addEventListener('input', syncAndPersist);
+      bodyField.addEventListener('change', syncAndPersist);
+    }
+    if (authorField) {
+      authorField.addEventListener('input', syncAndPersist);
+      authorField.addEventListener('change', syncAndPersist);
+    }
+    form.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        if (!state.submitting) form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }
+    });
+  }
+
   function renderDraftPopover() {
+    captureDraftFormValues();
     removeDraftPopoverEl();
     if (!state.draft) return;
 
+    var icons = composerIcons();
+    var storedName = getStoredName();
+    var authorValue = state.draft.author != null ? state.draft.author : storedName;
+    var bodyValue = state.draft.body != null ? state.draft.body : '';
+    var hasStoredName = !!(storedName && storedName.trim());
+
     var popover = document.createElement('div');
     popover.id = 'rv-popover';
-    popover.className = 'rv-popover rv-interactive';
+    popover.className = 'rv-popover rv-popover--composer rv-interactive';
     popover.setAttribute('role', 'dialog');
     popover.setAttribute('aria-label', 'Add comment');
     popover.setAttribute('aria-modal', 'true');
 
     popover.innerHTML =
-      '<div class="rv-popover-head" title="Drag to move">' +
-        '<div><strong>Add comment</strong><span>' + escapeHtml(state.draft.sectionLabel) + '</span></div>' +
-        '<button type="button" class="rv-popover-close" id="rv-popover-close" aria-label="Cancel adding comment">&times;</button>' +
+      '<div class="rv-popover-head rv-composer-head" title="Drag to move">' +
+        '<div class="rv-composer-title">' +
+          '<strong>Comment</strong>' +
+          '<span class="rv-composer-meta">' + escapeHtml(state.draft.sectionLabel || 'Page') + '</span>' +
+        '</div>' +
+        '<div class="rv-head-actions">' +
+          '<button type="button" class="rv-icon-btn" id="rv-popover-close" aria-label="Close comment draft">' + icons.close + '</button>' +
+        '</div>' +
       '</div>' +
-      '<form id="rv-popover-form">' +
-        '<label class="rv-field">' +
-          '<span>Your name</span>' +
-          '<input name="author" type="text" required maxlength="80" placeholder="Jane Client" value="' + escapeHtml(getStoredName()) + '" aria-label="Your name">' +
-        '</label>' +
-        '<label class="rv-field">' +
-          '<span>What should change?</span>' +
-          '<textarea name="body" required maxlength="4000" placeholder="Describe your feedback… (type @ to mention)" aria-label="Comment text"></textarea>' +
-        '</label>' +
-        '<div class="rv-popover-actions">' +
-          '<button type="button" class="rv-btn rv-btn-ghost-dark" id="rv-popover-cancel">Cancel</button>' +
-          '<button type="submit" class="rv-btn rv-btn-primary"' + (state.submitting ? ' disabled aria-busy="true"' : '') + '>' +
-            (state.submitting ? 'Saving…' : 'Post comment') +
+      '<form id="rv-popover-form" class="rv-composer-form">' +
+        (hasStoredName
+          ? '<input type="hidden" name="author" value="' + escapeHtml(authorValue) + '">' +
+            '<button type="button" class="rv-composer-byline" id="rv-edit-author" title="Change your name">' +
+              'Commenting as <strong>' + escapeHtml(authorValue || storedName) + '</strong>' +
+            '</button>'
+          : '<label class="rv-composer-name">' +
+              '<span class="rv-sr-only">Your name</span>' +
+              '<input name="author" type="text" required maxlength="80" placeholder="Your name" value="' + escapeHtml(authorValue) + '" aria-label="Your name" autocomplete="name">' +
+            '</label>') +
+        '<div class="rv-composer-box">' +
+          '<textarea name="body" required maxlength="4000" rows="3" placeholder="Add a comment…" aria-label="Comment text">' + escapeHtml(bodyValue) + '</textarea>' +
+          '<button type="submit" class="rv-send-btn"' + (state.submitting ? ' disabled aria-busy="true"' : '') + ' aria-label="' + (state.submitting ? 'Saving comment' : 'Post comment') + '" title="Post comment (Ctrl+Enter)">' +
+            (state.submitting ? '…' : icons.send) +
           '</button>' +
         '</div>' +
+        '<div class="rv-composer-hint">Drafts auto-save · Ctrl+Enter to post</div>' +
       '</form>';
 
     document.body.appendChild(popover);
-    positionPopover(popover, draftPopoverPos, state.draft.clientX, state.draft.clientY, 300);
+    positionPopover(popover, draftPopoverPos, state.draft.clientX, state.draft.clientY, 220);
     makeDraggable(popover, popover.querySelector('.rv-popover-head'), function (pos) {
       draftPopoverPos = pos;
     });
-    popover.querySelector('#rv-popover-close').addEventListener('click', closeDraftPopover);
-    popover.querySelector('#rv-popover-cancel').addEventListener('click', closeDraftPopover);
+    popover.querySelector('#rv-popover-close').addEventListener('click', function () {
+      closeDraftPopover();
+      if (hasPersistedComposerText()) showToast('Draft saved in this browser.');
+    });
     popover.querySelector('#rv-popover-form').addEventListener('submit', onSubmitComment);
 
     var authorField = popover.querySelector('input[name="author"]');
     var bodyField = popover.querySelector('textarea[name="body"]');
-    
+    var form = popover.querySelector('#rv-popover-form');
     bodyField.id = 'draft-textarea';
     bindMentionDetection(bodyField);
-    
-    if (getStoredName()) bodyField.focus();
-    else authorField.focus();
+    bindComposerAutosave(form, bodyField, authorField);
+
+    var editAuthorBtn = popover.querySelector('#rv-edit-author');
+    if (editAuthorBtn) {
+      editAuthorBtn.addEventListener('click', function () {
+        var current = authorField ? authorField.value : getStoredName();
+        var next = window.prompt('Your name for comments', current || '');
+        if (next == null) return;
+        next = String(next);
+        // Preserve exactly what the user entered (including a single ".") — only reject empty/whitespace.
+        if (isBlankCommentText(next)) {
+          showToast('Name cannot be empty.', true);
+          return;
+        }
+        setStoredName(next.trim());
+        state.draft.author = next.trim();
+        persistComposerDraftNow();
+        renderDraftPopover();
+      });
+    }
+
+    if (state.submitting) {
+      bodyField.disabled = true;
+      if (authorField && authorField.type !== 'hidden') authorField.disabled = true;
+    }
+
+    if (hasStoredName) bodyField.focus();
+    else if (authorField && authorField.type !== 'hidden') authorField.focus();
+    else bodyField.focus();
+
+    // Place caret at end so restored drafts are easy to continue.
+    try {
+      var len = bodyField.value.length;
+      bodyField.setSelectionRange(len, len);
+    } catch (err) {}
   }
 
   function generateCommentLink(commentId) {
@@ -2296,10 +2578,14 @@
     var color = commentIndex >= 0 ? getCommentColor(commentIndex) : COMMENT_COLORS[0];
     var resolved = comment.status === 'resolved';
     var editing = state.editingCommentId === comment.id;
-    var heightEstimate = editing ? 310 : 360;
+    var heightEstimate = editing ? 280 : 300;
+    var icons = composerIcons();
+    var replyDrafts = loadReplyDrafts();
+    var savedReply = replyDrafts[comment.id] || '';
+    var authorInitial = (getStoredName() || comment.authorName || '?').trim().charAt(0).toUpperCase();
     var popover = document.createElement('div');
     popover.id = 'rv-thread-popover';
-    popover.className = 'rv-popover rv-thread rv-interactive' + (isMobileView() ? ' rv-popover--sheet' : '');
+    popover.className = 'rv-popover rv-thread rv-popover--compact rv-interactive' + (isMobileView() ? ' rv-popover--sheet' : '');
     popover.setAttribute('role', 'dialog');
     popover.setAttribute('aria-label', 'Comment thread');
 
@@ -2307,32 +2593,25 @@
     popover.style.setProperty('--rv-accent-light', color.light);
     popover.style.setProperty('--rv-accent-text', color.text);
     popover.innerHTML =
-      '<div class="rv-popover-head rv-popover-head--tinted" title="Drag to move">' +
-        '<div class="rv-popover-head-id">' +
-          '<span class="rv-popover-avatar">' + escapeHtml((comment.authorName || '?').trim().charAt(0).toUpperCase()) + '</span>' +
-          '<div>' +
-            '<div class="rv-popover-head-title">' +
-              '<strong>' + escapeHtml(comment.authorName) + '</strong>' +
-              '<span class="rv-popover-num">#' + commentNum + '</span>' +
-            '</div>' +
-            '<span class="rv-badge rv-badge-' + (resolved ? 'resolved' : 'open') + '">' +
-              (resolved ? 'Resolved' : 'Open') +
-            '</span>' +
-          '</div>' +
+      '<div class="rv-popover-head rv-popover-head--compact" title="Drag to move">' +
+        '<div class="rv-composer-title">' +
+          '<strong>Comment</strong>' +
+          '<span class="rv-composer-meta">#' + commentNum +
+            (resolved ? ' · Resolved' : '') +
+            (comment.sectionLabel ? ' · ' + escapeHtml(comment.sectionLabel) : '') +
+          '</span>' +
         '</div>' +
-        '<button type="button" class="rv-popover-close" aria-label="Close">&times;</button>' +
-        '<button type="button" class="rv-popover-link" onclick="copyCommentLink(\'' + comment.id + '\')" aria-label="Copy comment link" title="Copy shareable link">' +
-          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-            '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>' +
-            '<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>' +
-          '</svg>' +
-        '</button>' +
+        '<div class="rv-head-actions">' +
+          '<button type="button" class="rv-icon-btn rv-icon-btn--more" aria-label="More actions" aria-haspopup="menu" title="More">' + icons.more + '</button>' +
+          '<button type="button" class="rv-icon-btn rv-icon-btn--resolve' + (resolved ? ' is-resolved' : '') + '" data-status="' +
+            (resolved ? 'open' : 'resolved') + '" aria-label="' + (resolved ? 'Reopen comment' : 'Resolve comment') + '" title="' +
+            (resolved ? 'Reopen' : 'Resolve') + '">' + icons.check + '</button>' +
+          '<button type="button" class="rv-icon-btn rv-popover-close" aria-label="Close">' + icons.close + '</button>' +
+        '</div>' +
       '</div>' +
       '<div class="rv-thread-body">' +
-        (comment.sectionLabel ?
-          '<div class="rv-card-section">' + escapeHtml(comment.sectionLabel) + '</div>' : '') +
         (comment.tabId && comment.tabId !== 'default' ?
-          '<div class="rv-card-section" style="margin-top:2px;"><span class="rv-badge rv-badge-tab">' + humanizeTabId(comment.tabId) + '</span></div>' : '') +
+          '<div class="rv-card-section"><span class="rv-badge rv-badge-tab">' + humanizeTabId(comment.tabId) + '</span></div>' : '') +
         (isAnchorBroken(comment) || comment.anchorBroken ?
           '<div class="rv-anchor-broken-row">' +
             '<span class="rv-anchor-broken-badge" title="Target element not found.">Anchor broken</span>' +
@@ -2340,47 +2619,41 @@
           '</div>' : '') +
         (editing ?
           '<form class="rv-edit-form">' +
-            '<label class="rv-field"><span>Edit comment</span>' +
-              '<textarea name="body" required maxlength="4000">' + escapeHtml(comment.body) + '</textarea>' +
+            '<label class="rv-field"><span class="rv-sr-only">Edit comment</span>' +
+              '<textarea name="body" required maxlength="4000" rows="3">' + escapeHtml(comment.body) + '</textarea>' +
             '</label>' +
             '<div class="rv-popover-actions">' +
               '<button type="button" class="rv-btn rv-btn-ghost-dark rv-edit-cancel">Cancel</button>' +
               '<button type="submit" class="rv-btn rv-btn-primary"' + (state.submitting ? ' disabled' : '') + '>Save</button>' +
             '</div>' +
           '</form>' :
+          '<div class="rv-thread-author-row">' +
+            '<span class="rv-popover-avatar rv-popover-avatar--sm">' + escapeHtml((comment.authorName || '?').trim().charAt(0).toUpperCase()) + '</span>' +
+            '<div class="rv-thread-author-meta">' +
+              '<strong>' + escapeHtml(comment.authorName) + '</strong>' +
+              '<span class="rv-card-time" title="' + escapeHtml(formatTime(comment.createdAt)) + '">' +
+                escapeHtml(formatRelativeTime(comment.createdAt)) +
+                (comment.editHistory && comment.editHistory.length > 1 ?
+                  '<button type="button" class="rv-edit-indicator" data-edit-history="' + escapeHtml(comment.id) + '" title="View edit history">' +
+                  ' (edited)' +
+                  '</button>' : '') +
+              '</span>' +
+            '</div>' +
+            (comment.authorName === getStoredName() ?
+              '<button type="button" class="rv-edit-pill rv-edit-comment">Edit</button>' : '') +
+          '</div>' +
           '<div class="rv-thread-comment">' + escapeHtml(comment.body) + '</div>' +
-          '<div class="rv-card-time" title="' + escapeHtml(formatTime(comment.createdAt)) + '">' + 
-            escapeHtml(formatRelativeTime(comment.createdAt)) +
-            (comment.editHistory && comment.editHistory.length > 1 ? 
-              '<button class="rv-edit-indicator" onclick="showEditHistory(\'' + comment.id + '\')" title="View edit history">' +
-              '(edited ' + escapeHtml(formatRelativeTime(comment.updatedAt)) + ')' +
-              '</button>' : '') +
-          '</div>' +
-          renderReactionsHtml(comment) +
-          '<div class="rv-thread-actions">' +
-            '<button type="button" class="rv-btn rv-btn-ghost-dark rv-toggle-status" data-status="' +
-              (resolved ? 'open' : 'resolved') + '">' +
-              (resolved ? 'Reopen' : 'Mark resolved') +
-            '</button>' +
-            '<button type="button" class="rv-btn rv-btn-primary-soft rv-edit-comment">Edit comment</button>' +
-            '<button type="button" class="rv-btn rv-btn-primary-soft rv-pin-comment" onclick="togglePinComment(\'' + comment.id + '\')" title="' + (comment.pinned ? 'Unpin' : 'Pin') + ' this comment">' +
-              (comment.pinned ? '📌 Pinned' : '📌 Pin comment') +
-            '</button>' +
-          '</div>' +
-          '<div class="rv-thread-danger">' +
-            '<button type="button" class="rv-delete-link rv-delete-comment"' +
-              (state.submitting ? ' disabled' : '') + '>Delete this comment</button>' +
-          '</div>') +
+          renderReactionsHtml(comment)) +
         '<div class="rv-thread-replies">' + renderThreadedReplies(comment.replies) + '</div>' +
-        '<form class="rv-reply-form">' +
-        '<label class="rv-field">' +
-          '<span>Your reply</span>' +
-          '<textarea name="body" required maxlength="2000" placeholder="Add a reply… (type @ to mention)" aria-label="Your reply text"></textarea>' +
-        '</label>' +
-          '<input type="hidden" name="author" value="' + escapeHtml(getStoredName()) + '">' +
-          '<div class="rv-popover-actions">' +
-            '<button type="submit" class="rv-btn rv-btn-primary"' + (state.submitting ? ' disabled aria-busy="true"' : '') + '>Reply</button>' +
+        '<form class="rv-reply-form rv-reply-composer">' +
+          '<span class="rv-reply-avatar" aria-hidden="true">' + escapeHtml(authorInitial) + '</span>' +
+          '<div class="rv-composer-box">' +
+            '<textarea name="body" required maxlength="2000" rows="1" placeholder="Reply" aria-label="Your reply text">' + escapeHtml(savedReply) + '</textarea>' +
+            '<button type="submit" class="rv-send-btn"' + (state.submitting ? ' disabled aria-busy="true"' : '') + ' aria-label="Send reply" title="Send reply (Ctrl+Enter)">' +
+              icons.send +
+            '</button>' +
           '</div>' +
+          '<input type="hidden" name="author" value="' + escapeHtml(getStoredName()) + '">' +
         '</form>' +
       '</div>';
 
@@ -2398,6 +2671,46 @@
       if (state.panelOpen) renderPanel();
     });
 
+    var moreBtn = popover.querySelector('.rv-icon-btn--more');
+    if (moreBtn) {
+      moreBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var existing = document.getElementById('rv-thread-menu');
+        if (existing) {
+          closeThreadOverflowMenu();
+          return;
+        }
+        var menu = document.createElement('div');
+        menu.id = 'rv-thread-menu';
+        menu.className = 'rv-overflow-menu rv-interactive';
+        menu.setAttribute('role', 'menu');
+        menu.innerHTML =
+          '<button type="button" class="rv-overflow-item" data-action="copy" role="menuitem">Copy link</button>' +
+          '<button type="button" class="rv-overflow-item" data-action="pin" role="menuitem">' + (comment.pinned ? 'Unpin' : 'Pin comment') + '</button>' +
+          '<button type="button" class="rv-overflow-item" data-action="edit" role="menuitem">Edit</button>' +
+          '<button type="button" class="rv-overflow-item rv-overflow-item--danger" data-action="delete" role="menuitem">Delete</button>';
+        document.body.appendChild(menu);
+        var btnRect = moreBtn.getBoundingClientRect();
+        menu.style.top = (btnRect.bottom + 4) + 'px';
+        menu.style.left = Math.max(8, btnRect.right - 160) + 'px';
+        menu.querySelectorAll('.rv-overflow-item').forEach(function (item) {
+          item.addEventListener('click', function () {
+            var action = item.getAttribute('data-action');
+            closeThreadOverflowMenu();
+            if (action === 'copy') copyCommentLink(comment.id);
+            else if (action === 'pin') togglePinComment(comment.id);
+            else if (action === 'edit') {
+              state.editingCommentId = comment.id;
+              openThreadPopover(getComment(comment.id), clientX, clientY);
+            } else if (action === 'delete') deleteComment(comment.id);
+          });
+        });
+        setTimeout(function () {
+          document.addEventListener('pointerdown', onThreadMenuOutside, true);
+        }, 0);
+      });
+    }
+
     // Close when clicking the page canvas (not the popover / pins / review chrome).
     // Deferred so the same pointerdown that opened the popover does not immediately close it.
     document.removeEventListener('pointerdown', onThreadOutsideClick, true);
@@ -2406,10 +2719,17 @@
       document.addEventListener('pointerdown', onThreadOutsideClick, true);
     }, 0);
 
-    var toggleBtn = popover.querySelector('.rv-toggle-status');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', function (e) {
-        toggleCommentStatus(comment.id, e.target.dataset.status);
+    var resolveBtn = popover.querySelector('.rv-icon-btn--resolve');
+    if (resolveBtn) {
+      resolveBtn.addEventListener('click', function (e) {
+        toggleCommentStatus(comment.id, e.currentTarget.getAttribute('data-status'));
+      });
+    }
+
+    var editHistoryBtn = popover.querySelector('[data-edit-history]');
+    if (editHistoryBtn) {
+      editHistoryBtn.addEventListener('click', function () {
+        showEditHistory(comment.id);
       });
     }
 
@@ -2431,13 +2751,6 @@
         updateCommentBody(e, comment.id, clientX, clientY);
       });
       editForm.querySelector('textarea').focus();
-    }
-
-    var deleteBtn = popover.querySelector('.rv-delete-comment');
-    if (deleteBtn) {
-      deleteBtn.addEventListener('click', function () {
-        deleteComment(comment.id);
-      });
     }
 
     var convertBtn = popover.querySelector('.rv-convert-general');
@@ -2469,6 +2782,27 @@
     if (replyTextarea) {
       replyTextarea.id = 'reply-textarea-' + comment.id;
       bindMentionDetection(replyTextarea);
+      replyTextarea.addEventListener('input', function () {
+        scheduleReplyDraftPersist(comment.id, replyTextarea.value);
+      });
+      replyTextarea.addEventListener('change', function () {
+        persistReplyDraft(comment.id, replyTextarea.value);
+      });
+      replyForm.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          if (!state.submitting) replyForm.requestSubmit ? replyForm.requestSubmit() : replyForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        }
+      });
+      // Auto-grow lightly for compact reply field
+      replyTextarea.addEventListener('input', function () {
+        replyTextarea.style.height = 'auto';
+        replyTextarea.style.height = Math.min(120, Math.max(36, replyTextarea.scrollHeight)) + 'px';
+      });
+      if (savedReply) {
+        replyTextarea.style.height = 'auto';
+        replyTextarea.style.height = Math.min(120, Math.max(36, replyTextarea.scrollHeight)) + 'px';
+      }
     }
 
     replyForm.addEventListener('submit', function (e) {
@@ -2511,7 +2845,7 @@
   }
 
   function closeDraft() {
-    state.draft = null;
+    closeDraftPopover();
     renderAll();
   }
 
@@ -2537,7 +2871,12 @@
     if (!comment) return;
 
     state.activeCommentId = commentId;
+    if (state.draft) {
+      captureDraftFormValues();
+      persistComposerDraftNow();
+    }
     state.draft = null;
+    removeDraftPopoverEl();
     // Do not force-open the drawer; panel stays as the user left it.
 
     var pos = getCommentPinPosition(comment);
@@ -3193,15 +3532,22 @@
     if (!state.draft || state.submitting) return;
 
     var form = e.target;
-    var authorName = form.author.value.trim();
-    var body = form.body.value.trim();
+    var authorEl = form.querySelector('[name="author"]') || form.author;
+    var bodyEl = form.querySelector('[name="body"]') || form.body;
+    var authorName = (authorEl && authorEl.value != null ? String(authorEl.value) : '').trim();
+    // Keep every character the user typed; only reject whitespace-only bodies.
+    var bodyRaw = bodyEl && bodyEl.value != null ? String(bodyEl.value) : '';
+    var body = bodyRaw;
 
-    if (!authorName || !body) {
+    if (!authorName || isBlankCommentText(body)) {
       showToast('Please enter your name and comment.', true);
       return;
     }
 
     setStoredName(authorName);
+    state.draft.author = authorName;
+    state.draft.body = bodyRaw;
+    persistComposerDraftNow();
     state.submitting = true;
     renderDraftPopover();
 
@@ -3232,6 +3578,7 @@
       };
       upsertComment(newComment);
       lsSave();
+      clearComposerDraft();
       state.draft = null;
       state.activeCommentId = newComment.id;
       state.submitting = false;
@@ -3267,6 +3614,7 @@
         data.comment.anchor = data.comment.anchor || draftSnapshot.anchor || null;
         data.comment._pendingSync = false;
         upsertComment(data.comment);
+        clearComposerDraft();
         state.draft = null;
         state.activeCommentId = data.comment.id;
         renderAll();
@@ -3279,7 +3627,7 @@
       })
       .finally(function () {
         state.submitting = false;
-        renderDraftPopover();
+        if (state.draft) renderDraftPopover();
       });
   }
 
@@ -3288,32 +3636,43 @@
     if (state.submitting) return;
 
     var form = e.target;
-    var authorName = form.author.value.trim() || getStoredName();
-    var body = form.body.value.trim();
+    var authorEl = form.querySelector('[name="author"]') || form.author;
+    var bodyEl = form.querySelector('[name="body"]') || form.body;
+    var authorName = ((authorEl && authorEl.value) || getStoredName() || '').trim();
+    var bodyRaw = bodyEl && bodyEl.value != null ? String(bodyEl.value) : '';
+    var body = bodyRaw;
 
-    if (!body) {
+    if (isBlankCommentText(body)) {
       showToast('Please enter a reply.', true);
       return;
     }
 
     setStoredName(authorName);
+    persistReplyDraft(commentId, bodyRaw);
     state.submitting = true;
 
-    if (isOfflineMode) {
+    function finishLocalReply(message, isError) {
       var now = new Date().toISOString();
       var reply = {
         id: genId(),
-        authorName: authorName,
+        authorName: authorName || 'Guest',
         body: body,
-        createdAt: now
+        createdAt: now,
+        _pendingSync: isOfflineMode ? false : 'create'
       };
       addReplyToComment(commentId, reply);
       lsSave();
-      form.body.value = '';
+      persistLocalBackup();
+      persistReplyDraft(commentId, '');
+      if (bodyEl) bodyEl.value = '';
       state.submitting = false;
       renderAll();
       refreshOpenThread();
-      showToast('Reply added.');
+      showToast(message, !!isError);
+    }
+
+    if (isOfflineMode) {
+      finishLocalReply('Reply added.');
       return;
     }
 
@@ -3324,13 +3683,16 @@
     })
       .then(function (data) {
         addReplyToComment(commentId, data.reply);
-        form.body.value = '';
+        persistLocalBackup();
+        persistReplyDraft(commentId, '');
+        if (bodyEl) bodyEl.value = '';
         renderAll();
         refreshOpenThread();
         showToast('Reply added.');
       })
-      .catch(function (err) {
-        showToast(err.message || 'Could not submit reply.', true);
+      .catch(function () {
+        // Never lose the reply — keep it locally and sync later.
+        finishLocalReply('Reply saved locally — will sync when connection returns.', true);
       })
       .finally(function () {
         state.submitting = false;
@@ -3358,8 +3720,12 @@
         return;
       }
       closeContextMenu();
-      if (state.draft) closeDraft();
-      else if (document.getElementById('rv-thread-popover')) {
+      if (state.draft) {
+        closeDraftPopover();
+        if (hasPersistedComposerText()) showToast('Draft saved in this browser.');
+        renderPendingPin();
+        renderAddHint();
+      } else if (document.getElementById('rv-thread-popover')) {
         state.activeCommentId = null;
         closeThreadPopover();
         renderPins();
@@ -3413,8 +3779,11 @@
     }
     if (currentTabId !== lastTabId) {
       lastTabId = currentTabId;
+      // Stash drafts before clearing UI so tab switches never erase typed text.
+      captureDraftFormValues();
+      persistComposerDraftNow();
+      captureOpenReplyDraft();
       state.activeCommentId = null;
-      state.draft = null;
       closeThreadPopover();
       closeDraftPopover();
       renderAll();
