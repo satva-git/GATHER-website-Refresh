@@ -4,7 +4,7 @@
   // Bump this whenever review.js changes — lets us confirm in the browser
   // console (or via `fetch('/review/review.js').then(r=>r.text())`) exactly
   // which build a given deployment is actually serving.
-  var REVIEW_JS_BUILD = '2026-07-20-compact-composer';
+  var REVIEW_JS_BUILD = '2026-07-21-edit-author-fix';
   if (window.console && console.info) {
     console.info('[review.js] build ' + REVIEW_JS_BUILD);
   }
@@ -2479,8 +2479,14 @@
           showToast('Name cannot be empty.', true);
           return;
         }
-        setStoredName(next.trim());
-        state.draft.author = next.trim();
+        next = next.trim();
+        // Keep body text, then clear the old form before applying the new name.
+        // Otherwise renderDraftPopover() → captureDraftFormValues() would read the
+        // stale hidden author input and undo the rename.
+        if (bodyField) state.draft.body = bodyField.value;
+        removeDraftPopoverEl();
+        setStoredName(next);
+        state.draft.author = next;
         persistComposerDraftNow();
         renderDraftPopover();
       });
