@@ -69,6 +69,25 @@ ul { list-style: none; }
 .btn--outline:hover { background: rgba(var(--teal-rgb), 0.06); color: var(--teal-deep); }
 .btn--ghost-light { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.28); }
 .btn--ghost-light:hover { border-color: #fff; background: rgba(255, 255, 255, 0.06); }
+.btn--demo-orange {
+  background: linear-gradient(90deg, #ff5b2e 0%, #ff8235 100%);
+  color: #fff;
+  border-color: transparent;
+}
+.btn--demo-orange:hover {
+  background: linear-gradient(90deg, #ef4f24 0%, #f07428 100%);
+  border-color: transparent;
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(255, 91, 46, 0.4);
+}
+.btn--demo-orange .btn-demo-chevs {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.btn--demo-orange .btn-demo-chevs svg { width: 9px; height: 14px; display: block; }
+.btn--demo-orange .btn-demo-chevs svg:first-child { opacity: 0.45; margin-right: -4px; }
+.btn--demo-orange:hover .btn-demo-chevs { transform: translateX(3px); transition: transform 0.2s var(--ease); }
 .btn .a { width: 14px; height: 14px; }
 .wf-pill {
   display: inline-flex; align-items: center; gap: 8px;
