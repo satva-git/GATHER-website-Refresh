@@ -137,87 +137,96 @@
     if (nextBtn) nextBtn.addEventListener('click', function () { goTo(index + 1); });
 
     goTo(0);
+  }
 
-    /* Click-to-zoom lightbox for journey tab images */
-    var zoomImgs = Array.prototype.slice.call(
-      journeyRoot.querySelectorAll('.journey-visual-frame img')
-    );
-    if (zoomImgs.length) {
-      var lightbox = document.createElement('div');
-      lightbox.className = 'journey-lightbox';
-      lightbox.id = 'journey-lightbox';
-      lightbox.setAttribute('role', 'dialog');
-      lightbox.setAttribute('aria-modal', 'true');
-      lightbox.setAttribute('aria-label', 'Enlarged workflow diagram');
-      lightbox.hidden = true;
-      lightbox.innerHTML =
-        '<div class="journey-lightbox-dialog">' +
-          '<button type="button" class="journey-lightbox-close" aria-label="Close enlarged image">&times;</button>' +
-          '<img class="journey-lightbox-img" alt="" />' +
-        '</div>';
-      document.body.appendChild(lightbox);
+  /* Click-to-zoom lightbox for content images site-wide */
+  (function initImageZoom() {
+    function isZoomableImage(img) {
+      if (!img || img.tagName !== 'IMG') return false;
+      if (img.classList.contains('journey-lightbox-img')) return false;
+      if (img.classList.contains('featured-logo')) return false;
+      if (img.closest('.journey-lightbox, header, .subpage-nav, footer, .subpage-foot, nav')) return false;
+      if (img.closest('.journey-visual-frame, .screenshot-frame--filled')) return true;
+      var src = img.getAttribute('src') || '';
+      return src.indexOf('assets/images/') !== -1;
+    }
 
-      var lightboxImg = lightbox.querySelector('.journey-lightbox-img');
-      var closeBtn = lightbox.querySelector('.journey-lightbox-close');
-      var lastFocus = null;
+    var zoomImgs = Array.prototype.slice.call(document.querySelectorAll('img')).filter(isZoomableImage);
+    if (!zoomImgs.length) return;
 
-      function openZoom(img) {
-        lastFocus = document.activeElement;
-        lightboxImg.src = img.currentSrc || img.src;
-        lightboxImg.alt = img.alt || 'Enlarged workflow diagram';
-        lightbox.hidden = false;
-        // Force reflow so the open transition runs
-        void lightbox.offsetWidth;
-        lightbox.classList.add('is-open');
-        document.body.classList.add('journey-lightbox-open');
-        closeBtn.focus();
-      }
+    var lightbox = document.createElement('div');
+    lightbox.className = 'journey-lightbox';
+    lightbox.id = 'journey-lightbox';
+    lightbox.setAttribute('role', 'dialog');
+    lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-label', 'Enlarged image');
+    lightbox.hidden = true;
+    lightbox.innerHTML =
+      '<div class="journey-lightbox-dialog">' +
+        '<button type="button" class="journey-lightbox-close" aria-label="Close enlarged image">&times;</button>' +
+        '<img class="journey-lightbox-img" alt="" />' +
+      '</div>';
+    document.body.appendChild(lightbox);
 
-      function closeZoom() {
-        if (!lightbox.classList.contains('is-open')) return;
-        lightbox.classList.remove('is-open');
-        document.body.classList.remove('journey-lightbox-open');
-        window.setTimeout(function () {
-          if (!lightbox.classList.contains('is-open')) {
-            lightbox.hidden = true;
-            lightboxImg.removeAttribute('src');
-          }
-        }, 220);
-        if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-      }
+    var lightboxImg = lightbox.querySelector('.journey-lightbox-img');
+    var closeBtn = lightbox.querySelector('.journey-lightbox-close');
+    var lastFocus = null;
 
-      zoomImgs.forEach(function (img) {
-        img.classList.add('journey-zoomable');
-        img.setAttribute('tabindex', '0');
-        img.setAttribute('role', 'button');
-        img.setAttribute(
-          'aria-label',
-          (img.alt ? img.alt + '. ' : '') + 'Click to enlarge'
-        );
-        img.addEventListener('click', function () { openZoom(img); });
-        img.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openZoom(img);
-          }
-        });
-      });
+    function openZoom(img) {
+      lastFocus = document.activeElement;
+      lightboxImg.src = img.currentSrc || img.src;
+      lightboxImg.alt = img.alt || 'Enlarged image';
+      lightbox.hidden = false;
+      void lightbox.offsetWidth;
+      lightbox.classList.add('is-open');
+      document.body.classList.add('journey-lightbox-open');
+      closeBtn.focus();
+    }
 
-      closeBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        closeZoom();
-      });
-      lightbox.addEventListener('click', function (e) {
-        if (e.target === lightbox || e.target === lightboxImg) closeZoom();
-      });
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && lightbox.classList.contains('is-open')) {
+    function closeZoom() {
+      if (!lightbox.classList.contains('is-open')) return;
+      lightbox.classList.remove('is-open');
+      document.body.classList.remove('journey-lightbox-open');
+      window.setTimeout(function () {
+        if (!lightbox.classList.contains('is-open')) {
+          lightbox.hidden = true;
+          lightboxImg.removeAttribute('src');
+        }
+      }, 220);
+      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+    }
+
+    zoomImgs.forEach(function (img) {
+      img.classList.add('journey-zoomable');
+      img.setAttribute('tabindex', '0');
+      img.setAttribute('role', 'button');
+      img.setAttribute(
+        'aria-label',
+        (img.alt ? img.alt + '. ' : '') + 'Click to enlarge'
+      );
+      img.addEventListener('click', function () { openZoom(img); });
+      img.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          closeZoom();
+          openZoom(img);
         }
       });
-    }
-  }
+    });
+
+    closeBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      closeZoom();
+    });
+    lightbox.addEventListener('click', function (e) {
+      if (e.target === lightbox || e.target === lightboxImg) closeZoom();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && lightbox.classList.contains('is-open')) {
+        e.preventDefault();
+        closeZoom();
+      }
+    });
+  })();
 
   if (typeof IntersectionObserver !== 'undefined') {
     var io = new IntersectionObserver(function (entries) {
