@@ -174,7 +174,13 @@
 
     function openZoom(img) {
       lastFocus = document.activeElement;
-      lightboxImg.src = img.currentSrc || img.src;
+      var src = img.currentSrc || img.src || '';
+      /* Force GIF reload so animation restarts in the lightbox */
+      if (/\.gif(\?|#|$)/i.test(src)) {
+        src = src.replace(/([?&])v=[^&]*&?/, '$1').replace(/[?&]$/, '');
+        src += (src.indexOf('?') === -1 ? '?' : '&') + 'zoom=' + Date.now();
+      }
+      lightboxImg.src = src;
       lightboxImg.alt = img.alt || 'Enlarged image';
       lightbox.hidden = false;
       void lightbox.offsetWidth;

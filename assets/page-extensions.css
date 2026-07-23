@@ -159,11 +159,21 @@ ul { list-style: none; }
   display: block;
 }
 .screenshot-frame--filled::before { display: none; }
-.screenshot-frame--filled img {
+.screenshot-frame--filled picture {
+  display: block;
+  width: 100%;
+}
+.screenshot-frame--filled img,
+.screenshot-frame--filled picture img {
   display: block;
   width: 100%;
   height: auto;
+  max-width: 100%;
   border-radius: inherit;
+  object-fit: contain;
+  /* Keep GIF / animated media playing; avoid layout tricks that freeze frames */
+  image-rendering: auto;
+  background: #fff;
 }
 .screenshot-frame__inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 320px; }
 .screenshot-frame__ic {
