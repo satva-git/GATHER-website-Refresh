@@ -268,6 +268,30 @@
   var LS_COMPOSER_KEY = 'rv-composer-draft-' + reviewToken;
   var LS_REPLY_DRAFT_KEY = 'rv-reply-drafts-' + reviewToken;
   var LS_USER_KEY = 'rv-user-id';
+  // One-time wipe so local backups cannot restore cleared review pins.
+  (function clearRaisedCommentsOnce() {
+    var flag = 'rv-cleared-raised-comments-2026-07-24';
+    try {
+      if (localStorage.getItem(flag)) return;
+      var keysToRemove = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (!key) continue;
+        if (
+          key === LS_KEY ||
+          key === LS_BAK_KEY ||
+          key.indexOf('rv-offline-') === 0 ||
+          key.indexOf('rv-offline-bak-') === 0
+        ) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(function (k) { localStorage.removeItem(k); });
+      localStorage.setItem(LS_DELETED_KEY, JSON.stringify([]));
+      localStorage.setItem(flag, '1');
+      console.log('[review] Cleared raised comment pins from local storage.');
+    } catch (e) {}
+  })();
   var flushInFlight = false;
   var restoredFromBackupNotice = false;
   var beforeUnloadBound = false;
