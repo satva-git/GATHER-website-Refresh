@@ -957,10 +957,12 @@ ul { list-style: none; }
 /* Content images — click to zoom */
 img.journey-zoomable {
   cursor: zoom-in;
-  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  transition: transform 0.2s var(--ease);
 }
-img.journey-zoomable:hover {
+/* Avoid opacity changes on GIFs — they freeze animation in Chromium */
+img.journey-zoomable:not([src*=".gif"]):hover {
   opacity: 0.92;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
 }
 img.journey-zoomable:focus-visible {
   outline: 2px solid var(--teal);
