@@ -20,10 +20,26 @@ function resolve(from, href) {
   return path.normalize(path.join(path.dirname(from), href.split('#')[0].split('?')[0]));
 }
 
+function collectPages(dir, acc) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectPages(full, acc);
+    } else if (entry.isFile() && entry.name.endsWith('.html')) {
+      acc.push(full);
+    }
+  }
+}
+
 const pages = [
   path.join(ROOT, 'index.html'),
   path.join(ROOT, 'HomePage.html'),
-  ...fs.readdirSync(path.join(ROOT, 'modules')).map((f) => path.join(ROOT, 'modules', f))
+  ...(() => {
+    const modulePages = [];
+    collectPages(path.join(ROOT, 'modules'), modulePages);
+    collectPages(path.join(ROOT, 'group-financial-reporting'), modulePages);
+    return modulePages;
+  })()
 ];
 
 const missing = [];

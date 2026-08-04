@@ -463,6 +463,29 @@ MODULE_PAGES.forEach(slug => {
   });
 });
 
+const COMPLEX_CONSOLIDATIONS_PAGE = path.join(
+  ROOT,
+  'group-financial-reporting',
+  'complex-consolidations',
+  'index.html'
+);
+
+function sendComplexConsolidationsPage(_req, res) {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.sendFile(COMPLEX_CONSOLIDATIONS_PAGE);
+}
+
+app.get(
+  /^\/group-financial-reporting\/complex-consolidations\/?$/,
+  redirectToDefaultReview,
+  sendComplexConsolidationsPage
+);
+app.get(
+  '/group-financial-reporting/complex-consolidations/index.html',
+  redirectToDefaultReview,
+  sendComplexConsolidationsPage
+);
+
 app.use(express.static(ROOT, { index: false }));
 
 app.use((_req, res) => {

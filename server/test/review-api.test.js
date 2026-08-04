@@ -265,6 +265,20 @@ describe('Review API integration', () => {
     assert.match(String(res.headers.location || ''), /review=/);
   });
 
+  it('serves the Complex Consolidations detail page', async () => {
+    const redirectRes = await request(baseUrl, 'GET', '/group-financial-reporting/complex-consolidations/');
+    assert.equal(redirectRes.status, 302);
+    assert.match(String(redirectRes.headers.location || ''), /review=/);
+
+    const pageRes = await request(
+      baseUrl,
+      'GET',
+      '/group-financial-reporting/complex-consolidations/?review=test-token'
+    );
+    assert.equal(pageRes.status, 200);
+    assert.match(String(pageRes.json || ''), /Complex Consolidations, Managed with Confidence/);
+  });
+
   it('supports pin and reaction endpoints', async () => {
     const createRes = await request(baseUrl, 'POST', `/api/sessions/${sessionToken}/comments`, {
       authorName: 'Reactor',
