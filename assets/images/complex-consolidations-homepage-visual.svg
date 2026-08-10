@@ -1,40 +1,61 @@
-<!-- Complex Consolidations Homepage Visual  Replace with approved final asset -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" fill="none" role="img" aria-label="Complex ownership structure leading to automated Group accounting and consolidated reporting">
+<!-- Complex Consolidations Homepage Visual ï¿½ Replace with approved final asset -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" width="640" height="420" fill="none" role="img" aria-label="Complex ownership structure leading to automated Group accounting and consolidated reporting">
   <rect width="640" height="420" fill="#F6F8FB"/>
-  <!-- Parent Group -->
-  <rect x="240" y="24" width="160" height="52" rx="8" fill="#fff" stroke="#C5DDD6" stroke-width="1.5"/>
-  <text x="320" y="48" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="11" font-weight="600" fill="#245A4E" letter-spacing="0.06em">PARENT GROUP</text>
-  <text x="320" y="66" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="13" font-weight="700" fill="#0A1B30">Holdco Ltd</text>
-  <!-- Level 2 -->
-  <line x1="320" y1="76" x2="320" y2="96" stroke="#C5DDD6" stroke-width="1.5"/>
-  <line x1="130" y1="96" x2="510" y2="96" stroke="#C5DDD6" stroke-width="1.5"/>
-  <line x1="130" y1="96" x2="130" y2="110" stroke="#C5DDD6" stroke-width="1.5"/>
-  <line x1="320" y1="96" x2="320" y2="110" stroke="#C5DDD6" stroke-width="1.5"/>
-  <line x1="510" y1="96" x2="510" y2="110" stroke="#C5DDD6" stroke-width="1.5"/>
-  <rect x="50" y="110" width="160" height="48" rx="8" fill="#fff" stroke="#E2E8F0" stroke-width="1.5"/>
-  <text x="130" y="132" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="12" font-weight="600" fill="#0A1B30">Sub A</text>
-  <text x="130" y="148" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="11" fill="#7787A0">80% owned</text>
-  <rect x="240" y="110" width="160" height="48" rx="8" fill="#fff" stroke="#E2E8F0" stroke-width="1.5"/>
-  <text x="320" y="132" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="12" font-weight="600" fill="#0A1B30">Sub B</text>
-  <text x="320" y="148" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="11" fill="#7787A0">100% owned</text>
-  <rect x="430" y="110" width="160" height="48" rx="8" fill="#fff" stroke="#E2E8F0" stroke-width="1.5"/>
-  <text x="510" y="132" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="12" font-weight="600" fill="#0A1B30">Sub C</text>
-  <text x="510" y="148" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="11" fill="#7787A0">60% owned</text>
-  <!-- Level 3 -->
-  <line x1="130" y1="158" x2="130" y2="172" stroke="#E2E8F0" stroke-width="1.5"/>
-  <rect x="50" y="172" width="160" height="40" rx="8" fill="#fff" stroke="#E2E8F0" stroke-width="1.5"/>
-  <text x="130" y="197" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="11" font-weight="600" fill="#4A5B70">Sub A.1</text>
-  <!-- Arrow down -->
-  <line x1="320" y1="220" x2="320" y2="248" stroke="#2D7261" stroke-width="2"/>
-  <polygon points="320,256 314,244 326,244" fill="#2D7261"/>
-  <!-- Group accounting -->
-  <rect x="180" y="260" width="280" height="56" rx="10" fill="#E8F3F0" stroke="#C5DDD6" stroke-width="1.5"/>
-  <text x="320" y="284" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="11" font-weight="600" fill="#245A4E" letter-spacing="0.05em">GROUP ACCOUNTING</text>
-  <text x="320" y="302" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="12" font-weight="600" fill="#0A1B30">Acquisitions · Goodwill · NCI · Adjustments</text>
-  <!-- Arrow down -->
-  <line x1="320" y1="316" x2="320" y2="340" stroke="#2D7261" stroke-width="2"/>
-  <polygon points="320,348 314,336 326,336" fill="#2D7261"/>
-  <!-- Consolidated output -->
-  <rect x="200" y="352" width="240" height="48" rx="8" fill="#2D7261"/>
-  <text x="320" y="381" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="13" font-weight="700" fill="#fff">Consolidated Reporting</text>
+  <rect x="24" y="24" width="592" height="372" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+
+  <!-- Left: ownership tree -->
+  <text x="56" y="58" font-family="Instrument Sans, Arial, sans-serif" font-size="11" font-weight="700" fill="#2D7261" letter-spacing="0.08em">OWNERSHIP</text>
+
+  <rect x="120" y="76" width="168" height="46" rx="10" fill="#E8F3F0" stroke="#2D7261" stroke-width="1.5"/>
+  <text x="204" y="94" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="10" font-weight="600" fill="#245A4E" letter-spacing="0.05em">PARENT GROUP</text>
+  <text x="204" y="110" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="13" font-weight="700" fill="#0A1B30">Holdco Ltd</text>
+
+  <line x1="204" y1="122" x2="204" y2="140" stroke="#C5DDD6" stroke-width="1.5"/>
+  <line x1="88" y1="140" x2="320" y2="140" stroke="#C5DDD6" stroke-width="1.5"/>
+  <line x1="88" y1="140" x2="88" y2="152" stroke="#C5DDD6" stroke-width="1.5"/>
+  <line x1="204" y1="140" x2="204" y2="152" stroke="#C5DDD6" stroke-width="1.5"/>
+  <line x1="320" y1="140" x2="320" y2="152" stroke="#C5DDD6" stroke-width="1.5"/>
+
+  <rect x="32" y="152" width="112" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="88" y="170" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#0A1B30">Sub A</text>
+  <text x="88" y="186" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="10" fill="#7787A0">80%</text>
+
+  <rect x="148" y="152" width="112" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="204" y="170" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#0A1B30">Sub B</text>
+  <text x="204" y="186" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="10" fill="#7787A0">100%</text>
+
+  <rect x="264" y="152" width="112" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="320" y="170" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#0A1B30">Sub C</text>
+  <text x="320" y="186" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="10" fill="#7787A0">60% NCI</text>
+
+  <line x1="88" y1="196" x2="88" y2="210" stroke="#E2E8F0" stroke-width="1.5"/>
+  <rect x="40" y="210" width="96" height="32" rx="8" fill="#F6F8FB" stroke="#E2E8F0" stroke-width="1.25"/>
+  <text x="88" y="230" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="11" font-weight="600" fill="#4A5B70">Sub A.1</text>
+
+  <!-- Arrow to accounting -->
+  <line x1="204" y1="258" x2="204" y2="286" stroke="#2D7261" stroke-width="2"/>
+  <polygon points="204,296 198,284 210,284" fill="#2D7261"/>
+
+  <rect x="56" y="304" width="296" height="64" rx="12" fill="#E8F3F0" stroke="#C5DDD6" stroke-width="1.5"/>
+  <text x="204" y="330" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="11" font-weight="700" fill="#245A4E" letter-spacing="0.06em">GROUP ACCOUNTING</text>
+  <text x="204" y="350" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="12" font-weight="600" fill="#0A1B30">Acquisitions ï¿½ Goodwill ï¿½ NCI</text>
+
+  <!-- Right panel: flow result -->
+  <rect x="392" y="76" width="200" height="292" rx="14" fill="#0A1B30"/>
+  <text x="492" y="112" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="11" font-weight="700" fill="#9AD4C4" letter-spacing="0.08em">RESULT</text>
+  <text x="492" y="142" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">Consolidated</text>
+  <text x="492" y="164" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">Reporting</text>
+
+  <rect x="416" y="192" width="152" height="36" rx="8" fill="#245A4E"/>
+  <text x="492" y="214" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">Audit trail</text>
+
+  <rect x="416" y="240" width="152" height="36" rx="8" fill="#245A4E"/>
+  <text x="492" y="262" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">Backing calcs</text>
+
+  <rect x="416" y="288" width="152" height="36" rx="8" fill="#2D7261"/>
+  <text x="492" y="310" text-anchor="middle" font-family="Instrument Sans, Arial, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">Drill-down</text>
+
+  <!-- Connector into result panel -->
+  <line x1="352" y1="336" x2="380" y2="336" stroke="#2D7261" stroke-width="2"/>
+  <polygon points="392,336 380,330 380,342" fill="#2D7261"/>
 </svg>
