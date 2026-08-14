@@ -714,31 +714,32 @@ ul { list-style: none; }
 .mod-intro-gl {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  align-items: center;
+  gap: 20px;
   list-style: none;
-  margin: 4px 0 0;
+  margin: 8px 0 0;
   padding: 0;
 }
 .mod-intro-gl li {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border: 1px solid var(--teal-line);
-  border-radius: var(--r-pill);
-  padding: 10px 18px;
-  min-height: 52px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  min-height: 0;
 }
 .mod-intro-gl-logo {
   display: block;
-  height: 32px;
+  height: 36px;
   width: auto;
-  max-width: 120px;
+  max-width: 140px;
   object-fit: contain;
 }
 .mod-intro-gl-logo--qb {
-  height: 28px;
-  max-width: 160px;
+  height: 32px;
+  max-width: 180px;
 }
 .mod-positioning {
   padding: 72px 0;

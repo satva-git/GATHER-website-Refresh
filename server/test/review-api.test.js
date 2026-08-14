@@ -276,7 +276,7 @@ describe('Review API integration', () => {
       '/group-financial-reporting/complex-consolidations/?review=test-token'
     );
     assert.equal(pageRes.status, 200);
-    assert.match(String(pageRes.json || ''), /Complex Consolidations, Managed with Confidence/);
+    assert.match(String(pageRes.json || ''), /Automate Complex Consolidation scenarios supported by a clear audit trail/);
   });
 
   it('supports pin and reaction endpoints', async () => {
