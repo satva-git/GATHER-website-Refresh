@@ -486,7 +486,15 @@ app.get(
   sendComplexConsolidationsPage
 );
 
-app.use(express.static(ROOT, { index: false }));
+app.use(express.static(ROOT, {
+  index: false,
+  setHeaders: function (res, filePath) {
+    if (/\.(html?|gif)$/i.test(filePath)) {
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+      res.set('Pragma', 'no-cache');
+    }
+  }
+}));
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
