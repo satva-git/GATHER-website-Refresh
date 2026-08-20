@@ -27,11 +27,13 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html _site/
+          cp HomePage.html _site/ 2>/dev/null || true
           cp site.webmanifest _site/ 2>/dev/null || true
           cp .nojekyll _site/ 2>/dev/null || true
           cp -r assets _site/
           cp -r modules _site/
           cp -r review _site/
+          cp -r group-financial-reporting _site/ 2>/dev/null || true
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -44,3 +46,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Trigger Render deploy
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$HOOK" ]; then
+            curl -fsS -X POST "$HOOK"
+          else
+            echo "RENDER_DEPLOY_HOOK secret not set; skipping Render trigger"
+          fi

@@ -843,17 +843,23 @@ ul { list-style: none; }
 .mod-advanced-capability-content .body { margin: 0; font-size: 15px; }
 .mod-advanced-capability-action { flex-shrink: 0; }
 .cc-promo-visual {
+  width: 100%;
+  background: #fff;
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
+  box-shadow: 0 12px 40px rgba(10, 27, 48, 0.06);
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 4px 24px rgba(10, 27, 48, 0.06);
 }
 .cc-promo-visual img,
 .cc-promo-visual svg {
   display: block;
   width: 100%;
   height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  image-rendering: auto;
+  background: #fff;
+  border-radius: inherit;
 }
 .mod-overview-card {
   background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg);
@@ -1170,9 +1176,11 @@ ul { list-style: none; }
 /* Content images — click to zoom */
 img.journey-zoomable {
   cursor: zoom-in;
+}
+/* Avoid opacity/transform on GIFs — they freeze animation in Chromium */
+img.journey-zoomable:not([src*=".gif"]) {
   transition: transform 0.2s var(--ease);
 }
-/* Avoid opacity changes on GIFs — they freeze animation in Chromium */
 img.journey-zoomable:not([src*=".gif"]):hover {
   opacity: 0.92;
   transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
