@@ -488,7 +488,7 @@ app.get(
 
 app.get('/assets/images/complex-consolidations-homepage-visual.png', (_req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.redirect(302, '/assets/images/complex-consolidations-homepage-visual.gif?v=20260820-approved');
+  res.redirect(302, '/assets/images/complex-consolidations-homepage-visual.gif?v=20260820-incoming');
 });
 
 app.use(express.static(ROOT, {
