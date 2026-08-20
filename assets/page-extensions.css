@@ -844,11 +844,11 @@ ul { list-style: none; }
 .mod-advanced-capability-action { flex-shrink: 0; }
 .cc-promo-visual {
   width: 100%;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: 0 12px 40px rgba(10, 27, 48, 0.06);
   overflow: hidden;
-  border-radius: 14px;
 }
 .cc-promo-visual img,
 .cc-promo-visual svg {
@@ -858,7 +858,8 @@ ul { list-style: none; }
   max-width: 100%;
   object-fit: contain;
   image-rendering: auto;
-  background: transparent;
+  background: #fff;
+  border-radius: inherit;
 }
 .mod-overview-card {
   background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg);
