@@ -202,14 +202,6 @@
       if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
     }
 
-    function restartAnimatedGif(img) {
-      var src = img.getAttribute('src') || '';
-      if (!/\.gif(\?|#|$)/i.test(src)) return;
-      img.removeAttribute('src');
-      void img.offsetWidth;
-      img.setAttribute('src', src);
-    }
-
     zoomImgs.forEach(function (img) {
       img.classList.add('journey-zoomable');
       img.setAttribute('tabindex', '0');
@@ -225,7 +217,6 @@
           openZoom(img);
         }
       });
-      restartAnimatedGif(img);
     });
 
     closeBtn.addEventListener('click', function (e) {
