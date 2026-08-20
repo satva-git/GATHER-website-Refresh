@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PageComment demo</title>
+  <link rel="stylesheet" href="page-comment.css">
+  <style>
+    body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; color: #1b2430; line-height: 1.5; }
+    main { max-width: 720px; margin: 0 auto; padding: 48px 24px 120px; }
+    h1 { font-size: 32px; }
+    section { margin-top: 40px; }
+    .card { padding: 20px; border: 1px solid #e6ebf1; border-radius: 12px; background: #f8fafb; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Right-click this page</h1>
+    <p>Use the context menu item <strong>Add comment here</strong>. Pins stay attached to the element you clicked.</p>
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>This demo has no host-site code, review bar, or backend. Comments are stored in this browser only.</p>
+    </section>
+    <section id="card-block">
+      <div class="card">
+        <h2>A sample block</h2>
+        <p>Right-click this card or the heading above it to place a comment on that element.</p>
+      </div>
+    </section>
+  </main>
+  <script src="page-comment.js" data-auto-init></script>
+</body>
+</html>
