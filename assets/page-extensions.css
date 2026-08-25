@@ -861,6 +861,12 @@ ul { list-style: none; }
   background: #fff;
   border-radius: inherit;
 }
+.cc-promo-visual img[src*=".gif"] {
+  /* Opacity/transform on GIF containers freeze animation in Chromium */
+  transform: none;
+  filter: none;
+  opacity: 1;
+}
 .mod-overview-card {
   background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg);
   padding: 24px 22px; box-shadow: 0 4px 16px rgba(10, 27, 48, 0.04);
