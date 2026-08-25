@@ -488,12 +488,12 @@ app.get(
 
 app.get('/assets/images/complex-consolidations-homepage-visual.png', (_req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.redirect(302, '/assets/images/complex-consolidations-step-acquisition.png?v=20260825i');
+  res.redirect(302, '/assets/images/complex-consolidations-step-acquisition.gif?v=20260825k');
 });
 
 app.get('/assets/images/complex-consolidations-homepage-visual.gif', (_req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.redirect(302, '/assets/images/complex-consolidations-step-acquisition.png?v=20260825i');
+  res.redirect(302, '/assets/images/complex-consolidations-step-acquisition.gif?v=20260825k');
 });
 
 app.use(express.static(ROOT, {
