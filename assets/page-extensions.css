@@ -849,6 +849,7 @@ ul { list-style: none; }
   border-radius: var(--r-lg);
   box-shadow: 0 12px 40px rgba(10, 27, 48, 0.06);
   overflow: hidden;
+  aspect-ratio: 1024 / 648;
 }
 .cc-promo-visual img,
 .cc-promo-visual svg {
