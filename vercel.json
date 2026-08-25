@@ -1,0 +1,37 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/(.*)\\.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/assets/images/complex-consolidations-homepage-visual.gif",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/HomePage.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/assets/images/complex-consolidations-homepage-visual.png",
+      "destination": "/assets/images/complex-consolidations-homepage-visual.gif",
+      "permanent": false
+    }
+  ]
+}

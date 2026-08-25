@@ -486,6 +486,16 @@ app.get(
   sendComplexConsolidationsPage
 );
 
+app.get('/assets/images/complex-consolidations-homepage-visual.png', (_req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.redirect(302, '/assets/images/complex-consolidations-step-acquisition.png?v=20260825g');
+});
+
+app.get('/assets/images/complex-consolidations-homepage-visual.gif', (_req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.redirect(302, '/assets/images/complex-consolidations-step-acquisition.png?v=20260825g');
+});
+
 app.use(express.static(ROOT, {
   index: false,
   setHeaders: function (res, filePath) {

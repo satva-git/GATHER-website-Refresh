@@ -2,3 +2,4 @@ node_modules/
 deploy_pkg/
 server/data/
 server/data-test/
+.vercel/

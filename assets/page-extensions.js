@@ -234,6 +234,31 @@
     });
   })();
 
+  /* Chromium often paints only the first GIF frame until the URL is reloaded in view */
+  (function restartVisibleGifs() {
+    function replay(img) {
+      var src = img.getAttribute('src') || '';
+      if (!/\.gif(\?|#|$)/i.test(src)) return;
+      var next = src.replace(/([?&])replay=\d+/g, '$1').replace(/[?&]$/, '');
+      next += (next.indexOf('?') === -1 ? '?' : '&') + 'replay=' + Date.now();
+      img.src = next;
+    }
+    var gifs = Array.prototype.slice.call(document.querySelectorAll('img[src*=".gif"]'));
+    if (!gifs.length) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      gifs.forEach(replay);
+      return;
+    }
+    var gifIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        replay(entry.target);
+        gifIo.unobserve(entry.target);
+      });
+    }, { threshold: 0.2 });
+    gifs.forEach(function (img) { gifIo.observe(img); });
+  })();
+
   if (typeof IntersectionObserver !== 'undefined') {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
