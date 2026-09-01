@@ -3,3 +3,5 @@ deploy_pkg/
 server/data/
 server/data-test/
 .vercel/
+.vercel
+.env*

@@ -480,6 +480,7 @@
       trigger.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
         
         var isOpen = item.classList.contains('open');
         closeNavDrops();

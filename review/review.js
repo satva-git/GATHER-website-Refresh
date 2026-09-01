@@ -120,6 +120,9 @@
   function isStaticHost() {
     var host = window.location.hostname;
     return host.endsWith('github.io') ||
+      host.endsWith('vercel.app') ||
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
       window.location.protocol === 'file:';
   }
 

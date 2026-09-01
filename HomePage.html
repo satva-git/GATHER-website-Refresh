@@ -1502,7 +1502,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   .gather-diff-card{padding:18px 16px;gap:14px}
 }
 </style>
-<link rel="stylesheet" href="assets/page-extensions.css?v=20260901b"/>
+<link rel="stylesheet" href="assets/page-extensions.css?v=20260901c"/>
 <link rel="preload" as="image" href="assets/images/complex-consolidations-step-acquisition.gif?v=20260825k"/>
 </head>
 <body id="top">
@@ -2810,43 +2810,8 @@ window.addEventListener('scroll', () => {
   progress.style.width = pct + '%';
 }, {passive:true});
 
-/* Nav dropdowns */
-function closeNavDrops(except){
-  document.querySelectorAll('.nav-item--drop').forEach(i => {
-    if(except && i === except) return;
-    i.classList.remove('open','is-closing');
-    i.querySelector('.nav-drop-trigger').setAttribute('aria-expanded', 'false');
-  });
-}
-document.querySelectorAll('.nav-item--drop').forEach(item => {
-  const trigger = item.querySelector('.nav-drop-trigger');
-  const menu = item.querySelector('.nav-drop');
-  trigger.addEventListener('click', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    const visuallyOpen = item.classList.contains('open') ||
-      (!item.classList.contains('is-closing') && getComputedStyle(menu).visibility !== 'hidden');
-    closeNavDrops();
-    if(visuallyOpen){
-      item.classList.add('is-closing');
-      trigger.setAttribute('aria-expanded', 'false');
-      trigger.blur();
-    } else {
-      item.classList.remove('is-closing');
-      item.classList.add('open');
-      trigger.setAttribute('aria-expanded', 'true');
-    }
-  });
-  item.addEventListener('mouseleave', () => {
-    item.classList.remove('is-closing');
-  });
-});
-document.addEventListener('click', () => {
-  closeNavDrops();
-});
-document.querySelectorAll('.nav-drop').forEach(menu => {
-  menu.addEventListener('click', e => e.stopPropagation());
-});
+/* Nav dropdowns live in assets/page-extensions.js so homepage
+   and inner pages share one handler (duplicate listeners cancel open). */
 
 /* Scroll reveal */
 const io = new IntersectionObserver(entries => {
@@ -2981,8 +2946,8 @@ function filterFaq(cat, btn){
   goTo(0);
 })();
 </script>
-<link rel="stylesheet" href="review/review.css?v=20260721-edit-author-1"/>
-<script src="assets/page-extensions.js?v=20260901b" defer></script>
-<script src="review/review.js?v=20260721-edit-author-1" defer></script>
+<link rel="stylesheet" href="review/review.css?v=20260901c"/>
+<script src="assets/page-extensions.js?v=20260901c" defer></script>
+<script src="review/review.js?v=20260901c" defer></script>
 </body>
 </html>

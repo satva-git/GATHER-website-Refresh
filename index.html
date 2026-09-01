@@ -1497,7 +1497,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   .gather-diff-card{padding:18px 16px;gap:14px}
 }
 </style>
-<link rel="stylesheet" href="assets/page-extensions.css?v=20260901b"/>
+<link rel="stylesheet" href="assets/page-extensions.css?v=20260901c"/>
 <link rel="preload" as="image" href="assets/images/complex-consolidations-step-acquisition.gif?v=20260825k"/>
 </head>
 <body id="top">
@@ -2805,77 +2805,8 @@ window.addEventListener('scroll', () => {
   progress.style.width = pct + '%';
 }, {passive:true});
 
-/* Nav dropdowns */
-function closeNavDrops(except){
-  document.querySelectorAll('.nav-item--drop').forEach(i => {
-    if(except && i === except) return;
-    i.classList.remove('open','is-closing');
-    const trigger = i.querySelector('.nav-drop-trigger');
-    if(trigger) trigger.setAttribute('aria-expanded', 'false');
-  });
-}
-document.querySelectorAll('.nav-item--drop').forEach(item => {
-  const trigger = item.querySelector('.nav-drop-trigger');
-  const menu = item.querySelector('.nav-drop');
-  if(!trigger || !menu) return;
-  
-  trigger.addEventListener('click', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const isOpen = item.classList.contains('open');
-    closeNavDrops();
-    
-    if(isOpen){
-      item.classList.remove('open');
-      trigger.setAttribute('aria-expanded', 'false');
-      trigger.blur();
-    } else {
-      item.classList.add('open');
-      trigger.setAttribute('aria-expanded', 'true');
-    }
-  });
-  
-  trigger.addEventListener('keydown', e => {
-    if(e.key === 'Escape' && item.classList.contains('open')){
-      e.preventDefault();
-      item.classList.remove('open');
-      trigger.setAttribute('aria-expanded', 'false');
-      trigger.focus();
-    }
-  });
-  
-  item.addEventListener('mouseleave', () => {
-    item.classList.remove('is-closing');
-  });
-});
-
-document.addEventListener('click', e => {
-  if(!nav || nav.contains(e.target)) return;
-  closeNavDrops();
-}, true);
-
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape'){
-    closeNavDrops();
-  }
-});
-
-document.querySelectorAll('.nav-drop').forEach(menu => {
-  menu.addEventListener('click', e => {
-    e.stopPropagation();
-    
-    const link = e.target.closest('a');
-    if(link){
-      const item = link.closest('.nav-item--drop');
-      if(item){
-        item.classList.remove('open');
-        const trigger = item.querySelector('.nav-drop-trigger');
-        if(trigger) trigger.setAttribute('aria-expanded', 'false');
-      }
-    }
-  });
-});
+/* Nav dropdowns live in assets/page-extensions.js so homepage
+   and inner pages share one handler (duplicate listeners cancel open). */
 
 /* Scroll reveal */
 const io = new IntersectionObserver(entries => {
@@ -3010,8 +2941,8 @@ function filterFaq(cat, btn){
   goTo(0);
 })();
 </script>
-<link rel="stylesheet" href="review/review.css?v=20260721-edit-author-1"/>
-<script src="assets/page-extensions.js?v=20260901b" defer></script>
-<script src="review/review.js?v=20260721-edit-author-1" defer></script>
+<link rel="stylesheet" href="review/review.css?v=20260901c"/>
+<script src="assets/page-extensions.js?v=20260901c" defer></script>
+<script src="review/review.js?v=20260901c" defer></script>
 </body>
 </html>
