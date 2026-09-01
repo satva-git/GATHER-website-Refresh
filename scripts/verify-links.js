@@ -34,10 +34,12 @@ function collectPages(dir, acc) {
 const pages = [
   path.join(ROOT, 'index.html'),
   path.join(ROOT, 'HomePage.html'),
+  path.join(ROOT, 'knowledge-centre.html'),
   ...(() => {
     const modulePages = [];
     collectPages(path.join(ROOT, 'modules'), modulePages);
     collectPages(path.join(ROOT, 'group-financial-reporting'), modulePages);
+    collectPages(path.join(ROOT, 'knowledge-centre'), modulePages);
     return modulePages;
   })()
 ];

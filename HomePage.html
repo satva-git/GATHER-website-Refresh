@@ -246,73 +246,74 @@ ul{list-style:none}
 .nav-links a:hover::after,
 .nav-drop-trigger:hover::after,
 .nav-item--drop.open > .nav-drop-trigger::after{transform:scaleX(1)}
-/* Mega menus — match live gather.nexus structure */
+/* Mega menus — match live gather.nexus dropdowns */
+#nav:has(.nav-item--drop.open){
+  background:#fff;
+}
 .nav-drop{
-  position:absolute;top:calc(100% + 14px);left:50%;
+  position:absolute;top:calc(100% + 8px);left:50%;
   transform:translateX(-50%) translateY(6px);
   list-style:none;margin:0;
-  background:#fff;border:1px solid var(--line);
-  border-radius:14px;box-shadow:0 18px 48px rgba(10,27,48,.12);
+  background:#fff;
   opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity .18s var(--ease),transform .18s var(--ease),visibility .18s;
   z-index:300;
 }
 .nav-item--drop.open > .nav-drop,
-.nav-item--drop:hover > .nav-drop,
-.nav-item--drop:focus-within > .nav-drop{
+.nav-item--drop:hover:not(.is-closing) > .nav-drop,
+.nav-item--drop:focus-within:not(.is-closing) > .nav-drop{
   opacity:1;visibility:visible;pointer-events:auto;
   transform:translateX(-50%) translateY(0);
 }
+.nav-links > li.nav-item--mega{position:static}
 .nav-drop--mega{
-  left:0;right:0;width:min(920px,92vw);
-  transform:translateX(0) translateY(6px);
-  padding:28px 28px 20px;
+  left:0;right:0;width:100%;
+  top:100%;
+  transform:none;
+  padding:31px 0 24px;
+  border:0;border-radius:0;
+  box-shadow:0 10px 20px 0 rgba(148,148,148,.12);
+  background:#fff;
 }
 .nav-item--drop.open > .nav-drop--mega,
-.nav-item--drop:hover > .nav-drop--mega,
-.nav-item--drop:focus-within > .nav-drop--mega{
-  transform:translateX(0) translateY(0);
+.nav-item--drop:hover:not(.is-closing) > .nav-drop--mega,
+.nav-item--drop:focus-within:not(.is-closing) > .nav-drop--mega{
+  transform:none;
 }
-.nav-item--modules{position:static}
-.nav-item--modules .nav-drop--mega{
-  left:50%;
-  transform:translateX(-50%) translateY(6px);
+.mega-menu-inner{
+  width:100%;
+  padding-inline:var(--nav-gutter);
 }
-.nav-item--modules.open > .nav-drop--mega,
-.nav-item--modules:hover > .nav-drop--mega,
-.nav-item--modules:focus-within > .nav-drop--mega{
-  transform:translateX(-50%) translateY(0);
-}
-.nav-drop--integrations{
-  width:min(640px,90vw);
-  padding:28px 28px 20px;
+.nav-drop a::after{
+  display:none !important;
+  content:none !important;
 }
 .nav-drop--resources{
-  min-width:260px;padding:10px;left:auto;right:0;
-  transform:translateX(0) translateY(6px);
+  width:300px;padding:0;left:auto;right:0;top:calc(100% + 10px);
+  transform:none;
+  border:0;border-radius:0;
+  box-shadow:0 10px 20px 0 rgba(148,148,148,.12);
 }
 .nav-item--drop.open > .nav-drop--resources,
-.nav-item--drop:hover > .nav-drop--resources,
-.nav-item--drop:focus-within > .nav-drop--resources{
-  transform:translateX(0) translateY(0);
+.nav-item--drop:hover:not(.is-closing) > .nav-drop--resources,
+.nav-item--drop:focus-within:not(.is-closing) > .nav-drop--resources{
+  transform:none;
 }
 .mega-menu{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:8px 28px;
-  align-items:start;
+  display:flex;
+  align-items:flex-start;
 }
-.mega-menu--2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.mega-menu-cell{
-  display:flex;flex-direction:column;min-width:0;
-}
-.mega-menu-cell .mega-menu-box{padding-bottom:0}
+.mega-menu--2 .mega-menu-box{width:50%}
 .mega-menu-box{
-  display:block;padding:8px 6px 12px;
-  border-radius:10px;text-decoration:none;color:inherit;
-  transition:background .15s;
+  width:33.33%;
+  padding:0 20px;
+  box-sizing:border-box;
 }
-.mega-menu-box:hover{background:var(--paper-2)}
+.mega-menu-box:first-child{padding-left:0}
+.mega-menu-box a,
+.mega-menu-box > a{
+  display:block;text-decoration:none;color:inherit;
+}
 .mega-menu-box::after,
 .mega-menu-related::after,
 .nav-resources-list a::after,
@@ -321,69 +322,82 @@ ul{list-style:none}
   content:none !important;
 }
 .mega-menu-ic{
-  display:flex;align-items:center;justify-content:flex-start;
-  width:40px;height:40px;margin-bottom:10px;color:var(--ink);
+  display:block;width:40px;height:40px;color:#000;
 }
 .mega-menu-ic svg{width:40px;height:40px;display:block}
 .mega-menu-box h2{
-  margin:0 0 8px;font-size:16px;font-weight:700;line-height:1.3;color:var(--ink);
+  margin:0;padding:15px 0;
+  font-size:18px;font-weight:500;line-height:1.3;color:#000;
 }
-.mega-menu-box:hover h2{color:var(--teal-deep)}
+.mega-menu-box a:hover h2{
+  color:#2B7869;text-decoration:underline;
+}
 .mega-menu-box p{
-  margin:0;font-size:13.5px;line-height:1.45;font-weight:450;color:var(--text-mid);
+  margin:0;color:#4D4D4D;
+  font-size:14px;font-weight:400;line-height:22px;letter-spacing:-.14px;
 }
-.mega-menu-box p strong{font-weight:700;color:var(--ink)}
+.mega-menu-box p strong{font-weight:700;color:#000}
 .mega-menu-related{
-  display:block;margin:0 6px 4px;
-  padding:11px 8px 10px;
-  border-top:1px solid var(--line);
+  display:block;margin-top:10px;
+  padding:15px 0 0;
+  border-top:1px solid #ccc;
   text-decoration:none;
 }
 .mega-menu-related-label{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:13.5px;font-weight:600;color:var(--teal-deep);line-height:1.3;
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:17px;font-weight:500;color:#2B7869;line-height:1.3;
 }
 .mega-menu-related-label svg{
-  width:11px;height:11px;flex-shrink:0;
-  transition:transform .15s;
+  width:16px;height:16px;flex-shrink:0;position:relative;top:1px;
 }
 .mega-menu-related:hover .mega-menu-related-label{text-decoration:underline}
-.mega-menu-related:hover .mega-menu-related-label svg{transform:translateX(2px)}
 .mega-menu-related-desc{
-  display:block;margin-top:3px;
-  font-size:12.5px;line-height:1.4;color:var(--text-mid);font-weight:450;
+  display:block;margin-top:2px;padding-top:2px;
+  font-size:14px;line-height:22px;color:#4D4D4D;font-weight:400;
 }
 .mega-menu-footer{
-  margin-top:8px;padding-top:16px;border-top:1px solid var(--line);
+  margin-top:30px;padding-top:30px;border-top:2px solid #D9D9D9;
   max-width:280px;
 }
 .mega-menu-footer .nav-cta{
-  display:block;text-align:center;width:100%;
+  display:inline-block;text-align:center;
+  width:auto;min-width:210px;
   box-sizing:border-box;
+  font-size:13px;font-weight:500;padding:10px 18px;
 }
 .mega-menu-note{
-  margin:8px 0 0;font-size:12px;color:var(--text-mid);text-align:center;
+  margin:8px 0 0;font-size:12px;color:#6b7280;text-align:center;
 }
 .nav-brand-mark{
-  display:block;width:40px;height:40px;margin-bottom:10px;
+  display:block;
   background-image:url(https://gather.nexus/wp-content/uploads/2026/03/gather-nexus-integrations-xero-quickbooks-client-logos.webp);
   background-repeat:no-repeat;
 }
-.nav-brand-mark--qb{background-position:-251px -102px;background-size:420px auto;width:120px;height:36px}
-.nav-brand-mark--xero{background-position:0 -102px;background-size:420px auto;width:100px;height:36px}
-.nav-resources-list{display:flex;flex-direction:column;gap:2px}
+.nav-brand-mark--qb{background-position:-69px -99px;width:175px;height:50px}
+.nav-brand-mark--xero{background-position:0 -97px;width:50px;height:50px}
+.nav-resources-list{display:flex;flex-direction:column}
 .nav-resources-list a{
-  display:flex;align-items:center;gap:12px;
-  padding:11px 12px;border-radius:8px;
-  font-size:14.5px;font-weight:600;color:var(--ink);
-  text-decoration:none;
+  display:flex;align-items:center;gap:0;
+  padding:15px;
+  border-bottom:1px solid #D9D9D9;
+  font-size:18px;font-weight:500;color:#000;line-height:1.2;
+  text-decoration:none;border-radius:0;
 }
+.nav-resources-list a:last-child{border-bottom:0}
 .nav-resources-list a::after{display:none !important}
-.nav-resources-list a:hover{background:var(--paper-2)}
+.nav-resources-list a:hover{background:#f3f3f3}
+.nav-resources-list a:hover .nav-resources-label{color:#2B7869;text-decoration:underline}
+.nav-resources-label{padding-left:15px}
 .nav-resources-ic{
-  width:22px;height:22px;flex-shrink:0;color:var(--text-mid);opacity:.85;
+  width:31px;height:31px;flex-shrink:0;
+  background-image:url(https://gather.nexus/wp-content/uploads/2026/03/resources-tools-documents.webp);
+  background-repeat:no-repeat;
+  display:inline-block;
 }
-.nav-resources-ic svg{width:100%;height:100%;display:block}
+.nav-resources-ic--guides{background-position:-49px 0}
+.nav-resources-ic--insights{background-position:0 0}
+.nav-resources-ic--updates{background-position:-96px 0}
+.nav-resources-ic--video{background-position:-141px 0}
 .nav-right{
   display:flex;align-items:center;gap:clamp(8px,1vw,12px);
   flex-shrink:0;justify-self:end;
@@ -392,7 +406,7 @@ ul{list-style:none}
   display:inline-flex;align-items:center;gap:7px;
   font-size:14px;font-weight:500;color:var(--text-mid);padding:8px 4px;transition:color .15s;
 }
-.nav-login svg{width:16px;height:16px;flex-shrink:0}
+.nav-login svg{width:16px;height:16px;flex-shrink:0;display:block}
 .nav-login:hover{color:var(--ink)}
 .nav-cta{
   font-size:13.5px;font-weight:600;background:var(--teal);color:#fff;
@@ -401,11 +415,11 @@ ul{list-style:none}
 }
 .nav-cta:hover{background:var(--teal-deep);transform:translateY(-1px);box-shadow:0 8px 18px rgba(var(--teal-rgb),.28)}
 @media (max-width:1100px){
-  .mega-menu{grid-template-columns:1fr;gap:4px}
-  .mega-menu--2{grid-template-columns:1fr}
-  .nav-drop--mega,.nav-drop--integrations{width:min(420px,92vw);max-height:70vh;overflow:auto}
+  .mega-menu{flex-direction:column}
+  .mega-menu-box,.mega-menu--2 .mega-menu-box{width:100%;padding:12px 0}
+  .mega-menu-box:first-child{padding-left:0}
+  .nav-drop--mega{max-height:70vh;overflow:auto}
 }
-
 /* ============================================================
    HERO
 ============================================================ */
@@ -1502,18 +1516,17 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
     </a>
     <div class="nav-center">
     <ul class="nav-links">
-      <li class="nav-item--drop nav-item--modules">
+      <li class="nav-item--drop nav-item--mega">
         <button type="button" class="nav-drop-trigger" aria-expanded="false" aria-haspopup="true">
           Modules
           <svg class="nav-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="nav-drop nav-drop--mega" role="menu" aria-label="Modules">
+          <div class="mega-menu-inner">
           <div class="mega-menu">
-            <div class="mega-menu-cell">
-              <a class="mega-menu-box" href="modules/group-reporting.html">
-                <span class="mega-menu-ic" aria-hidden="true">
-                  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M30.9 19.4V7l-6-6H2.3v36.5h17.5c1.6 1 3.5 1.5 5.4 1.5 5.8 0 10.6-4.8 10.6-10.6 0-3.6-1.9-6.9-5-8.9zM23.6 2.2l5.5 5.5v.5h-5.5V2.2zM3.9 35.8V2.6h18v7.2h7.2v8.6c-1.1-.4-2.2-.5-3.4-.5-5.8 0-10.6 4.8-10.6 10.6 0 2.5.9 5 2.5 6.9l.5.6H3.9zM25.3 37.4c-4.9 0-9-4-9-9s4-9 9-9 9 4 9 9-4 9-9 9z" fill="currentColor"/><path d="M27 23.5v-1.4h-1.7v1.4c-1.8.2-3.8 1.1-3.8 3 0 1.7 1.9 2.8 3.8 3v3.2c-1-.2-2.1-.7-2.1-1.5v-.1h-1.7v.1c0 1.8 1.9 2.8 3.8 3v1.4H27v-1.4c1.8-.2 3.8-1.1 3.8-3 0-1.9-2-2.8-3.8-3V25c.6.1 2.1.5 2.1 1.5v.1h1.7v-.1c0-1.8-2-2.8-3.8-3z" fill="currentColor"/></svg>
-                </span>
+            <div class="mega-menu-box">
+              <a href="modules/group-reporting.html">
+                <span class="mega-menu-ic" aria-hidden="true"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><g fill="#000"><path d="M30.9 19.4V7l-6-6H2.3v36.5h17.5c1.6 1 3.5 1.5 5.4 1.5 5.8 0 10.6-4.8 10.6-10.6 0-3.6-1.9-6.9-5-8.9zM23.6 2.2l5.5 5.5v.5h-5.5V2.2zM3.9 35.8V2.6h18v7.2h7.2v8.6c-1.1-.4-2.2-.5-3.4-.5-5.8 0-10.6 4.8-10.6 10.6 0 2.5.9 5 2.5 6.9l.5.6H3.9zM25.3 37.4c-4.9 0-9-4-9-9s4-9 9-9 9 4 9 9-4 9-9 9z"/><rect x="5.5" y="5.9" width="10.3" height="1.7"/><rect x="5.5" y="10.8" width="13.8" height="1.7"/><rect x="5.5" y="15.7" width="8.1" height="1.7"/><path d="M27 23.5v-1.4h-1.7v1.4c-1.8.2-3.8 1.1-3.8 3 0 1.7 1.9 2.8 3.8 3v3.2c-1-.2-2.1-.7-2.1-1.5v-.1h-1.7v.1c0 1.8 1.9 2.8 3.8 3v1.4H27v-1.4c1.8-.2 3.8-1.1 3.8-3 0-1.9-2-2.8-3.8-3V25c.6.1 2.1.5 2.1 1.5v.1h1.7v-.1c0-1.8-2-2.8-3.8-3zM25.3 28c-1-.2-2.1-.7-2.1-1.5 0-1 1.5-1.4 2.1-1.5V28zM29.1 31.2c0 1-1.5 1.4-2.1 1.5v-3c.5.1 2.1.4 2.1 1.5z"/></g></svg></span>
                 <h2>Group Financial Reporting</h2>
                 <p>Consolidated Financial Reporting with multi-level Drill Down for data validation and analysis. Full audit trail with user logs</p>
               </a>
@@ -1525,24 +1538,25 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
                 <span class="mega-menu-related-desc">Acquisitions, disposals and layered ownership structures.</span>
               </a>
             </div>
-            <a class="mega-menu-box" href="modules/intercompany-control.html">
-              <span class="mega-menu-ic" aria-hidden="true">
-                <svg viewBox="0 0 40 38" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 8a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 2.2a5.8 5.8 0 1 0 0 11.6 5.8 5.8 0 0 0 0-11.6z"/><path d="M8 28c2.8-3.2 6.6-5 12-5s9.2 1.8 12 5l-1.6 1.5C27.8 27 24.6 25.6 20 25.6S12.2 27 9.6 29.5L8 28z"/><path d="M4 18h4v2H4v-2zm28 0h4v2h-4v-2zM18 4h2v4h-2V4zm0 28h2v4h-2v-4z"/></svg>
-              </span>
-              <h2>Intercompany Control</h2>
-              <p>An integrated workflow for Intercompany Control, with automated Recharges, in-month counterparty balance visibility and real-time Automatched Reconciliations</p>
-            </a>
-            <a class="mega-menu-box" href="modules/group-planning.html">
-              <span class="mega-menu-ic" aria-hidden="true">
-                <svg viewBox="0 0 40 40" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 6a2 2 0 0 1 2 2v1.1a10 10 0 0 1 4.2 1.7l.8-.8a2 2 0 1 1 2.8 2.8l-.8.8A10 10 0 0 1 30.9 18H32a2 2 0 1 1 0 4h-1.1a10 10 0 0 1-1.7 4.2l.8.8a2 2 0 1 1-2.8 2.8l-.8-.8A10 10 0 0 1 22 30.9V32a2 2 0 1 1-4 0v-1.1a10 10 0 0 1-4.2-1.7l-.8.8a2 2 0 1 1-2.8-2.8l.8-.8A10 10 0 0 1 9.1 22H8a2 2 0 1 1 0-4h1.1a10 10 0 0 1 1.7-4.2l-.8-.8a2 2 0 1 1 2.8-2.8l.8.8A10 10 0 0 1 18 9.1V8a2 2 0 0 1 2-2zm0 8a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 2.5a2.5 2.5 0 0 1 .1 5H19v1.2h2V22h.4a3.5 3.5 0 1 0-.4-7H19v1.2h1.5a2.3 2.3 0 0 1 0 4.6z"/></svg>
-              </span>
-              <h2>Group Financial Planning</h2>
-              <p>Empower Senior Leadership with Division/Function level Budgets and roll up natively to Group level</p>
-            </a>
+            <div class="mega-menu-box">
+              <a href="modules/intercompany-control.html">
+                <span class="mega-menu-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="38" viewBox="0 0 40 38" fill="none" aria-hidden="true"><g clip-path="url(#nav-ic-clip)" fill="#000"><path d="M39.96 30.322L39.7602 29.5894C39.627 29.0566 39.294 28.5904 38.7612 28.324C38.295 28.1242 37.6956 28.0576 37.1628 28.2574L33.966 28.99H33.8928L37.0962 25.7932L34.299 22.3966C34.8318 21.4642 35.298 20.4652 35.5644 19.3995L39.96 18.9333V13.7385L35.5644 13.2723C35.298 12.2067 34.8984 11.2077 34.299 10.2753L37.0962 6.87874L33.4332 3.21573L30.0366 6.01293C29.1042 5.48013 28.1052 5.01393 27.0396 4.74753L26.5734 0.351929H21.3786L20.9124 4.74753C19.8468 5.01393 18.8478 5.41353 17.9154 6.01293L14.5188 3.21573L10.8558 6.87874L13.653 10.2753C13.1202 11.2077 12.654 12.2067 12.3876 13.2723L7.99201 13.7385V18.9333L12.3876 19.3995C12.5341 19.979 12.714 20.5318 12.9604 21.0646C11.0889 21.3576 9.17083 22.643 7.99201 23.5621V21.664H0V37.648H7.99201V33.7852L20.0466 35.5834C20.4462 35.65 20.9124 35.65 21.312 35.65H27.1728C27.7056 35.65 28.305 35.5834 28.8378 35.3836L34.0326 34.3846C34.6986 34.2514 35.298 34.0516 35.8308 33.7186L39.4272 31.7206C39.8934 31.4542 40.0932 30.8548 39.96 30.322ZM6.66001 24.7276V36.316H1.332V22.996H6.66001V24.7276ZM9.32401 17.7345V14.9373L13.4532 14.5377L13.5864 14.0715C13.8528 12.8727 14.319 11.6739 15.0516 10.6083L15.318 10.2087L12.654 7.01194L14.652 5.01393L17.8488 7.67794L18.2484 7.41154C19.314 6.74554 20.5128 6.21273 21.7116 5.94633L22.1778 5.81313L22.5774 1.68393H25.3746L25.7742 5.81313L26.2404 5.94633C27.4392 6.21273 28.638 6.67894 29.7036 7.41154L30.1032 7.67794L33.3 5.01393L35.298 7.01194L32.634 10.2087L32.9004 10.6083C33.5664 11.6739 34.0992 12.8727 34.3656 14.0715L34.4988 14.5377L38.628 14.9373V17.7345L34.4988 18.1341L34.3656 18.6003C34.0992 19.7992 33.633 20.9979 32.9004 22.0636L32.634 22.4632L35.298 25.66L33.3 27.658L30.1032 24.994L29.7036 25.2604C28.8245 25.8131 27.8455 26.2594 26.8598 26.5524C27.2661 26.2061 27.5724 25.7465 27.7056 25.1938L27.8388 24.5944C27.8988 24.4079 27.9121 24.2214 27.8921 24.0482C30.7226 22.5897 32.634 19.7126 32.634 16.3359C32.634 11.5407 28.7712 7.67794 23.976 7.67794C19.1808 7.67794 15.318 11.5407 15.318 16.3359C15.318 18.3939 16.0373 20.2454 17.2228 21.7239C16.3636 21.3443 15.4246 21.1178 14.4322 21.0446C14.0393 20.2654 13.7329 19.4528 13.5864 18.6003L13.4532 18.1341L9.32401 17.7345ZM33.0136 29.1098L30.3696 29.4562C29.304 29.5894 28.2384 29.5228 27.1728 29.2564L26.9131 29.1964L27.0396 27.9244C28.1052 27.658 29.1042 27.2584 30.0366 26.659L33.0136 29.1098ZM26.64 22.9294L20.1931 22.5764C18.0753 21.2843 16.65 18.96 16.65 16.3359C16.65 12.2733 19.9134 9.00994 23.976 9.00994C28.0386 9.00994 31.302 12.2733 31.302 16.3359C31.302 19.2863 29.5305 21.8438 27.033 23.0093C26.9064 22.9627 26.7799 22.9294 26.64 22.9294ZM35.1648 32.653C34.6986 32.9194 34.2324 33.1192 33.7662 33.1858L28.5714 34.1848C28.1052 34.2514 27.639 34.318 27.1728 34.318H21.312C20.979 34.318 20.5794 34.318 20.2464 34.1848L7.99201 32.3866V25.327C8.72461 24.661 11.5218 22.3966 13.7196 22.3966C15.0516 22.3966 16.3836 22.7296 17.3826 23.329C17.982 23.662 18.648 23.8618 19.314 23.9284L26.5734 24.2614L26.4402 24.8608C26.307 25.3936 25.8408 25.7932 25.308 25.8598L17.0496 28.1242L26.973 30.5884C28.1718 30.8548 29.4372 30.9214 30.636 30.7882L34.2324 30.322L37.5624 29.5228H37.629C37.7622 29.4562 37.962 29.4562 38.1618 29.5228C38.295 29.5894 38.4282 29.7226 38.4948 29.9224L38.6946 30.655L35.1648 32.653ZM25.7476 27.1318L25.5811 28.8701L22.2444 28.0576L25.5078 27.1918C25.5877 27.1784 25.6677 27.1518 25.7476 27.1318Z"/><path d="M3.996 27.658C5.1282 27.658 5.994 26.7922 5.994 25.66C5.994 24.5278 5.1282 23.662 3.996 23.662C2.8638 23.662 1.998 24.5278 1.998 25.66C1.998 26.7922 2.8638 27.658 3.996 27.658ZM3.996 24.994C4.3956 24.994 4.662 25.2604 4.662 25.66C4.662 26.0596 4.3956 26.326 3.996 26.326C3.5964 26.326 3.33 26.0596 3.33 25.66C3.33 25.2604 3.5964 24.994 3.996 24.994Z"/><path d="M24.5221 11.7805V10.6816H23.3566V11.7805C22.1312 11.9537 20.7193 12.6796 20.7193 14.1648C20.7193 15.5501 22.038 16.356 23.3566 16.5491V19.0533C22.6307 18.9134 21.8848 18.5338 21.8848 17.8545V17.8012H20.7193V17.8545C20.7193 19.2597 22.038 20.0656 23.3566 20.2454V21.3377H24.5221V20.2388C25.7476 20.0656 27.1595 19.3397 27.1595 17.8545C27.1595 16.3693 25.7476 15.65 24.5221 15.4702V12.966C24.9417 13.0526 25.994 13.3456 25.994 14.1648V14.2181H27.1595V14.1648C27.1595 12.6796 25.7476 11.9604 24.5221 11.7805ZM23.3566 15.3636C22.6307 15.2171 21.8848 14.8308 21.8848 14.1648C21.8848 13.3456 22.9371 13.0526 23.3566 12.966V15.3636ZM25.994 17.8545C25.994 18.6736 24.9417 18.9667 24.5221 19.0533V16.6557C24.9417 16.7422 25.994 17.0353 25.994 17.8545Z"/></g><defs><clipPath id="nav-ic-clip"><rect width="40" height="37.296" fill="white" transform="translate(0 0.351929)"/></clipPath></defs></svg></span>
+                <h2>Intercompany Control</h2>
+                <p>An integrated workflow for Intercompany Control, with automated Recharges, in-month counterparty balance visibility and real-time Automatched Reconciliations</p>
+              </a>
+            </div>
+            <div class="mega-menu-box">
+              <a href="modules/group-planning.html">
+                <span class="mega-menu-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true"><g clip-path="url(#nav-plan-clip)" fill="#000"><path d="M20 8.5C13.6571 8.5 8.5 13.6571 8.5 20C8.5 26.3429 13.6571 31.5 20 31.5C26.3429 31.5 31.5 26.3429 31.5 20C31.5 13.6571 26.3429 8.5 20 8.5ZM20 29.9357C14.5214 29.9357 10.0643 25.4786 10.0643 20C10.0643 14.5214 14.5214 10.0643 20 10.0643C25.4786 10.0643 29.9357 14.5214 29.9357 20C29.9357 25.4786 25.4786 29.9357 20 29.9357Z"/><path d="M37.9571 16.0357C36.25 16.0357 35.1786 14.9285 34.75 13.8928C34.3214 12.8571 34.2929 11.3214 35.5 10.1071C36.3 9.30708 36.3 8.01423 35.5 7.21423L32.7786 4.4928C31.9786 3.6928 30.6857 3.6928 29.8857 4.4928C28.6786 5.69994 27.1429 5.67137 26.1 5.2428C25.0643 4.81423 23.9571 3.7428 23.9571 2.03565C23.9571 0.907083 23.0429 -0.00720215 21.9143 -0.00720215H18.0714C16.9429 -0.00720215 16.0286 0.907083 16.0286 2.03565C16.0286 3.7428 14.9214 4.81423 13.8857 5.2428C12.85 5.67137 11.3071 5.69994 10.1 4.4928C9.71429 4.10708 9.2 3.8928 8.65714 3.8928C8.11429 3.8928 7.6 4.10708 7.21429 4.4928L4.49286 7.21423C3.69286 8.01423 3.69286 9.30708 4.49286 10.1071C5.7 11.3142 5.67143 12.8499 5.24286 13.8928C4.81429 14.9357 3.74286 16.0357 2.03572 16.0357C0.907145 16.0357 -0.00714111 16.9499 -0.00714111 18.0785V21.9214C-0.00714111 23.0499 0.907145 23.9642 2.03572 23.9642C3.74286 23.9642 4.81429 25.0714 5.24286 26.1071C5.67143 27.1428 5.7 28.6857 4.49286 29.8928C3.69286 30.6928 3.69286 31.9857 4.49286 32.7857L7.21429 35.5071C8.01429 36.3071 9.30715 36.3071 10.1071 35.5071C11.3143 34.2999 12.8571 34.3285 13.8929 34.7571C14.9286 35.1856 16.0357 36.2571 16.0357 37.9642C16.0357 39.0928 16.95 40.0071 18.0786 40.0071H21.9214C23.05 40.0071 23.9643 39.0928 23.9643 37.9642C23.9643 36.2571 25.0714 35.1856 26.1071 34.7571C27.1429 34.3285 28.6786 34.2999 29.8929 35.5071C30.6929 36.3071 31.9857 36.3071 32.7857 35.5071L35.5 32.7857C35.8857 32.3999 36.1 31.8857 36.1 31.3428C36.1 30.7999 35.8857 30.2857 35.5 29.8999C34.2929 28.6928 34.3214 27.1571 34.75 26.1142C35.1786 25.0785 36.25 23.9714 37.9571 23.9714C39.0857 23.9714 40 23.0571 40 21.9285V18.0857C40 16.9571 39.0857 16.0428 37.9571 16.0428V16.0357ZM38.4357 21.9214C38.4357 22.1857 38.2214 22.3999 37.9571 22.3999C35.8857 22.3999 34.1 23.5928 33.3071 25.5071C32.5143 27.4285 32.9286 29.5285 34.3929 30.9928C34.4857 31.0857 34.5357 31.2071 34.5357 31.3357C34.5357 31.4642 34.4857 31.5857 34.3929 31.6785L31.6786 34.3999C31.4929 34.5857 31.1857 34.5857 31 34.3999C29.5357 32.9356 27.4286 32.5142 25.5143 33.3142C23.5929 34.1071 22.4071 35.8928 22.4071 37.9642C22.4071 38.2285 22.1929 38.4428 21.9286 38.4428H18.0857C17.8214 38.4428 17.6071 38.2285 17.6071 37.9642C17.6071 35.8928 16.4143 34.1071 14.5 33.3142C13.8571 33.0499 13.1929 32.9214 12.5429 32.9214C11.25 32.9214 9.99286 33.4356 9.01429 34.4071C8.82857 34.5928 8.52143 34.5928 8.33572 34.4071L5.61429 31.6857C5.42857 31.4999 5.42857 31.1928 5.61429 31.0071C7.07857 29.5428 7.5 27.4428 6.7 25.5214C5.90715 23.6071 4.12143 22.4142 2.05 22.4142C1.78572 22.4142 1.57143 22.1999 1.57143 21.9357V18.0928C1.57143 17.8285 1.78572 17.6142 2.05 17.6142C4.12143 17.6142 5.90715 16.4214 6.7 14.5071C7.49286 12.5857 7.07857 10.4857 5.61429 9.02137C5.42857 8.83565 5.42857 8.52851 5.61429 8.3428L8.33572 5.62137C8.42857 5.52851 8.55 5.47851 8.67857 5.47851C8.80715 5.47851 8.92857 5.52851 9.02143 5.62137C10.4857 7.08565 12.5857 7.50708 14.5071 6.70708C16.4214 5.91423 17.6143 4.12851 17.6143 2.05708C17.6143 1.7928 17.8286 1.57851 18.0929 1.57851H21.9357C22.2 1.57851 22.4143 1.7928 22.4143 2.05708C22.4143 4.12851 23.6071 5.91423 25.5214 6.70708C26.1643 6.97137 26.8286 7.10708 27.4857 7.10708C28.7786 7.10708 30.0357 6.5928 31.0071 5.62137C31.1929 5.43565 31.5 5.43565 31.6857 5.62137L34.4071 8.3428C34.5929 8.52851 34.5929 8.83565 34.4071 9.02137C32.9429 10.4857 32.5214 12.5857 33.3214 14.5071C34.1143 16.4214 35.9 17.6142 37.9714 17.6142C38.2357 17.6142 38.45 17.8285 38.45 18.0928V21.9357L38.4357 21.9214Z"/><path d="M20.7786 14.3571V12.8928H19.2214V14.3571C17.5857 14.5928 15.7 15.5571 15.7 17.5357C15.7 19.3785 17.4571 20.4571 19.2214 20.7143V24.0571C18.2571 23.8714 17.2571 23.3571 17.2571 22.4571V22.3857H15.7V22.4571C15.7 24.3357 17.4571 25.4071 19.2214 25.6428V27.1071H20.7786V25.6428C22.4143 25.4071 24.3 24.4357 24.3 22.4643C24.3 20.4928 22.4214 19.5214 20.7786 19.2857V15.9428C21.3357 16.0571 22.7429 16.45 22.7429 17.5428V17.6143H24.3V17.5428C24.3 15.5643 22.4214 14.6 20.7786 14.3643V14.3571ZM19.2214 19.1357C18.2571 18.9357 17.2571 18.4214 17.2571 17.5357C17.2571 16.4428 18.6643 16.05 19.2214 15.9357V19.1357ZM22.7429 22.4643C22.7429 23.5571 21.3357 23.95 20.7786 24.0643V20.8643C21.3357 20.9785 22.7429 21.3714 22.7429 22.4643Z"/></g><defs><clipPath id="nav-plan-clip"><rect width="40" height="40" fill="white"/></clipPath></defs></svg></span>
+                <h2>Group Financial Planning</h2>
+                <p>Empower Senior Leadership with Division/Function level Budgets and roll up natively to Group level</p>
+              </a>
+            </div>
           </div>
           <div class="mega-menu-footer">
-            <a href="#" class="nav-cta">Start 30 days Free Trial</a>
+            <a href="https://app.gather.nexus/auth/user/signup" class="nav-cta">Start 30 days Free Trial</a>
             <p class="mega-menu-note">No Credit Card Required</p>
+          </div>
           </div>
         </div>
       </li>
@@ -1550,27 +1564,33 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
       <li><a href="#">Finance Teams</a></li>
       <li><a href="#faq" class="nav-link--caps">GATHER AI</a></li>
       <li><a href="#pricing">Pricing</a></li>
-      <li class="nav-item--drop">
+      <li class="nav-item--drop nav-item--mega">
         <button type="button" class="nav-drop-trigger" aria-expanded="false" aria-haspopup="true">
           Integrations
           <svg class="nav-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="nav-drop nav-drop--mega nav-drop--integrations" role="menu" aria-label="Integrations">
+          <div class="mega-menu-inner">
           <div class="mega-menu mega-menu--2">
-            <a class="mega-menu-box" href="#integrations">
-              <span class="nav-brand-mark nav-brand-mark--qb" role="img" aria-label="QuickBooks"></span>
-              <h2>QuickBooks</h2>
-              <p>GATHER.nexus integrates seamlessly with QuickBooks to solve all your <strong>MULTI-ENTITY</strong> issues on a single powerful platform</p>
-            </a>
-            <a class="mega-menu-box" href="#integrations">
-              <span class="nav-brand-mark nav-brand-mark--xero" role="img" aria-label="Xero"></span>
-              <h2>Xero</h2>
-              <p>GATHER.nexus integrates seamlessly with Xero to solve all your <strong>MULTI-ENTITY</strong> issues on a single powerful platform</p>
-            </a>
+            <div class="mega-menu-box">
+              <a href="#integrations">
+                <span class="nav-brand-mark nav-brand-mark--qb" role="img" aria-label="QuickBooks"></span>
+                <h2>QuickBooks</h2>
+                <p>GATHER.nexus integrates seamlessly with QuickBooks to solve all your <strong>MULTI-ENTITY</strong> issues on a single powerful platform</p>
+              </a>
+            </div>
+            <div class="mega-menu-box">
+              <a href="#integrations">
+                <span class="nav-brand-mark nav-brand-mark--xero" role="img" aria-label="Xero"></span>
+                <h2>Xero</h2>
+                <p>GATHER.nexus integrates seamlessly with Xero to solve all your <strong>MULTI-ENTITY</strong> issues on a single powerful platform</p>
+              </a>
+            </div>
           </div>
           <div class="mega-menu-footer">
-            <a href="#" class="nav-cta">Start 30 days Free Trial</a>
+            <a href="https://app.gather.nexus/auth/user/signup" class="nav-cta">Start 30 days Free Trial</a>
             <p class="mega-menu-note">No Credit Card Required</p>
+          </div>
           </div>
         </div>
       </li>
@@ -1581,21 +1601,47 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
         </button>
         <div class="nav-drop nav-drop--resources" role="menu" aria-label="Resources">
           <div class="nav-resources-list">
-            <a href="#">
-              <span class="nav-resources-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span>
-              User Guides
+            <a href="https://help.gather.nexus/en">
+              <span class="nav-resources-ic nav-resources-ic--guides" aria-hidden="true"></span>
+              <span class="nav-resources-label">User Guides</span>
             </a>
-            <a href="#">
-              <span class="nav-resources-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg></span>
-              Expert Insights
+            <a href="https://gather.nexus/blog">
+              <span class="nav-resources-ic nav-resources-ic--insights" aria-hidden="true"></span>
+              <span class="nav-resources-label">Expert Insights</span>
             </a>
-            <a href="#">
-              <span class="nav-resources-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H8a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V8c.3.6.9 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
-              Product Updates
+            <a href="https://gather.nexus/product-updates">
+              <span class="nav-resources-ic nav-resources-ic--updates" aria-hidden="true"></span>
+              <span class="nav-resources-label">Product Updates</span>
             </a>
-            <a href="#">
-              <span class="nav-resources-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 10.5V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-3.5l5 3.5V7l-5 3.5z"/></svg></span>
-              Video Tutorials
+            <a href="https://gather.nexus/video">
+              <span class="nav-resources-ic nav-resources-ic--video" aria-hidden="true"></span>
+              <span class="nav-resources-label">Video Tutorials</span>
+            </a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item--drop">
+        <button type="button" class="nav-drop-trigger" aria-expanded="false" aria-haspopup="true">
+          Knowledge Centre
+          <svg class="nav-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="nav-drop nav-drop--resources" role="menu" aria-label="Knowledge Centre">
+          <div class="nav-resources-list">
+            <a href="knowledge-centre.html">
+              <span class="nav-resources-ic nav-resources-ic--video" aria-hidden="true"></span>
+              <span class="nav-resources-label">All collections</span>
+            </a>
+            <a href="knowledge-centre/intercompany-control.html">
+              <span class="nav-resources-ic nav-resources-ic--guides" aria-hidden="true"></span>
+              <span class="nav-resources-label">Intercompany Control</span>
+            </a>
+            <a href="knowledge-centre/group-financial-reporting.html">
+              <span class="nav-resources-ic nav-resources-ic--updates" aria-hidden="true"></span>
+              <span class="nav-resources-label">Group Financial Reporting</span>
+            </a>
+            <a href="knowledge-centre/group-financial-planning.html">
+              <span class="nav-resources-ic nav-resources-ic--insights" aria-hidden="true"></span>
+              <span class="nav-resources-label">Group Financial Planning</span>
             </a>
           </div>
         </div>
@@ -1604,7 +1650,7 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
     </div>
     <div class="nav-right">
       <a href="#" class="nav-login">
-        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3H3.5A1.5 1.5 0 0 0 2 4.5v7A1.5 1.5 0 0 0 3.5 13H6M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><path d="M6 3H3.5A1.5 1.5 0 0 0 2 4.5v7A1.5 1.5 0 0 0 3.5 13H6M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Login
       </a>
       <a href="#" class="nav-cta">Start 30 days Free Trial</a>
@@ -2765,27 +2811,38 @@ window.addEventListener('scroll', () => {
 }, {passive:true});
 
 /* Nav dropdowns */
+function closeNavDrops(except){
+  document.querySelectorAll('.nav-item--drop').forEach(i => {
+    if(except && i === except) return;
+    i.classList.remove('open','is-closing');
+    i.querySelector('.nav-drop-trigger').setAttribute('aria-expanded', 'false');
+  });
+}
 document.querySelectorAll('.nav-item--drop').forEach(item => {
   const trigger = item.querySelector('.nav-drop-trigger');
+  const menu = item.querySelector('.nav-drop');
   trigger.addEventListener('click', e => {
     e.preventDefault();
     e.stopPropagation();
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.nav-item--drop').forEach(i => {
-      i.classList.remove('open');
-      i.querySelector('.nav-drop-trigger').setAttribute('aria-expanded', 'false');
-    });
-    if(!isOpen){
+    const visuallyOpen = item.classList.contains('open') ||
+      (!item.classList.contains('is-closing') && getComputedStyle(menu).visibility !== 'hidden');
+    closeNavDrops();
+    if(visuallyOpen){
+      item.classList.add('is-closing');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.blur();
+    } else {
+      item.classList.remove('is-closing');
       item.classList.add('open');
       trigger.setAttribute('aria-expanded', 'true');
     }
   });
+  item.addEventListener('mouseleave', () => {
+    item.classList.remove('is-closing');
+  });
 });
 document.addEventListener('click', () => {
-  document.querySelectorAll('.nav-item--drop').forEach(i => {
-    i.classList.remove('open');
-    i.querySelector('.nav-drop-trigger').setAttribute('aria-expanded', 'false');
-  });
+  closeNavDrops();
 });
 document.querySelectorAll('.nav-drop').forEach(menu => {
   menu.addEventListener('click', e => e.stopPropagation());

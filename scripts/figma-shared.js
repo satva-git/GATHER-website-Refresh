@@ -106,8 +106,8 @@ function setPillarState(html, index) {
 
 function setNavDropdownOpen(html) {
   return html.replace(
-    'class="nav-item--drop"',
-    'class="nav-item--drop open"'
+    'class="nav-item--drop nav-item--mega"',
+    'class="nav-item--drop nav-item--mega open"'
   ).replace(
     'aria-expanded="false"',
     'aria-expanded="true"'
