@@ -476,32 +476,64 @@
       var trigger = item.querySelector('.nav-drop-trigger');
       var menu = item.querySelector('.nav-drop');
       if (!trigger || !menu) return;
+      
       trigger.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        var visuallyOpen = item.classList.contains('open') ||
-          (!item.classList.contains('is-closing') && getComputedStyle(menu).visibility !== 'hidden');
+        
+        var isOpen = item.classList.contains('open');
         closeNavDrops();
-        if (visuallyOpen) {
-          item.classList.add('is-closing');
+        
+        if (isOpen) {
+          item.classList.remove('open');
           trigger.setAttribute('aria-expanded', 'false');
           trigger.blur();
         } else {
-          item.classList.remove('is-closing');
           item.classList.add('open');
           trigger.setAttribute('aria-expanded', 'true');
         }
       });
+      
+      trigger.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && item.classList.contains('open')) {
+          e.preventDefault();
+          item.classList.remove('open');
+          trigger.setAttribute('aria-expanded', 'false');
+          trigger.focus();
+        }
+      });
+      
       item.addEventListener('mouseleave', function () {
         item.classList.remove('is-closing');
       });
     });
 
-    document.addEventListener('click', function () {
-      closeNavDrops();
+    document.addEventListener('click', function (e) {
+      if (!siteNav.contains(e.target)) {
+        closeNavDrops();
+      }
+    }, true);
+    
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeNavDrops();
+      }
     });
+    
     siteNav.querySelectorAll('.nav-drop').forEach(function (menu) {
-      menu.addEventListener('click', function (e) { e.stopPropagation(); });
+      menu.addEventListener('click', function (e) {
+        e.stopPropagation();
+        
+        var link = e.target.closest('a');
+        if (link) {
+          var item = link.closest('.nav-item--drop');
+          if (item) {
+            item.classList.remove('open');
+            var trigger = item.querySelector('.nav-drop-trigger');
+            if (trigger) trigger.setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
     });
   }
 })();

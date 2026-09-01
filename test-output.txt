@@ -1,0 +1,75 @@
+
+> test
+> node --test server/test/review-api.test.js server/test/comment-restore.e2e.test.js server/test/pin-shake.dom.test.js server/test/page-comments-persistence.test.js
+
+Restored 42 comments, 6 replies
+Γû╢ Comment wipe/restore durability
+  Γ£ö restores 40 comments + 2 local with replies after empty server (1.6754ms)
+Γ£ö Comment wipe/restore durability (2.4252ms)
+Γû╢ Page comments persistence across pages
+  Γ£ö stores comments with pagePath and retrieves only page-specific comments (0.7313ms)
+  Γ£ö handles batch upsert from client with multiple comments per page (8.9517ms)
+  Γ£ö updates existing comments when upserting same page (1.411ms)
+  Γ£ö normalizes page paths correctly (0.2579ms)
+  Γ£ö preserves pinX/pinY when updating comments (0.2585ms)
+Γ£ö Page comments persistence across pages (12.5964ms)
+[review.js] build 2026-07-21-edit-author-fix
+[review] Cleared raised comment pins from local storage.
+Migrated 0, success 0, failed 0
+[review] verifyAnchors: all anchored comments OK
+[review.js] build 2026-07-21-edit-author-fix
+[review] Cleared raised comment pins from local storage.
+Migrated 0, success 0, failed 0
+[review] verifyAnchors: all anchored comments OK
+Γ£ö clicking an existing comment pin opens its popover and it survives a DOM-churn storm (1212.3123ms)
+[review.js] build 2026-07-21-edit-author-fix
+[review] Cleared raised comment pins from local storage.
+Migrated 0, success 0, failed 0
+[review] verifyAnchors: all anchored comments OK
+Γ£ö Add Comment flow (context menu -> draft -> submit) persists and opens a stable thread under churn (1084.0445ms)
+[review] pin relayout loop detected ΓÇö pausing for 4s.
+Γ£ö pin relayout circuit breaker self-heals when something calls renderPins() in a tight loop (4409.0429ms)
+[db] Seeded review database from E:\Howard\New-Website-Updated\Refresh-Website\server\seed\review.db.json
+[startup] listen target: tcp:0
+[startup] azure: false
+[startup] data dir: E:\Howard\New-Website-Updated\Refresh-Website\server\data
+[db] remote store disabled (no DATABASE_URL); using local file only
+
+  GATHER.nexus preview + review server
+  ------------------------------------
+  Homepage:  http://localhost:0/
+  Admin:     http://localhost:0/admin/
+  Network:   http://192.168.0.51:0/  (share this with clients on your Wi-Fi)
+  Comments:  E:\Howard\New-Website-Updated\Refresh-Website\server\data\review.db.json
+
+  Primary review link (saved for ongoing work):
+  http://localhost:0/?review=ade20793493210f2321bfbf8cc64278a
+  http://192.168.0.51:0/?review=ade20793493210f2321bfbf8cc64278a
+
+  Create a share link from Admin, then send the client URL with ?review=TOKEN
+
+Γû╢ Review API integration
+  Γ£ö health check responds ok (23.8487ms)
+  Γ£ö creates a review session with share URL (12.2128ms)
+  Γ£ö rejects empty comments (1.921ms)
+  Γ£ö stores and lists comments (4.0849ms)
+  Γ£ö updates and deletes comments (15.7804ms)
+  Γ£ö persists data to disk without loss (6.9807ms)
+  Γ£ö returns 404 for invalid session token (1.7952ms)
+  Γ£ö updates comment body and rejects empty text (4.87ms)
+  Γ£ö creates and lists thread replies (8.7914ms)
+  Γ£ö stores pagePath on module-page comments (2.6819ms)
+  Γ£ö persists element anchors for sticky pin placement (4.4408ms)
+  Γ£ö redirects module pages to default review token (1.9017ms)
+  Γ£ö serves the Complex Consolidations detail page (8.061ms)
+  Γ£ö supports pin and reaction endpoints (14.7618ms)
+  Γ£ö claims first user as session owner (4.6004ms)
+Γ£ö Review API integration (248.9772ms)
+Γä╣ tests 24
+Γä╣ suites 3
+Γä╣ pass 24
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 7454.1766
