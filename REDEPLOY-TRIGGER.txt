@@ -1,0 +1,19 @@
+Force Vercel Redeploy
+====================
+
+This file is used to trigger a fresh deployment on Vercel.
+All dropdown fixes have been applied and are ready to deploy.
+
+Timestamp: 2026-09-01 16:10 UTC+5:30
+
+Changes included:
+- Fixed critical dropdown bugs
+- Updated version numbers to v=20260901b
+- Added null safety checks
+- Fixed click-outside handler
+- Added Escape key handler
+- Added link click handler
+- Fixed CSS conflicts
+- Updated vercel.json configuration
+
+All changes are committed to GitHub main branch and ready for deployment.
