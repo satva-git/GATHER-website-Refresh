@@ -3518,6 +3518,27 @@
   }
 
   function loadSession() {
+    // On static hosts (GitHub Pages, local file://), skip API and use offline mode intentionally
+    // This prevents incorrectly triggering offline status when the backend is not available
+    if (isStaticHost()) {
+      isOfflineMode = true;
+      state.session = { title: 'Design Review', token: state.token };
+      // Static host: first browser visitor becomes local owner for this token
+      try {
+        var ownerKey = 'rv-owner-' + state.token;
+        var owner = localStorage.getItem(ownerKey);
+        if (!owner) {
+          localStorage.setItem(ownerKey, state.userId);
+          state.isOwner = true;
+        } else {
+          state.isOwner = owner === state.userId;
+        }
+      } catch (e) {
+        state.isOwner = true;
+      }
+      return Promise.resolve();
+    }
+
     return apiFetch('/api/sessions/' + encodeURIComponent(state.token))
       .then(function (res) {
         if (!res.ok) throw new Error('no-backend');
