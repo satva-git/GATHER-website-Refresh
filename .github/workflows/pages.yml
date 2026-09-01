@@ -32,6 +32,7 @@ jobs:
           cp .nojekyll _site/ 2>/dev/null || true
           cp -r assets _site/
           cp -r modules _site/
+          cp -r knowledge-centre _site/
           cp -r review _site/
           cp -r group-financial-reporting _site/ 2>/dev/null || true
 
