@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>GATHER.nexus: One Powerful Platform for All Your Multi-Entity Workflows</title>
+<link rel="canonical" href="https://gather.nexus/"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -986,7 +987,7 @@ ul{list-style:none}
 .faq-tab{border-radius:var(--r-pill);transition:all .18s var(--ease)}
 .faq-tab.active,.faq-tab:hover{box-shadow:0 2px 8px rgba(var(--teal-rgb),.08)}
 .faq-item{border-radius:var(--r-md);transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
-.faq-item.open{border-color:var(--teal-line);box-shadow:0 4px 16px rgba(var(--teal-rgb),.06)}
+.faq-item[open]{border-color:var(--teal-line);box-shadow:0 4px 16px rgba(var(--teal-rgb),.06)}
 
 @media(min-width:1200px){
   .journey-panel-layout{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}
@@ -1274,28 +1275,33 @@ ul{list-style:none}
   border:1px solid var(--line);border-radius:var(--r-md);
   background:#fff;overflow:hidden;transition:border-color .15s,box-shadow .15s;
 }
-.faq-item.open{border-color:var(--teal);box-shadow:0 12px 28px rgba(var(--teal-rgb),.08)}
+.faq-item[open]{border-color:var(--teal);box-shadow:0 12px 28px rgba(var(--teal-rgb),.08)}
 .faq-q{
   width:100%;text-align:left;padding:20px 24px;
-  font-size:16px;font-weight:600;color:var(--ink);
+  font-family:inherit;font-size:16px;font-weight:600;color:var(--ink);
   display:flex;align-items:center;justify-content:space-between;gap:18px;
+  border:none;background:none;cursor:pointer;
   transition:background .15s;letter-spacing:-.005em;
+  list-style:none;
 }
+.faq-q::-webkit-details-marker{display:none}
+.faq-q::marker{content:"";display:none}
 .faq-q:hover{background:var(--paper-2)}
+.faq-q-text{margin:0;flex:1;font:inherit;font-size:inherit;font-weight:inherit;letter-spacing:inherit;color:inherit}
 .faq-icon{
   width:32px;height:32px;flex-shrink:0;
   background:var(--teal-tint);color:var(--teal-deep);
   border-radius:50%;display:flex;align-items:center;justify-content:center;
   transition:transform 200ms ease,background .15s,color .15s;
 }
-.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--teal);color:#fff}
+.faq-item[open] .faq-icon{transform:rotate(45deg);background:var(--teal);color:#fff}
 .faq-icon svg{width:13px;height:13px}
 .faq-a{
-  max-height:0;overflow:hidden;padding:0 24px;
+  padding:0 24px 22px;
   font-size:14.5px;line-height:1.7;color:var(--text-mid);
-  transition:max-height 300ms ease-in-out,padding 300ms ease-in-out;
 }
-.faq-item.open .faq-a{max-height:600px;padding:0 24px 22px}
+.faq-a p{margin:0}
+.faq-item.is-faq-filtered{display:none}
 
 .faq-help{
   text-align:center;margin-top:40px;padding:40px 36px 34px;
@@ -1504,6 +1510,81 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
 </style>
 <link rel="stylesheet" href="assets/page-extensions.css?v=20260901c"/>
 <link rel="preload" as="image" href="assets/images/complex-consolidations-step-acquisition.gif?v=20260825k"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://gather.nexus/#faq",
+  "url": "https://gather.nexus/#faq",
+  "name": "GATHER.nexus Frequently Asked Questions",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does GATHER.nexus ensure my data is secure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The GATHER Platform is hosted entirely on Microsoft Azure Cloud, certified and compliant with ISO 27001, SOC 2, and GDPR. All data is encrypted in transit (SSL) and at rest using Azure's built-in encryption. GATHER.nexus is an approved Xero integration partner and undergoes regular security audits. Payment processing is handled by Stripe (PCI-DSS compliant). Your data is 100% owned by you and is never shared with any third parties."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does GATHER AI ensure my data is protected?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GATHER AI is underpinned by Microsoft Azure AI. Our first AI feature enables auto-mapping from underlying Xero or QuickBooks General Ledger accounts to Group Reporting Templates. No customer-specific financial data is shared with the AI engine, only the account name, account ID and account type are shared in encrypted format."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a Multi-Entity business and how does GATHER.nexus help?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Multi-entity businesses operate across more than one legal entity, common in VC or PE backed scale-ups expanding internationally. GATHER delivers apps across three key areas: Group (Consolidated) Financial Reporting, Group Financial Control (including Intercompany Control), and Group (Consolidated) Financial Planning."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What type of businesses benefit from GATHER.nexus?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The GATHER Platform is built for Finance teams in businesses with a multi-entity corporate structure integrating with Xero and QuickBooks. Our features particularly benefit Finance teams in venture or PE backed scale-up businesses and Fractional CFOs who work with such businesses."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does GATHER.nexus integrate with Xero and QuickBooks?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GATHER.nexus offers seamless integration with Xero and QuickBooks with a single click, allowing you to import and manage your financial data effortlessly across all your legal entities. Users may create Groups of legal entities which are a mixture of Xero and QuickBooks entities."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long is the free trial for GATHER.nexus?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Users may access a 30-day Free Trial Period, during which they have access to all the features of the GATHER Platform, as well as benefiting from regular new features added to the Platform. No credit card required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What pricing packages do you offer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pricing packages are tailored according to (a) which multi-entity applications you wish to use and (b) how many Groups of companies you wish to manage on the Platform. In each case, users pay a monthly subscription fee. Full details are on our pricing page."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I upgrade or downgrade my pricing plan later?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can upgrade at any time, fees are paid monthly in advance. If you decide to downgrade or cancel, you may do so with 14 days notice and your current plan will elapse at the end of the month in which the notice period completes."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body id="top">
 <a href="#main-content" class="skip-link">Skip to content</a>
@@ -2599,82 +2680,98 @@ footer{background:var(--ink);padding:72px 0 28px;color:var(--text-light)}
   </div>
 </div>
 
-<!-- ═════ FAQ ═════ -->
-<section class="faq-section" id="faq" data-rv-anchor="rv_ff63cefbc3">
+<!-- ═════ FAQ (edit HomePage.html, then run: npm run sync) ═════ -->
+<section class="faq-section" id="faq" aria-labelledby="faq-heading" data-rv-anchor="rv_ff63cefbc3">
   <div class="wrap">
     <div class="sec-head sr">
       <div class="eyebrow">Support</div>
-      <h2 class="h2" data-rv-anchor="rv_9f5465d96d">Frequently Asked Questions</h2>
+      <h2 class="h2" id="faq-heading" data-rv-anchor="rv_9f5465d96d">Frequently Asked Questions</h2>
       <p class="lead">Everything you need to know about GATHER.nexus.</p>
     </div>
 
     <div class="faq-wrap">
-      <div class="faq-tabs sr sr-d1">
-        <button class="faq-tab active" onclick="filterFaq('all',this)">All</button>
-        <button class="faq-tab" onclick="filterFaq('security',this)">Security</button>
-        <button class="faq-tab" onclick="filterFaq('ai',this)">GATHER AI</button>
-        <button class="faq-tab" onclick="filterFaq('platform',this)">Platform</button>
-        <button class="faq-tab" onclick="filterFaq('integrations',this)">Integrations</button>
-        <button class="faq-tab" onclick="filterFaq('pricing',this)">Pricing</button>
+      <div class="faq-tabs sr sr-d1" role="tablist" aria-label="Filter questions by topic">
+        <button class="faq-tab active" type="button" role="tab" aria-selected="true" onclick="filterFaq('all',this)">All</button>
+        <button class="faq-tab" type="button" role="tab" aria-selected="false" onclick="filterFaq('security',this)">Security</button>
+        <button class="faq-tab" type="button" role="tab" aria-selected="false" onclick="filterFaq('ai',this)">GATHER AI</button>
+        <button class="faq-tab" type="button" role="tab" aria-selected="false" onclick="filterFaq('platform',this)">Platform</button>
+        <button class="faq-tab" type="button" role="tab" aria-selected="false" onclick="filterFaq('integrations',this)">Integrations</button>
+        <button class="faq-tab" type="button" role="tab" aria-selected="false" onclick="filterFaq('pricing',this)">Pricing</button>
       </div>
 
       <div class="faq-stack sr sr-d2">
-        <div class="faq-item open" data-cat="security">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            How does GATHER.nexus ensure my data is secure?
-            <span class="faq-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          </button>
-          <div class="faq-a">The GATHER Platform is hosted entirely on Microsoft Azure Cloud, certified and compliant with ISO 27001, SOC 2, and GDPR. All data is encrypted in transit (SSL) and at rest using Azure's built-in encryption. GATHER.nexus is an approved Xero integration partner and undergoes regular security audits. Payment processing is handled by Stripe (PCI-DSS compliant). Your data is 100% owned by you and is never shared with any third parties.</div>
-        </div>
-        <div class="faq-item" data-cat="ai">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            How does GATHER AI ensure my data is protected?
-            <span class="faq-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          </button>
-          <div class="faq-a">GATHER AI is underpinned by Microsoft Azure AI. Our first AI feature enables auto-mapping from underlying Xero or QuickBooks General Ledger accounts to Group Reporting Templates. No customer-specific financial data is shared with the AI engine, only the account name, account ID and account type are shared in encrypted format.</div>
-        </div>
-        <div class="faq-item" data-cat="platform">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            What is a Multi-Entity business and how does GATHER.nexus help?
-            <span class="faq-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          </button>
-          <div class="faq-a">Multi-entity businesses operate across more than one legal entity, common in VC or PE backed scale-ups expanding internationally. GATHER delivers apps across three key areas: Group (Consolidated) Financial Reporting, Group Financial Control (including Intercompany Control), and Group (Consolidated) Financial Planning.</div>
-        </div>
-        <div class="faq-item" data-cat="platform">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            What type of businesses benefit from GATHER.nexus?
-            <span class="faq-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          </button>
-          <div class="faq-a">The GATHER Platform is built for Finance teams in businesses with a multi-entity corporate structure integrating with Xero and QuickBooks. Our features particularly benefit Finance teams in venture or PE backed scale-up businesses and Fractional CFOs who work with such businesses.</div>
-        </div>
-        <div class="faq-item" data-cat="integrations">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            How does GATHER.nexus integrate with Xero and QuickBooks?
-            <span class="faq-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          </button>
-          <div class="faq-a">GATHER.nexus offers seamless integration with Xero and QuickBooks with a single click, allowing you to import and manage your financial data effortlessly across all your legal entities. Users may create Groups of legal entities which are a mixture of Xero and QuickBooks entities.</div>
-        </div>
-        <div class="faq-item" data-cat="pricing">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            How long is the free trial for GATHER.nexus?
-            <span class="faq-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          </button>
-          <div class="faq-a">Users may access a 30-day Free Trial Period, during which they have access to all the features of the GATHER Platform, as well as benefiting from regular new features added to the Platform. No credit card required.</div>
-        </div>
-        <div class="faq-item" data-cat="pricing">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            What pricing packages do you offer?
-            <span class="faq-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          </button>
-          <div class="faq-a">Pricing packages are tailored according to (a) which multi-entity applications you wish to use and (b) how many Groups of companies you wish to manage on the Platform. In each case, users pay a monthly subscription fee. Full details are on our pricing page.</div>
-        </div>
-        <div class="faq-item" data-cat="pricing">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Can I upgrade or downgrade my pricing plan later?
-            <span class="faq-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          </button>
-          <div class="faq-a">You can upgrade at any time, fees are paid monthly in advance. If you decide to downgrade or cancel, you may do so with 14 days notice and your current plan will elapse at the end of the month in which the notice period completes.</div>
-        </div>
+        <details class="faq-item" open data-cat="security">
+          <summary class="faq-q">
+            <h3 class="faq-q-text">How does GATHER.nexus ensure my data is secure?</h3>
+            <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </summary>
+          <div class="faq-a">
+            <p>The GATHER Platform is hosted entirely on Microsoft Azure Cloud, certified and compliant with ISO 27001, SOC 2, and GDPR. All data is encrypted in transit (SSL) and at rest using Azure's built-in encryption. GATHER.nexus is an approved Xero integration partner and undergoes regular security audits. Payment processing is handled by Stripe (PCI-DSS compliant). Your data is 100% owned by you and is never shared with any third parties.</p>
+          </div>
+        </details>
+        <details class="faq-item" data-cat="ai">
+          <summary class="faq-q">
+            <h3 class="faq-q-text">How does GATHER AI ensure my data is protected?</h3>
+            <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </summary>
+          <div class="faq-a">
+            <p>GATHER AI is underpinned by Microsoft Azure AI. Our first AI feature enables auto-mapping from underlying Xero or QuickBooks General Ledger accounts to Group Reporting Templates. No customer-specific financial data is shared with the AI engine, only the account name, account ID and account type are shared in encrypted format.</p>
+          </div>
+        </details>
+        <details class="faq-item" data-cat="platform">
+          <summary class="faq-q">
+            <h3 class="faq-q-text">What is a Multi-Entity business and how does GATHER.nexus help?</h3>
+            <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </summary>
+          <div class="faq-a">
+            <p>Multi-entity businesses operate across more than one legal entity, common in VC or PE backed scale-ups expanding internationally. GATHER delivers apps across three key areas: Group (Consolidated) Financial Reporting, Group Financial Control (including Intercompany Control), and Group (Consolidated) Financial Planning.</p>
+          </div>
+        </details>
+        <details class="faq-item" data-cat="platform">
+          <summary class="faq-q">
+            <h3 class="faq-q-text">What type of businesses benefit from GATHER.nexus?</h3>
+            <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </summary>
+          <div class="faq-a">
+            <p>The GATHER Platform is built for Finance teams in businesses with a multi-entity corporate structure integrating with Xero and QuickBooks. Our features particularly benefit Finance teams in venture or PE backed scale-up businesses and Fractional CFOs who work with such businesses.</p>
+          </div>
+        </details>
+        <details class="faq-item" data-cat="integrations">
+          <summary class="faq-q">
+            <h3 class="faq-q-text">How does GATHER.nexus integrate with Xero and QuickBooks?</h3>
+            <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </summary>
+          <div class="faq-a">
+            <p>GATHER.nexus offers seamless integration with Xero and QuickBooks with a single click, allowing you to import and manage your financial data effortlessly across all your legal entities. Users may create Groups of legal entities which are a mixture of Xero and QuickBooks entities.</p>
+          </div>
+        </details>
+        <details class="faq-item" data-cat="pricing">
+          <summary class="faq-q">
+            <h3 class="faq-q-text">How long is the free trial for GATHER.nexus?</h3>
+            <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </summary>
+          <div class="faq-a">
+            <p>Users may access a 30-day Free Trial Period, during which they have access to all the features of the GATHER Platform, as well as benefiting from regular new features added to the Platform. No credit card required.</p>
+          </div>
+        </details>
+        <details class="faq-item" data-cat="pricing">
+          <summary class="faq-q">
+            <h3 class="faq-q-text">What pricing packages do you offer?</h3>
+            <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </summary>
+          <div class="faq-a">
+            <p>Pricing packages are tailored according to (a) which multi-entity applications you wish to use and (b) how many Groups of companies you wish to manage on the Platform. In each case, users pay a monthly subscription fee. Full details are on our pricing page.</p>
+          </div>
+        </details>
+        <details class="faq-item" data-cat="pricing">
+          <summary class="faq-q">
+            <h3 class="faq-q-text">Can I upgrade or downgrade my pricing plan later?</h3>
+            <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </summary>
+          <div class="faq-a">
+            <p>You can upgrade at any time, fees are paid monthly in advance. If you decide to downgrade or cancel, you may do so with 14 days notice and your current plan will elapse at the end of the month in which the notice period completes.</p>
+          </div>
+        </details>
       </div>
 
       <div class="faq-help sr">
@@ -2815,35 +2912,31 @@ const io = new IntersectionObserver(entries => {
 }, {threshold:.08, rootMargin:'-30px 0px'});
 document.querySelectorAll('.sr').forEach(el => io.observe(el));
 
-/* FAQ */
-function toggleFaq(btn){
-  const item = btn.closest('.faq-item');
-  const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i => {
-    i.classList.remove('open');
-    const q = i.querySelector('.faq-q');
-    if(q){
-      q.setAttribute('aria-expanded','false');
-      q.setAttribute('aria-label','Expand answer');
-    }
+/* FAQ — native <details>; full Q&A in DOM for crawlers */
+function initFaqAccordions(){
+  document.querySelectorAll('.faq-item').forEach(function(details){
+    details.addEventListener('toggle', function(){
+      if(!details.open) return;
+      document.querySelectorAll('.faq-item').forEach(function(other){
+        if(other !== details && other.open) other.removeAttribute('open');
+      });
+    });
   });
-  if(!wasOpen){
-    item.classList.add('open');
-    btn.setAttribute('aria-expanded','true');
-    btn.setAttribute('aria-label','Collapse answer');
-  }
 }
-document.querySelectorAll('.faq-q').forEach(function(btn){
-  btn.setAttribute('aria-expanded', btn.closest('.faq-item').classList.contains('open') ? 'true' : 'false');
-  btn.setAttribute('aria-label', btn.closest('.faq-item').classList.contains('open') ? 'Collapse answer' : 'Expand answer');
-});
+initFaqAccordions();
 function filterFaq(cat, btn){
-  document.querySelectorAll('.faq-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.faq-tab').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
   btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
   document.querySelectorAll('.faq-item').forEach(item => {
     const show = cat === 'all' || item.dataset.cat === cat;
-    item.style.display = show ? '' : 'none';
-    if(!show) item.classList.remove('open');
+    item.classList.toggle('is-faq-filtered', !show);
+    if(show) item.removeAttribute('aria-hidden');
+    else item.setAttribute('aria-hidden', 'true');
+    if(!show && item.open) item.removeAttribute('open');
   });
 }
 

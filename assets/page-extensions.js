@@ -274,25 +274,17 @@
   }
 
   (function initKnowledgeCentre() {
-    function toggleFaq(btn) {
-      var item = btn.closest('.faq-item');
-      if (!item) return;
-      var wasOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(function (node) {
-        node.classList.remove('open');
-        var q = node.querySelector('.faq-q');
-        if (q) {
-          q.setAttribute('aria-expanded', 'false');
-          q.setAttribute('aria-label', 'Expand answer');
-        }
+    function initFaqAccordions() {
+      document.querySelectorAll('.faq-item').forEach(function (details) {
+        details.addEventListener('toggle', function () {
+          if (!details.open) return;
+          document.querySelectorAll('.faq-item').forEach(function (other) {
+            if (other !== details && other.open) other.removeAttribute('open');
+          });
+        });
       });
-      if (!wasOpen) {
-        item.classList.add('open');
-        btn.setAttribute('aria-expanded', 'true');
-        btn.setAttribute('aria-label', 'Collapse answer');
-      }
     }
-    window.toggleFaq = window.toggleFaq || toggleFaq;
+    initFaqAccordions();
 
     var topicBtns = document.querySelectorAll('.kc-topic[data-kc-topic]');
     var groups = document.querySelectorAll('[data-kc-group]');
@@ -311,10 +303,15 @@
           var text = item.textContent.toLowerCase();
           var matchQuery = !query || text.indexOf(query) !== -1;
           var show = matchTopic && matchQuery;
-          item.hidden = !show;
+          item.classList.toggle('is-faq-filtered', !show);
+          if (show) item.removeAttribute('aria-hidden');
+          else item.setAttribute('aria-hidden', 'true');
+          if (!show && item.open) item.removeAttribute('open');
           if (show) anyVisible = true;
         });
-        group.hidden = !anyVisible;
+        group.classList.toggle('is-faq-filtered', !anyVisible);
+        if (anyVisible) group.removeAttribute('aria-hidden');
+        else group.setAttribute('aria-hidden', 'true');
       });
     }
 
