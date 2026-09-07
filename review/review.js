@@ -326,30 +326,65 @@
   function bindBeforeUnloadWarning() {
     if (beforeUnloadBound) return;
     beforeUnloadBound = true;
+
+    // Same-origin navigation keeps review data in localStorage — do not warn.
+    var leavingViaSameOriginLink = false;
+    document.addEventListener('click', function (e) {
+      var anchor = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!anchor) return;
+      var href = anchor.getAttribute('href');
+      if (!href || href.charAt(0) === '#' || href.indexOf('mailto:') === 0 ||
+          href.indexOf('tel:') === 0 || href.indexOf('javascript:') === 0) {
+        return;
+      }
+      try {
+        var url = new URL(href, window.location.href);
+        if (url.origin === window.location.origin) leavingViaSameOriginLink = true;
+      } catch (err) {}
+    }, true);
+
     window.addEventListener('beforeunload', function (e) {
       captureDraftFormValues();
       persistComposerDraftNow();
       captureOpenReplyDraft();
-      var hasUnsavedComposer = hasPersistedComposerText();
-      var offlineComments = isOfflineMode && state.comments && state.comments.length;
-      if (!hasUnsavedComposer && !offlineComments) return;
-      var message = hasUnsavedComposer
-        ? 'You have an unsaved comment draft. It is kept in this browser, but stay on the page until it is posted.'
-        : 'Only saved locally. Comments may be lost if you close this tab.';
+      if (leavingViaSameOriginLink) {
+        leavingViaSameOriginLink = false;
+        return;
+      }
+      if (!hasActiveUnsavedComposerText() && !hasActiveUnsavedReplyText()) return;
+      var message = 'You have an unsaved comment draft. It is kept in this browser, but stay on the page until it is posted.';
       e.preventDefault();
       e.returnValue = message;
       return message;
     });
   }
 
+  function hasActiveUnsavedComposerText() {
+    var pop = document.getElementById('rv-popover');
+    if (!pop || !state.draft) return false;
+    var body = state.draft.body != null ? String(state.draft.body) : '';
+    return body.trim().length > 0;
+  }
+
+  function hasActiveUnsavedReplyText() {
+    var pop = document.getElementById('rv-thread-popover');
+    if (!pop || !state.activeCommentId) return false;
+    var replyEl = pop.querySelector('.rv-reply-form [name="body"], .rv-reply-composer [name="body"]');
+    if (!replyEl) return false;
+    return String(replyEl.value || '').trim().length > 0;
+  }
+
   function hasPersistedComposerText() {
+    if (hasActiveUnsavedComposerText()) return true;
     try {
       var raw = localStorage.getItem(LS_COMPOSER_KEY);
-      if (!raw) return !!(state.draft && state.draft.body && String(state.draft.body).length);
+      if (!raw) return false;
       var parsed = JSON.parse(raw);
-      return !!(parsed && parsed.draft && typeof parsed.draft.body === 'string' && parsed.draft.body.length);
+      if (!parsed || !parsed.draft) return false;
+      if (parsed.pagePath && parsed.pagePath !== PAGE_PATH) return false;
+      return typeof parsed.draft.body === 'string' && parsed.draft.body.trim().length > 0;
     } catch (err) {
-      return !!(state.draft && state.draft.body && String(state.draft.body).length);
+      return false;
     }
   }
 

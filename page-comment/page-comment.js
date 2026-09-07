@@ -200,7 +200,7 @@
       this.unloadBound = true;
       this.bindFn(window, 'beforeunload', function (e) {
         self.persistDraft();
-        if (!self.draft || !(self.draft.body || '').length) return;
+        if (!self.draft || !(self.draft.body || '').trim().length) return;
         e.preventDefault();
         e.returnValue = 'You have an unsaved comment draft.';
         return e.returnValue;
