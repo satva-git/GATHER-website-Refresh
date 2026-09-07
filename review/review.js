@@ -4,7 +4,7 @@
   // Bump this whenever review.js changes — lets us confirm in the browser
   // console (or via `fetch('/review/review.js').then(r=>r.text())`) exactly
   // which build a given deployment is actually serving.
-  var REVIEW_JS_BUILD = '2026-07-21-edit-author-fix';
+  var REVIEW_JS_BUILD = '2026-09-07-offline-comments-fix';
   if (window.console && console.info) {
     console.info('[review.js] build ' + REVIEW_JS_BUILD);
   }
@@ -124,6 +124,12 @@
       host === 'localhost' ||
       host === '127.0.0.1' ||
       window.location.protocol === 'file:';
+  }
+
+  // Hosts with no review API at all — always use local-only comment storage.
+  function isOfflineOnlyHost() {
+    var host = window.location.hostname;
+    return host.endsWith('github.io') || window.location.protocol === 'file:';
   }
 
   function ensureReviewQuery(token) {
@@ -329,7 +335,7 @@
 
     // Same-origin navigation keeps review data in localStorage — do not warn.
     var leavingViaSameOriginLink = false;
-    document.addEventListener('click', function (e) {
+    function markSameOriginNav(e) {
       var anchor = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       if (!anchor) return;
       var href = anchor.getAttribute('href');
@@ -341,12 +347,16 @@
         var url = new URL(href, window.location.href);
         if (url.origin === window.location.origin) leavingViaSameOriginLink = true;
       } catch (err) {}
-    }, true);
+    }
+    document.addEventListener('pointerdown', markSameOriginNav, true);
+    document.addEventListener('click', markSameOriginNav, true);
 
     window.addEventListener('beforeunload', function (e) {
       captureDraftFormValues();
       persistComposerDraftNow();
       captureOpenReplyDraft();
+      // Offline/static review stores everything in localStorage — never block navigation.
+      if (isOfflineMode) return;
       if (leavingViaSameOriginLink) {
         leavingViaSameOriginLink = false;
         return;
@@ -3556,9 +3566,8 @@
   }
 
   function loadSession() {
-    // On static hosts (GitHub Pages, local file://), skip API and use offline mode intentionally
-    // This prevents incorrectly triggering offline status when the backend is not available
-    if (isStaticHost()) {
+    // GitHub Pages and file:// have no review API — use offline mode intentionally.
+    if (isOfflineOnlyHost()) {
       isOfflineMode = true;
       state.session = { title: 'Design Review', token: state.token };
       // Static host: first browser visitor becomes local owner for this token

@@ -38,7 +38,7 @@ function setupDom(options) {
 
   var window = dom.window;
   window.fetch = function () {
-    return Promise.resolve(jsonResponse({}));
+    return Promise.reject(new Error('no-backend'));
   };
   window.HTMLElement.prototype.scrollIntoView = function () {};
   if (typeof window.ResizeObserver === 'undefined') {
@@ -93,6 +93,50 @@ test('beforeunload does not warn for offline comments on same-origin navigation'
   window.dispatchEvent(event);
 
   assert.equal(prevented, false, 'same-origin navigation should not trigger leave warning');
+});
+
+test('beforeunload does not warn in offline mode even with an open comment draft', async function () {
+  var token = 'offline-draft-test';
+  var dom = setupDom({ token: token });
+  var window = dom.window;
+
+  window.document.elementFromPoint = function () {
+    return window.document.querySelector('h1');
+  };
+
+  window.eval(reviewSource);
+  await wait(200);
+
+  var target = window.document.querySelector('h1');
+  target.dispatchEvent(new window.MouseEvent('contextmenu', {
+    bubbles: true,
+    cancelable: true,
+    clientX: 20,
+    clientY: 20
+  }));
+
+  var addBtn = window.document.getElementById('rv-add-comment');
+  assert.ok(addBtn, 'right-click should open the add-comment menu');
+  addBtn.dispatchEvent(new window.MouseEvent('click', { bubbles: true, cancelable: true }));
+
+  await wait(30);
+  var draftPopover = window.document.getElementById('rv-popover');
+  assert.ok(draftPopover, 'draft popover should open after choosing Add comment here');
+
+  var bodyInput = draftPopover.querySelector('textarea[name="body"]');
+  assert.ok(bodyInput, 'draft form should include a comment body field');
+  bodyInput.value = 'Client feedback from right-click';
+
+  var event = new window.Event('beforeunload', { cancelable: true });
+  var returnValue = '';
+  Object.defineProperty(event, 'returnValue', {
+    configurable: true,
+    get: function () { return returnValue; },
+    set: function (v) { returnValue = v; }
+  });
+  window.dispatchEvent(event);
+
+  assert.equal(returnValue, '', 'offline mode should never block navigation');
 });
 
 test('beforeunload does not warn for stale persisted composer drafts on other pages', async function () {
