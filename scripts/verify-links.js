@@ -34,7 +34,7 @@ function collectPages(dir, acc) {
 const pages = [
   path.join(ROOT, 'index.html'),
   path.join(ROOT, 'HomePage.html'),
-  path.join(ROOT, 'knowledge-centre.html'),
+
   ...(() => {
     const modulePages = [];
     collectPages(path.join(ROOT, 'modules'), modulePages);
