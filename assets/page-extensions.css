@@ -2670,6 +2670,24 @@ a.kc-resource:focus-visible {
 .kc-table tbody tr:last-child th,
 .kc-table tbody tr:last-child td { border-bottom: none; }
 
+/* Financial figure tables: right-aligned amounts with a highlighted result row */
+.kc-table--figures { min-width: 0; }
+.kc-table--figures .kc-num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.kc-table--figures tbody th { width: auto; }
+.kc-table--figures td.kc-num { color: var(--ink); }
+.kc-table--figures .kc-row-total th,
+.kc-table--figures .kc-row-total td {
+  font-weight: 700;
+  color: var(--teal-deep);
+  background: var(--teal-tint);
+}
+.kc-table--figures .kc-row-adjust th,
+.kc-table--figures .kc-row-adjust td { color: var(--teal-deep); }
+
 .kc-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -2779,7 +2797,7 @@ a.kc-resource:focus-visible {
 
 @media (max-width: 980px) {
   .kc-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
   }
   .kc-toc {
@@ -2931,6 +2949,34 @@ a.kc-resource:focus-visible {
     padding: 8px 10px;
     margin-top: 10px;
   }
+  .kc-table tbody td[data-label]::before { content: attr(data-label); }
+
+  /* Figure tables stay tabular on mobile and scroll if they must */
+  .kc-table-wrap--figures { overflow-x: auto; }
+  .kc-table--figures thead {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+  .kc-table--figures tbody tr {
+    display: table-row;
+    padding: 0;
+  }
+  .kc-table--figures tbody th,
+  .kc-table--figures tbody td {
+    display: table-cell;
+    width: auto;
+    margin: 0;
+    padding: 10px 6px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+  }
+  .kc-table--figures tr > :first-child { padding-left: 10px; }
+  .kc-table--figures tr > :last-child { padding-right: 10px; }
+  .kc-table--figures thead th { padding: 10px 6px; font-size: 10px; letter-spacing: 0; }
+  .kc-table.kc-table--figures tbody td::before { content: none; }
 }
 
 .site-foot { background: var(--ink); padding: 72px 0 28px; color: var(--text-light); }
