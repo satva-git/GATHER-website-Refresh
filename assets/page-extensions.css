@@ -2071,7 +2071,7 @@ a.kc-card:focus-visible {
 .kc-shelf-list { display: flex; flex-direction: column; }
 .kc-lib-item {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) auto;
+  grid-template-columns: 320px minmax(0, 1fr) auto;
   gap: 20px 28px;
   align-items: center;
   padding: 20px 24px;
@@ -2090,7 +2090,7 @@ a.kc-card:focus-visible {
   outline-offset: -2px;
 }
 .kc-lib-item-media {
-  width: 240px;
+  width: 320px;
   aspect-ratio: 16 / 10;
   border-radius: var(--r-md);
   overflow: hidden;
@@ -2826,10 +2826,10 @@ a.kc-resource:focus-visible {
   }
   .kc-lib-index { display: none; }
   .kc-lib-item {
-    grid-template-columns: 200px minmax(0, 1fr);
+    grid-template-columns: 260px minmax(0, 1fr);
     gap: 16px 20px;
   }
-  .kc-lib-item-media { width: 200px; }
+  .kc-lib-item-media { width: 260px; }
   .kc-lib-item-action { display: none; }
   .kc-shelf-head {
     flex-direction: column;
