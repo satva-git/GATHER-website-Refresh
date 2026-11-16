@@ -52,8 +52,40 @@ def esc(s):
 
 
 # ---------------------------------------------------------------- primitives
-def rect(x, y, w, h, fill, r=0, extra=""):
-    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{r}" fill="{fill}" {extra}/>'
+def rect(x, y, w, h, fill, r=0, extra="", shadow=None):
+    """Rounded rect. White cards and primary panels get the shared soft shadow."""
+    if shadow is None:
+        shadow = fill in (WHITE, TEAL) and w >= 100 and h >= 56
+    f = ' filter="url(#sh)"' if shadow else ""
+    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{r}" fill="{fill}"{f} {extra}/>'
+
+
+# Shared background + depth: faint brand-teal dot grid fading out toward the
+# edges, and one soft teal-tinted shadow used by every card and panel.
+DEFS = (
+    '<defs>'
+    '<pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">'
+    f'<circle cx="9" cy="9" r="1.5" fill="{TEAL}"/></pattern>'
+    '<radialGradient id="fade" cx="50%" cy="46%" r="70%">'
+    '<stop offset="0" stop-color="#fff" stop-opacity=".9"/>'
+    '<stop offset=".6" stop-color="#fff" stop-opacity=".45"/>'
+    '<stop offset="1" stop-color="#fff" stop-opacity=".12"/></radialGradient>'
+    f'<mask id="dotmask"><rect width="{W}" height="{H}" fill="url(#fade)"/></mask>'
+    '<filter id="sh" x="-20%" y="-20%" width="140%" height="150%">'
+    f'<feDropShadow dx="0" dy="6" stdDeviation="9" flood-color="{TEAL_DEEP}" flood-opacity=".12"/>'
+    '</filter></defs>'
+)
+
+
+def background():
+    return (rect(0, 0, W, H, BG, shadow=False)
+            + f'<rect width="{W}" height="{H}" fill="url(#dots)" opacity=".16" mask="url(#dotmask)"/>')
+
+
+def gather_mark(x, y, size):
+    """Just the GATHER 'G' briefcase mark, clipped from the full logo."""
+    return (f'<svg x="{x}" y="{y}" width="{size}" height="{size * 74 / 80:.1f}" viewBox="0 0 80 74">'
+            f'<image href="{LOGO["gather"]}" width="264" height="74"/></svg>')
 
 
 def text(x, y, s, size=24, weight=600, fill=INK, anchor="start"):
@@ -122,14 +154,48 @@ def entity_pill(x, y, w, label, logo=None, h=72):
 # Type scale on the 720 grid. Cards render 330-405px wide (x0.46-0.56), so:
 # numbers 34-48, primary labels 26-30, nothing below 26 except the step digits.
 def c_quickbooks():
-    ys = [84, 204, 324]
-    out = [curve(300, y + 36, 440, 240) for y in ys]
+    # Three QBO entities (each its own currency) flow through GATHER into one
+    # group report; the stacked bar re-uses each entity's chip colour.
+    seg = [(TEAL_DEEP, WHITE, "GBP", 80), (TEAL, WHITE, "USD", 58), (LINE, TEAL_DEEP, "AUD", 36)]
+    ys = [64, 197, 330]
+    node = (398, 240)
+    out = []
+    for y in ys:
+        cy = y + 43
+        out.append(curve(304, cy, node[0] - 30, node[1], LINE, 4))
+    for y in ys:  # data packets travelling along each connector
+        cy = y + 43
+        mx = (304 + node[0] - 30) / 2
+        out.append(f'<circle cx="{mx}" cy="{(cy + node[1]) / 2}" r="6" fill="{TEAL}" '
+                   f'stroke="{BG}" stroke-width="3"/>')
+    out += [line(node[0] + 36, 240, 448, 240, LINE, 4),
+            f'<path d="M444 232l9 8-9 8" stroke="{TEAL}" stroke-width="3.2" stroke-linecap="round" '
+            f'stroke-linejoin="round"/>',
+            f'<circle cx="{node[0]}" cy="{node[1]}" r="38" fill="{WHITE}" filter="url(#sh)"/>',
+            f'<circle cx="{node[0]}" cy="{node[1]}" r="38" stroke="{LINE}" stroke-width="2"/>',
+            gather_mark(node[0] - 22, node[1] - 20.5, 44)]
     for i, y in enumerate(ys):
-        out.append(entity_pill(40, y, 260, f"Entity {'ABC'[i]}", "quickbooks"))
-    out += [rect(440, 110, 240, 260, TEAL, 26),
-            text(560, 178, "Group view", 26, 600, ON_TEAL, "middle"),
-            text(560, 250, "1 report", 48, 700, WHITE, "middle"),
-            check(486, 314, 15, WHITE, TEAL), text(510, 323, "Consolidated", 26, 600, ON_TEAL)]
+        bg, fg, ccy, _ = seg[i]
+        cy = y + 43
+        out += [rect(32, y, 272, 86, WHITE, 22),
+                image(LOGO["quickbooks"], 50, cy - 23, 46, 46),
+                text(110, cy + 9, f"Entity {'ABC'[i]}", 26, 700, INK),
+                rect(226, cy - 18, 62, 36, bg, 18, shadow=False),
+                text(257, cy + 8, ccy, 22, 700, fg, "middle")]
+    x, y, w = 462, 52, 230
+    out += [rect(x, y, w, 376, WHITE, 24),
+            f'<path d="M{x} {y+72}V{y+24}a24 24 0 0 1 24-24h{w-48}a24 24 0 0 1 24 24v48z" fill="{TEAL}"/>',
+            text(x + 24, y + 46, "Group report", 26, 700, WHITE),
+            text(x + 24, y + 116, "Group revenue", 22, 600, MUTED),
+            text(x + 24, y + 170, "£2.4m", 48, 700, INK)]
+    bx = x + 24
+    for bg, _, _, sw in seg:
+        out.append(rect(bx, y + 194, sw, 18, bg, 6, shadow=False))
+        bx += sw + 4
+    out.append(line(x + 24, y + 244, x + w - 24, y + 244, RULE, 2))
+    for j, s in enumerate(["FX converted", "Eliminated"]):
+        cy = y + 284 + j * 48
+        out += [check(x + 38, cy, 13), text(x + 62, cy + 9, s, 24, 600, INK)]
     return out
 
 
@@ -350,7 +416,7 @@ def build(slug, alt, body):
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W*2}" '
            f'height="{H*2}" fill="none" role="img" aria-label="{esc(alt)}">'
            f"<style>{faces}text{{font-family:'FT','Figtree',Arial,sans-serif}}</style>"
-           f'{rect(0, 0, W, H, BG)}{inner}</svg>\n')
+           f'{DEFS}{background()}{inner}</svg>\n')
     with open(os.path.join(OUT, slug + ".svg"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(svg)
 
