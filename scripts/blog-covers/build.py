@@ -250,25 +250,57 @@ def c_xero():
     return out
 
 
+def user_icon(cx, cy, color=TEAL):
+    return (f'<g stroke="{color}" stroke-width="2.8" fill="none" stroke-linecap="round">'
+            f'<circle cx="{cx}" cy="{cy - 6}" r="7"/>'
+            f'<path d="M{cx - 13} {cy + 14}c1.5-8 7-12 13-12s11.5 4 13 12"/></g>')
+
+
 def c_fractional_cfo():
-    x, y, w = 110, 46, 500
-    rows = [("Client A", "xero", True), ("Client B", "quickbooks", True),
-            ("Client C", "xero", False), ("Client D", "quickbooks", True)]
-    out = [rect(x, y, w, 388, WHITE, 26),
-           text(x + 32, y + 58, "Client portfolio", 28, 700, INK),
-           line(x + 32, y + 90, x + w - 32, y + 90, RULE, 2)]
-    for i, (name, logo, done) in enumerate(rows):
-        cy = y + 132 + i * 70
-        out.append(image(LOGO[logo], x + 32, cy - 21, 42, 42))
-        out.append(text(x + 90, cy + 10, name, 28, 600, INK))
-        if done:
-            out += [check(x + w - 168, cy, 15), text(x + w - 142, cy + 9, "Closed", 26, 600, TEAL)]
+    # One GATHER window across the whole client book: a month-end close ring,
+    # per-client progress (Xero or QuickBooks), room to add the next client,
+    # and a floating "1 login" badge.
+    x, y, w, h = 96, 40, 588, 400
+    out = [rect(x, y, w, h, WHITE, 24),
+           f'<path d="M{x} {y+62}V{y+24}a24 24 0 0 1 24-24h{w-48}a24 24 0 0 1 24 24v38z" fill="{TINT}"/>',
+           line(x, y + 62, x + w, y + 62, RULE, 2)]
+    for k in range(3):
+        out.append(f'<circle cx="{x + 28 + k * 18}" cy="{y + 31}" r="5.5" fill="{LINE}"/>')
+    out += [gather_mark(x + 94, y + 17, 30),
+            text(x + 136, y + 40, "Client portfolio", 24, 700, INK)]
+    # close ring: 3 of 4 clients closed
+    rcx, rcy, r = 210, 248, 66
+    circ = 2 * 3.14159 * r
+    out += [text(rcx, 150, "Month-end", 24, 600, MUTED, "middle"),
+            f'<circle cx="{rcx}" cy="{rcy}" r="{r}" stroke="{TINT}" stroke-width="16"/>',
+            f'<circle cx="{rcx}" cy="{rcy}" r="{r}" stroke="{TEAL}" stroke-width="16" '
+            f'stroke-linecap="round" stroke-dasharray="{circ * 0.75 - 4:.1f} {circ:.1f}" '
+            f'transform="rotate(-90 {rcx} {rcy})"/>',
+            text(rcx, rcy + 8, "3/4", 34, 700, INK, "middle"),
+            text(rcx, rcy + 36, "closed", 24, 600, MUTED, "middle"),
+            line(316, 120, 316, 420, RULE, 2)]
+    rows = [("Client A", "xero", 1.0), ("Client B", "quickbooks", 1.0),
+            ("Client C", "xero", 0.6), ("Client D", "quickbooks", 1.0)]
+    for i, (name, logo, p) in enumerate(rows):
+        cy = 140 + i * 60
+        out += [image(LOGO[logo], 340, cy - 18, 36, 36),
+                text(388, cy + 8, name, 24, 600, INK),
+                rect(500, cy - 5, 96, 10, TINT, 5, shadow=False),
+                rect(500, cy - 5, round(96 * p), 10, TEAL if p == 1 else SLATE, 5, shadow=False)]
+        if p == 1:
+            out.append(check(634, cy, 13))
         else:
-            out += [f'<circle cx="{x+w-168}" cy="{cy}" r="14" fill="none" stroke="{SLATE}" '
-                    f'stroke-width="3" stroke-dasharray="4 4"/>',
-                    text(x + w - 142, cy + 9, "In review", 26, 600, MUTED)]
-        if i < 3:
-            out.append(line(x + 32, cy + 35, x + w - 32, cy + 35, RULE, 2))
+            out.append(f'<circle cx="634" cy="{cy}" r="12" stroke="{SLATE}" stroke-width="3" '
+                       f'stroke-dasharray="4 4"/>')
+        out.append(line(340, cy + 30, 656, cy + 30, RULE, 2))
+    out += [f'<rect x="340" y="378" width="316" height="44" rx="22" fill="{WHITE}" stroke="{LINE}" '
+            f'stroke-width="2.5" stroke-dasharray="7 6"/>',
+            f'<path d="M386 400h16M394 392v16" stroke="{TEAL}" stroke-width="3" stroke-linecap="round"/>',
+            text(412, 409, "Add client", 24, 600, TEAL)]
+    # floating badge breaking the window edge
+    out += [rect(34, 348, 168, 64, WHITE, 32),
+            f'<circle cx="74" cy="380" r="22" fill="{TINT}"/>', user_icon(74, 380),
+            text(108, 389, "1 login", 24, 700, INK)]
     return out
 
 
