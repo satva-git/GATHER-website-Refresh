@@ -21,18 +21,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 OUT = os.path.join(ROOT, "assets", "images", "blog")
 
-# Brand tokens (match assets/*.css and the kc-cover set)
-BG = "#E8F1EE"
-TEAL = "#2D7261"
-TEAL_DEEP = "#245A4E"
-TEAL_MID = "#4A8B7A"
-LINE = "#C5DDD6"
-TINT = "#E9F2EF"
-ON_TEAL = "#CFE3DC"
+# Approved GATHER.nexus brand colours: primary #2B7869, deep #1D5449, light #EDF4F2.
+# The remaining tokens are tints/shades derived from those three (plus neutral ink).
+TEAL = "#2B7869"       # brand primary
+TEAL_DEEP = "#1D5449"  # brand deep
+BG = "#EDF4F2"         # brand light (canvas)
+TINT = "#EDF4F2"       # brand light (icon wells / tags on white)
+TEAL_MID = "#5A978A"   # divider on primary panels
+LINE = "#BFD9D1"       # connector lines on the canvas
+ON_TEAL = "#EDF4F2"    # secondary text on primary panels (brand light, 4.7:1)
 INK = "#0A1B30"
-MUTED = "#5B6B7F"
+MUTED = "#536273"
 SLATE = "#94A3B8"
-RULE = "#E2E8F0"
+RULE = "#DDE8E4"
 WHITE = "#FFFFFF"
 
 W, H = 720, 480

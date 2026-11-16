@@ -41,7 +41,7 @@ def main():
                            check=True, capture_output=True)
             im = Image.open(png).convert("RGB").crop((0, 0, 1440, 960))
             dst = svg.with_suffix(".webp")
-            im.save(dst, "WEBP", quality=90, method=6)
+            im.save(dst, "WEBP", lossless=True, quality=100, method=6)
             print(f"{dst.name}: {im.size[0]}x{im.size[1]}, {dst.stat().st_size // 1024} KB")
 
 
