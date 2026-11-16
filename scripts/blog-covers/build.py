@@ -79,7 +79,7 @@ DEFS = (
 
 def background():
     return (rect(0, 0, W, H, BG, shadow=False)
-            + f'<rect width="{W}" height="{H}" fill="url(#dots)" opacity=".16" mask="url(#dotmask)"/>')
+            + f'<rect width="{W}" height="{H}" fill="url(#dots)" opacity=".22" mask="url(#dotmask)"/>')
 
 
 def gather_mark(x, y, size):
@@ -199,19 +199,54 @@ def c_quickbooks():
     return out
 
 
+def doc_icon(x, y, color=TEAL, s=1.0):
+    return (f'<g transform="translate({x} {y}) scale({s})" stroke="{color}" stroke-width="2.6" '
+            f'fill="none" stroke-linejoin="round" stroke-linecap="round">'
+            f'<path d="M0 0h18l8 8v24H0z"/><path d="M18 0v8h8M6 15h14M6 21h14M6 27h9"/></g>')
+
+
+def flow_up(x, y1, y2):
+    """Vertical connector (y1 below, y2 above) with a data dot and an up chevron."""
+    return (line(x, y1, x, y2 + 6, LINE, 4)
+            + f'<circle cx="{x}" cy="{(y1 + y2) / 2 + 4}" r="6" fill="{TEAL}" stroke="{BG}" stroke-width="3"/>'
+            + f'<path d="M{x-8} {y2+12}l8-8 8 8" stroke="{TEAL}" stroke-width="3.2" '
+              f'stroke-linecap="round" stroke-linejoin="round"/>')
+
+
 def c_xero():
-    xs = [60, 270, 480]
-    out = [line(x + 90, 314, x + 90, 264) for x in xs] + [line(360, 176, 360, 132)]
-    out += [rect(170, 56, 380, 76, WHITE, 38),
-            f'<g transform="translate(198 78)" stroke="{TEAL}" stroke-width="2.6" fill="none" '
-            f'stroke-linejoin="round"><path d="M0 0h20l8 8v24H0z"/><path d="M6 14h16M6 21h16M6 28h10"/></g>',
-            text(242, 104, "Consolidated reports", 26, 600, INK),
-            rect(60, 176, 600, 88, TEAL, 26),
-            text(360, 230, "Group layer", 30, 700, WHITE, "middle")]
-    for i, x in enumerate(xs):
-        out += [rect(x, 314, 180, 128, WHITE, 22),
-                image(LOGO["xero"], x + 64, 330, 52, 52),
-                text(x + 90, 418, f"Entity {'ABC'[i]}", 26, 600, INK, "middle")]
+    # Bottom: Xero organisations (own ledgers, own currency). Middle: the
+    # GATHER layer and what it does. Top: the group reports it produces.
+    cols = [30, 255, 480]
+    cw = 210
+    cur = [(TEAL_DEEP, WHITE, "GBP"), (TEAL, WHITE, "USD"), (LINE, TEAL_DEEP, "AUD")]
+    out = []
+    for x in cols:
+        cx = x + cw / 2
+        out.append(flow_up(cx, 168, 104))
+        out.append(flow_up(cx, 316, 264))
+    for x, s in zip(cols, ["Group P&L", "Balance sheet", "Cash flow"]):
+        out += [rect(x, 32, cw, 72, WHITE, 36), doc_icon(x + 20, 54, TEAL, 0.85),
+                text(x + 52, 77, s, 24, 600, INK)]
+    out += [rect(30, 168, 660, 96, TEAL, 28),
+            rect(50, 190, 196, 52, WHITE, 26, shadow=False),
+            image(LOGO["gather"], 68, 196, 160, 40)]
+    cx = 690 - 24
+    for s in reversed(["Mapping", "FX", "Eliminations"]):
+        wch = len(s) * 12.6 + 34
+        cx -= wch
+        out += [rect(round(cx), 194, round(wch), 44, TEAL_DEEP, 22, shadow=False),
+                text(round(cx + wch / 2), 224, s, 24, 600, WHITE, "middle")]
+        cx -= 12
+    for i, x in enumerate(cols):
+        bg, fg, code = cur[i]
+        out += [rect(x, 316, cw, 132, WHITE, 22),
+                image(LOGO["xero"], x + 18, 332, 44, 44),
+                text(x + 74, 364, f"Entity {'ABC'[i]}", 26, 700, INK)]
+        # mini ledger: six trial-balance bars
+        for j, h in enumerate([16, 26, 20, 32, 24, 30]):
+            out.append(rect(x + 20 + j * 15, 430 - h, 10, h, LINE if j < 5 else TEAL, 3, shadow=False))
+        out += [rect(x + cw - 78, 396, 60, 34, bg, 17, shadow=False),
+                text(x + cw - 48, 420, code, 22, 700, fg, "middle")]
     return out
 
 
