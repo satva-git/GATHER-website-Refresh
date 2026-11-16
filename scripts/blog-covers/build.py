@@ -304,27 +304,105 @@ def c_fractional_cfo():
     return out
 
 
+def control_glyph(kind, cx, cy, color=TEAL):
+    """Small line glyphs for the four group controls."""
+    d = {
+        "recharge": f"M{cx-8} {cy-4}h15l-4-4M{cx+8} {cy+4}h-15l4 4",
+        "reconcile": f"M{cx-8} {cy-4}h16M{cx-8} {cy+4}h16",
+        "eliminate": f"M{cx-11} {cy}h8l-4-4m4 4-4 4M{cx+11} {cy}h-8l4-4m-4 4 4 4",
+        "report": f"M{cx-6} {cy+7}v-6M{cx} {cy+7}v-14M{cx+6} {cy+7}v-9",
+    }[kind]
+    return (f'<path d="{d}" stroke="{color}" stroke-width="2.8" stroke-linecap="round" '
+            f'stroke-linejoin="round"/>')
+
+
 def c_xero_quickbooks_platform():
-    out = [f'<path d="M410 0H720V480H340z" fill="{TEAL}"/>',
-           entity_pill(40, 140, 260, "Xero", "xero", 84),
-           entity_pill(40, 256, 260, "QuickBooks", "quickbooks", 84),
-           f'<circle cx="374" cy="240" r="30" fill="{WHITE}"/>', arrow_right(374, 240)]
-    for i, s in enumerate(["Recharges", "Reconciliation", "Eliminations", "Group reporting"]):
-        cy = 132 + i * 72
-        out += [check(446, cy, 17, WHITE, TEAL), text(474, cy + 10, s, 28, 600, WHITE)]
+    # Left: entities on mixed ledgers (Xero / QuickBooks). Centre: GATHER hub
+    # sitting on the panel edge. Right: the group controls it runs, ending in
+    # a balanced result (the "one financial truth" of the original artwork).
+    panel = "M430 0H720V480H390z"
+    hub = (366, 270)
+    out = [
+        '<defs><pattern id="dotsl" width="18" height="18" patternUnits="userSpaceOnUse">'
+        f'<circle cx="9" cy="9" r="1.3" fill="{WHITE}"/></pattern>'
+        f'<clipPath id="panel"><path d="{panel}"/></clipPath></defs>',
+        f'<path d="{panel}" fill="{TEAL}"/>',
+        f'<path d="M640 0H720V480H560z" fill="{TEAL_DEEP}" opacity=".35"/>',
+        f'<rect width="{W}" height="{H}" fill="url(#dotsl)" opacity=".10" clip-path="url(#panel)"/>',
+        text(28, 84, "Entity ledgers", 24, 600, MUTED),
+        text(444, 84, "Group control", 28, 700, WHITE),
+    ]
+    ents = [("Entity A", "xero"), ("Entity B", "quickbooks"), ("Entity C", "xero")]
+    ys = [128, 232, 336]
+    ex, ew, eh = 28, 236, 76
+    for y in ys:
+        out.append(curve(ex + ew, y + eh / 2, hub[0] - 44, hub[1], LINE, 4))
+    for y in ys:
+        cy = y + eh / 2
+        mx = (ex + ew + hub[0] - 44) / 2
+        out.append(f'<circle cx="{mx}" cy="{(cy + hub[1]) / 2}" r="6" fill="{TEAL}" '
+                   f'stroke="{BG}" stroke-width="3"/>')
+    for (name, logo), y in zip(ents, ys):
+        out += [rect(ex, y, ew, eh, WHITE, eh / 2),
+                image(LOGO[logo], ex + 15, y + 15, 46, 46),
+                text(ex + 74, y + eh / 2 + 9, name, 26, 700, INK)]
+    # hub "socket" cut into the panel edge, then the GATHER node
+    out += [f'<circle cx="{hub[0]}" cy="{hub[1]}" r="60" fill="{BG}" stroke="{LINE}" stroke-width="2"/>',
+            f'<circle cx="{hub[0]}" cy="{hub[1]}" r="44" fill="{WHITE}" filter="url(#sh)"/>',
+            gather_mark(hub[0] - 25, hub[1] - 23, 50)]
+    rows = [("recharge", "Recharges"), ("reconcile", "Reconciliation"),
+            ("eliminate", "Eliminations"), ("report", "Group reporting")]
+    rx, rw, rh = 436, 262, 54
+    for i, (kind, label) in enumerate(rows):
+        y = 110 + i * 64
+        cy = y + rh / 2
+        out += [rect(rx, y, rw, rh, TEAL_DEEP, 16, shadow=False),
+                f'<circle cx="{rx + 30}" cy="{cy}" r="16" fill="{WHITE}"/>',
+                control_glyph(kind, rx + 30, cy),
+                text(rx + 56, cy + 9, label, 26, 600, WHITE)]
+    out += [rect(rx, 380, rw, 60, WHITE, 30),
+            check(rx + 32, 410, 16),
+            text(rx + 60, 419, "Balanced", 26, 700, INK),
+            rect(rx + rw - 74, 393, 58, 34, TINT, 17, shadow=False),
+            text(rx + rw - 45, 417, "£0", 22, 700, TEAL, "middle")]
     return out
 
 
 def c_seven_controls():
-    y = 290
-    xs = [56 + i * 58 for i in range(7)]
-    out = [rect(190, 120, 340, 72, TEAL, 36),
-           text(360, 166, "7 controls, in-period", 30, 700, WHITE, "middle"),
-           line(56, y, 440, y, LINE, 8)]
-    for i, x in enumerate(xs):
-        out.append(num(x, y, i + 1, 24, TEAL, WHITE, 26))
-    out += [rect(436, y - 42, 252, 84, WHITE, 42),
-            check(476, y, 19), text(504, y + 10, "Faster close", 28, 700, INK)]
+    # Close timeline. Manual: nothing happens in the month, then a long close.
+    # GATHER: the seven controls run through the month, the close is short.
+    cx0, cy0, cw, ch = 32, 46, 656, 384
+    m0, m1, c1 = 214, 512, 664          # month span, close zone end
+    r1, r2 = 252, 354                   # row centres
+    out = [rect(cx0, cy0, cw, ch, WHITE, 24),
+           text(60, 102, "7 controls, in-period", 28, 700, INK),
+           rect(456, 68, 208, 50, TEAL, 25, shadow=False),
+           check(484, 93, 14, WHITE, TEAL),
+           text(508, 102, "Faster close", 24, 700, WHITE),
+           line(60, 140, 664, 140, RULE, 2),
+           rect(m1 + 6, 152, c1 - m1 - 6, 258, TINT, 14, shadow=False),
+           text((m0 + m1) / 2, 186, "Month", 24, 600, MUTED, "middle"),
+           text((m1 + 6 + c1) / 2, 186, "Close", 26, 700, TEAL, "middle")]
+    for k in range(5):  # week ticks
+        tx = m0 + k * (m1 - m0) / 4
+        out.append(line(tx, 202, tx, 210, LINE, 3))
+    out.append(line(m0, 206, m1, 206, LINE, 3))
+    # manual row
+    out += [text(60, r1 + 10, "Manual", 26, 700, MUTED),
+            line(m0, r1, m1 - 64, r1, RULE, 4, "2 10"),
+            f'<rect x="{m1 - 56}" y="{r1 - 21}" width="{c1 - m1 + 40}" height="42" rx="21" fill="{RULE}" '
+            f'stroke="{SLATE}" stroke-width="2.5" stroke-dasharray="7 6"/>',
+            text(m1 + 66, r1 + 10, "Day 10", 26, 700, MUTED, "middle")]
+    # GATHER row
+    out += [gather_mark(60, r2 - 14, 30),
+            text(98, r2 + 10, "GATHER", 26, 700, TEAL),
+            line(m0, r2, m1 - 10, r2, LINE, 6)]
+    for i in range(7):
+        out.append(num(m0 + 16 + i * 44, r2, i + 1, 17, TEAL, WHITE, 22))
+    out += [rect(m1 + 18, r2 - 22, 112, 44, TEAL, 22, shadow=False),
+            check(m1 + 42, r2, 12, WHITE, TEAL),
+            text(m1 + 62, r2 + 9, "Day 2", 24, 700, WHITE),
+            line(60, r1 + 52, 664, r1 + 52, RULE, 2)]
     return out
 
 
@@ -459,7 +537,7 @@ COVERS = [
 # ---------------------------------------------------------------- fonts
 def font_face(weight, chars):
     src = os.path.join(HERE, "fonts", f"Figtree-{weight}.ttf")
-    f = TTFont(src)
+    f = TTFont(src, recalcTimestamp=False)  # keep output byte-stable across rebuilds
     opts = subset.Options()
     opts.layout_features = ["kern", "liga"]
     opts.name_IDs = []

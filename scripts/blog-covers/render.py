@@ -23,11 +23,14 @@ CHROME = [
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--chrome", default=next((c for c in CHROME if os.path.exists(c)), None))
+    ap.add_argument("slugs", nargs="*", help="only render these covers (default: all)")
     args = ap.parse_args()
     if not args.chrome:
         raise SystemExit("Chrome not found; pass --chrome")
     with tempfile.TemporaryDirectory() as tmp:
         for svg in sorted(OUT.glob("*.svg")):
+            if args.slugs and svg.stem not in args.slugs:
+                continue
             page = pathlib.Path(tmp) / "p.html"
             page.write_text(
                 "<!doctype html><style>html,body{margin:0;background:#E8F1EE}"
