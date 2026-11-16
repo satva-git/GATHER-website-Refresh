@@ -408,59 +408,42 @@ def c_seven_controls():
     return out
 
 
-def ledger_rows(x, y, w, n, bar, val, step=30, total=None):
-    """Abstract ledger lines: label bar left, value bar right."""
-    out = []
-    for k in range(n):
-        ry = y + k * step
-        out += [rect(x, ry, w * 0.42, 9, bar, 4.5, shadow=False),
-                rect(x + w - w * 0.26, ry, w * 0.26, 9, val, 4.5, shadow=False)]
-    if total:
-        ry = y + n * step
-        out += [rect(x, ry, w * 0.30, 11, total, 5.5, shadow=False),
-                rect(x + w - w * 0.34, ry, w * 0.34, 11, total, 5.5, shadow=False)]
-    return out
-
-
 def c_bridging_gaap():
-    # Local GAAP ledgers cross a bridge of adjustments (map, align, convert)
-    # into parallel US GAAP and IFRS group ledgers.
-    deck, a0, a1, top = 250, 226, 494, 108
-    out = [rect(56, 104, 182, 236, RULE, 20, shadow=False),
-           rect(44, 118, 182, 236, TINT, 20, shadow=True),
-           rect(32, 132, 182, 236, WHITE, 20),
-           text(52, 174, "Local GAAP", 24, 700, INK),
-           line(52, 194, 194, 194, RULE, 2)]
-    out += ledger_rows(52, 214, 142, 4, RULE, LINE, 30, TEAL)
-    # bridge: hangers, arch, deck, towers
-    for k in range(1, 8):
-        hx = a0 + k * (a1 - a0) / 8
-        t = (hx - a0) / (a1 - a0)
-        ay = (1 - t) ** 2 * deck + 2 * (1 - t) * t * top + t ** 2 * deck
-        out.append(line(hx, ay + 4, hx, deck, TEAL, 3))
-    out += [f'<path d="M{a0} {deck}Q360 {top} {a1} {deck}" stroke="{TEAL}" stroke-width="8" '
-            f'fill="none" stroke-linecap="round"/>',
-            line(a0 - 10, deck, a1 + 10, deck, TEAL_DEEP, 10),
-            rect(a0 - 8, deck - 34, 12, 70, TEAL_DEEP, 4, shadow=False),
-            rect(a1 - 4, deck - 34, 12, 70, TEAL_DEEP, 4, shadow=False)]
-    for px in (300, 392):  # entries crossing the bridge
-        out += [rect(px, deck - 26, 30, 20, TEAL, 5, shadow=False),
-                line(px + 7, deck - 18, px + 23, deck - 18, WHITE, 2.4),
-                line(px + 7, deck - 12, px + 18, deck - 12, WHITE, 2.4)]
-    out.append(text(360, 92, "Adjustments", 24, 700, TEAL, "middle"))
-    cx = 360 - (70 + 84 + 106 + 16) / 2
-    for s, wch in (("Map", 70), ("Align", 84), ("Convert", 106)):
-        out += [rect(cx, 298, wch, 42, WHITE, 21),
-                text(cx + wch / 2, 327, s, 24, 600, TEAL, "middle")]
-        cx += wch + 8
-    # parallel group ledgers
-    for (yy, fill, label) in ((128, TEAL, "US GAAP"), (266, TEAL_DEEP, "IFRS")):
-        out += [rect(512, yy, 180, 112, fill, 20, shadow=True),
-                text(532, yy + 42, label, 24, 700, WHITE),
-                check(668, yy + 34, 12, WHITE, fill)]
-        out += ledger_rows(532, yy + 64, 140, 2, TEAL_MID, ON_TEAL, 22)
-    out += [curve(a1 + 10, deck, 512, 184, LINE, 4), curve(a1 + 10, deck, 512, 322, LINE, 4)]
-    return ['<g transform="translate(0 18)">'] + out + ["</g>"]
+    # One set of books kept as parallel ledgers: a single GATHER source
+    # branches into Local GAAP, US GAAP and IFRS lanes (transit-map style);
+    # conversion adjustments sit on the lanes and each lane ends in its own
+    # reported figure (1.20 + 0.04 = 1.24, 1.20 - 0.02 = 1.18).
+    node = (74, 244)
+    lanes = [  # y, colour, label, adjustment, result
+        (112, LINE, "Local GAAP", None, "£1.20m"),
+        (244, TEAL, "US GAAP", "+£40k", "£1.24m"),
+        (376, TEAL_DEEP, "IFRS", "−£20k", "£1.18m"),
+    ]
+    out = [text(456, 62, "Adjustments", 24, 600, MUTED, "middle"),
+           text(608, 62, "Reported", 24, 600, MUTED, "middle")]
+    for y, col, *_ in lanes:  # rails first, so everything else sits on them
+        x0 = node[0] + 40
+        out.append(f'<path d="M{x0} {node[1]}C{x0 + 60} {node[1]} {x0 + 40} {y} {x0 + 100} {y}H600" '
+                   f'stroke="{col}" stroke-width="10" stroke-linecap="round" fill="none"/>')
+    out += [f'<circle cx="{node[0]}" cy="{node[1]}" r="44" fill="{WHITE}" filter="url(#sh)"/>',
+            f'<circle cx="{node[0]}" cy="{node[1]}" r="44" stroke="{LINE}" stroke-width="2"/>',
+            gather_mark(node[0] - 24, node[1] - 22, 48),
+            text(node[0], node[1] + 78, "One", 24, 700, INK, "middle"),
+            text(node[0], node[1] + 106, "ledger", 24, 700, INK, "middle")]
+    for y, col, label, adj, val in lanes:
+        out += [rect(196, y - 28, 186, 56, WHITE, 28),
+                f'<circle cx="222" cy="{y}" r="9" fill="{col}"/>',
+                text(242, y + 9, label, 24, 700, INK)]
+        if adj:
+            out += [rect(406, y - 24, 100, 48, col, 24, shadow=False),
+                    text(456, y + 9, adj, 24, 700, WHITE, "middle")]
+        else:
+            out += [rect(406, y - 24, 100, 48, BG, 24, shadow=False,
+                         extra=f'stroke="{LINE}" stroke-width="2.5" stroke-dasharray="6 5"'),
+                    text(456, y + 8, "None", 22, 600, MUTED, "middle")]
+        out += [rect(528, y - 36, 160, 72, WHITE, 22),
+                text(608, y + 11, val, 30, 700, INK, "middle")]
+    return out
 
 
 def c_quadruple_entry():
@@ -541,28 +524,34 @@ def c_chaos_to_control():
     out += [line(lx + 44, ya + ch, lx + 44, yb, SLATE, 3, "3 8"),
             line(rx + 44, ya + ch, rx + 44, yb, ON_TEAL, 4)]
 
-    def card(x, y, label, amt, dark):
-        fill, well, glyph, lc, ac = ((TEAL_DEEP, TEAL, ON_TEAL, ON_TEAL, WHITE) if dark
-                                     else (WHITE, TINT, TEAL, MUTED, INK))
+    def card(x, y, label, amt, side, dark):
+        # side: "Dr" (IC receivable) or "Cr" (IC payable), as on the quadruple-entry cover
+        fill, well, glyph, lc, ac, edge = ((TEAL_DEEP, TEAL, ON_TEAL, ON_TEAL, WHITE, TEAL_MID) if dark
+                                           else (WHITE, TINT, TEAL, MUTED, INK, LINE))
+        tx, ty = x + cw - 62, y + 14
+        tag = (rect(tx, ty, 46, 30, TEAL, 9, shadow=False) + text(tx + 23, ty + 22, side, 20, 700, WHITE, "middle")
+               if side == "Dr" else
+               f'<rect x="{tx+1}" y="{ty+1}" width="44" height="28" rx="8" fill="{fill}" stroke="{edge}" '
+               f'stroke-width="2"/>' + text(tx + 23, ty + 22, side, 20, 700, ON_TEAL if dark else TEAL, "middle"))
         return (rect(x, y, cw, ch, fill, 22, shadow=True)
                 + f'<circle cx="{x+44}" cy="{y+ch/2}" r="26" fill="{well}"/>'
                 + building(x + 44, y + ch / 2, 0.86, glyph)
                 + text(x + 84, y + 37, label, 22, 600, lc)
-                + text(x + 84, y + 70, amt, 30, 700, ac))
+                + text(x + 84, y + 70, amt, 30, 700, ac) + tag)
 
     mid = (ya + ch + yb) / 2
-    out += [card(lx, ya, "Entity A", "£10,000", False),
-            card(lx, yb, "Entity B", "£9,850", False),
-            # floating mismatch flag breaking the card corner
-            f'<circle cx="{lx+cw-8}" cy="{yb+8}" r="17" fill="{INK}" stroke="{BG}" stroke-width="4"/>',
-            text(lx + cw - 8, yb + 16, "!", 24, 700, WHITE, "middle"),
+    out += [card(lx, ya, "Entity A", "£10,000", "Dr", False),
+            card(lx, yb, "Entity B", "£9,850", "Cr", False),
+            # mismatch flag beside the short amount
+            f'<circle cx="{lx+212}" cy="{yb+60}" r="14" fill="{INK}"/>',
+            text(lx + 212, yb + 67, "!", 20, 700, WHITE, "middle"),
             f'<circle cx="{lx+44}" cy="{mid}" r="20" fill="{BG}" stroke="{SLATE}" stroke-width="3" '
             f'stroke-dasharray="5 4"/>',
             f'<path d="M{lx+36} {mid-4}h16M{lx+36} {mid+4}h16M{lx+48} {mid-10}l-8 20" stroke="{MUTED}" '
             f'stroke-width="2.8" stroke-linecap="round"/>',
             text(lx + 76, mid + 8, "£150 gap", 24, 700, MUTED),
-            card(rx, ya, "Entity A", "£10,000", True),
-            card(rx, yb, "Entity B", "£10,000", True),
+            card(rx, ya, "Entity A", "£10,000", "Dr", True),
+            card(rx, yb, "Entity B", "£10,000", "Cr", True),
             f'<circle cx="{rx+44}" cy="{mid}" r="20" fill="{WHITE}" stroke="{TEAL}" stroke-width="4"/>',
             check(rx + 44, mid, 15, WHITE, TEAL),
             text(rx + 76, mid + 8, "Matched", 24, 700, WHITE)]
@@ -657,33 +646,32 @@ def c_multi_entity_growth():
     # with entity tiles and a dashed trend rises over them. Right: GATHER (hub
     # on the panel edge) turns that into one group view: a mini dashboard (the
     # charts of the original artwork) over the four group responsibilities.
-    base, tile, pitch = 412, 36, 44
-    out = [text(36, 84, "Entities", 28, 700, INK),
-           line(20, base, 320, base, LINE, 4)]
+    base, tile, pitch = 416, 38, 46
+    out = [text(28, 84, "Entities", 28, 700, INK),
+           line(12, base, 324, base, LINE, 4)]
     tops = []
     for k, n in enumerate((1, 3, 8)):
-        bx = 28 + k * 96
+        bx = 20 + k * 100
         rows = (n + 1) // 2
         top = base - rows * pitch - 4
-        tops.append((bx + 46, top))
-        out.append(rect(bx, top, 92, base - top, WHITE, 16, shadow=True))
+        tops.append((bx + 48, top))
+        out.append(rect(bx, top, 96, base - top, WHITE, 16, shadow=True))
         for i in range(n):
             r, c = divmod(i, 2)
             tx = bx + 6 + c * pitch
             if n - i == 1 and n % 2:          # odd last tile sits centred
-                tx = bx + 28
+                tx = bx + 29
             ty = base - 4 - tile - r * pitch
-            out += [rect(tx, ty, tile, tile, TINT, 10, shadow=False),
-                    building(tx + tile / 2, ty + tile / 2, 0.62)]
-        out.append(text(bx + 46, top - 14, str(n), 34, 700, TEAL, "middle"))
-    # rising trend over the counts
-    pts = [(cx, t - 58) for cx, t in tops]
-    d = f"M{pts[0][0]} {pts[0][1]}" + "".join(f"L{x} {y}" for x, y in pts[1:])
-    ex, ey = pts[-1]
-    out += [f'<path d="{d}" stroke="{TEAL_MID}" stroke-width="3" stroke-dasharray="2 8" '
-            f'stroke-linecap="round" stroke-linejoin="round"/>',
-            f'<path d="M{ex - 14} {ey - 2}L{ex + 2} {ey - 8}L{ex - 2} {ey + 9}" stroke="{TEAL_MID}" '
-            f'stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>']
+            new = n == 8 and i >= 6           # the latest additions
+            out += [rect(tx, ty, tile, tile, TEAL if new else TINT, 10, shadow=False),
+                    building(tx + tile / 2, ty + tile / 2, 0.64, WHITE if new else TEAL)]
+        out.append(text(bx + 48, top - 14, str(n), 36, 700, TEAL, "middle"))
+    # rising trend over the counts: smooth dotted curve with an arrowhead
+    (x0, t0), (x1, t1), (x2, t2) = [(cx, t - 60) for cx, t in tops]
+    out += [f'<path d="M{x0} {t0}Q{x1 - 20} {t1 + 10} {x1} {t1}T{x2 + 10} {t2 - 14}" '
+            f'stroke="{TEAL_MID}" stroke-width="3.2" stroke-dasharray="1 9" stroke-linecap="round"/>',
+            f'<path d="M{x2 - 4} {t2 - 18}L{x2 + 12} {t2 - 16}L{x2 + 8} {t2 + 0}" stroke="{TEAL_MID}" '
+            f'stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>']
 
     # group view panel with a lighter white dot texture and a deeper corner
     px, py, pw, ph = 396, 36, 292, 408
@@ -694,6 +682,8 @@ def c_multi_entity_growth():
             f'<g clip-path="url(#gv)"><path d="M600 {py}H{px + pw}V{py + ph}H500z" fill="{TEAL_DEEP}" opacity=".3"/>'
             f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" fill="url(#dotsw)" opacity=".13"/></g>',
             text(424, 86, "Group view", 28, 700, WHITE)]
+    for k in range(3):  # window chrome, so the panel reads as a product screen
+        out.append(f'<circle cx="{620 + k * 16}" cy="77" r="5" fill="{WHITE}" opacity=".35"/>')
     # mini dashboard: donut + rising area chart
     out.append(rect(420, 104, 244, 100, WHITE, 16))
     dcx, dcy, dr = 466, 154, 26
@@ -727,9 +717,10 @@ def c_multi_entity_growth():
                 control_glyph(kind, 445, cy),
                 text(472, cy + 9, label, 26, 600, WHITE)]
     # GATHER hub on the panel edge, fed by the growing group
-    hx, hy = 355, 300
-    out += [line(312, hy, px, hy, LINE, 4),
-            f'<circle cx="{hx}" cy="{hy}" r="30" fill="{WHITE}" filter="url(#sh)"/>',
+    hx, hy = 356, 300
+    out += [line(316, hy, px, hy, LINE, 4),
+            f'<circle cx="{hx}" cy="{hy}" r="38" stroke="{LINE}" stroke-width="2" stroke-dasharray="3 6"/>',
+            f'<circle cx="{hx}" cy="{hy}" r="29" fill="{WHITE}" filter="url(#sh)"/>',
             gather_mark(hx - 18, hy - 16.7, 36)]
     return out
 
