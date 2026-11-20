@@ -1,6 +1,6 @@
-"""Render assets/images/blog/*.svg to 1440x960 WebP with headless Chrome.
+"""Render assets/images/blog/*.svg (or --dir) to 1440x960 WebP with headless Chrome.
 
-    python scripts/blog-covers/render.py [--chrome PATH]
+    python scripts/blog-covers/render.py [--chrome PATH] [--dir assets/images/product-updates]
 """
 import argparse
 import os
@@ -23,12 +23,13 @@ CHROME = [
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--chrome", default=next((c for c in CHROME if os.path.exists(c)), None))
+    ap.add_argument("--dir", default=str(OUT), help="folder of SVGs to render (default: blog)")
     ap.add_argument("slugs", nargs="*", help="only render these covers (default: all)")
     args = ap.parse_args()
     if not args.chrome:
         raise SystemExit("Chrome not found; pass --chrome")
     with tempfile.TemporaryDirectory() as tmp:
-        for svg in sorted(OUT.glob("*.svg")):
+        for svg in sorted(pathlib.Path(args.dir).resolve().glob("*.svg")):
             if args.slugs and svg.stem not in args.slugs:
                 continue
             page = pathlib.Path(tmp) / "p.html"

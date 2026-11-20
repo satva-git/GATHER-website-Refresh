@@ -463,28 +463,30 @@ MODULE_PAGES.forEach(slug => {
   });
 });
 
-const COMPLEX_CONSOLIDATIONS_PAGE = path.join(
-  ROOT,
-  'group-financial-reporting',
-  'complex-consolidations',
-  'index.html'
-);
+// Pages published at WordPress-style folder URLs (<dir>/index.html). Static
+// serving runs with index:false, so each folder URL is routed explicitly.
+const FOLDER_PAGES = [
+  'group-financial-reporting/complex-consolidations',
+  'knowledge-centre/bulk-intercompany-recharge-setup',
+  'knowledge-centre/consolidation-auditability-transaction-drill-down',
+  'knowledge-centre/foreign-exchange-consolidation',
+  'knowledge-centre/intercompany-recharges-guide',
+  'knowledge-centre/multi-ledger-multi-entity-consolidation',
+  'knowledge-centre/multi-gaap-reporting-xero-quickbooks',
+  'knowledge-centre/schedule-intercompany-recharges',
+  'knowledge-centre/xero-tracking-categories-quickbooks-class-consolidation',
+  'compare/gather-nexus-vs-spotlight-reporting',
+  'compare/gather-nexus-vs-translucent'
+];
 
-function sendComplexConsolidationsPage(_req, res) {
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
-  res.sendFile(COMPLEX_CONSOLIDATIONS_PAGE);
-}
-
-app.get(
-  /^\/group-financial-reporting\/complex-consolidations\/?$/,
-  redirectToDefaultReview,
-  sendComplexConsolidationsPage
-);
-app.get(
-  '/group-financial-reporting/complex-consolidations/index.html',
-  redirectToDefaultReview,
-  sendComplexConsolidationsPage
-);
+FOLDER_PAGES.forEach(dir => {
+  const file = path.join(ROOT, ...dir.split('/'), 'index.html');
+  const send = (_req, res) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.sendFile(file);
+  };
+  app.get([`/${dir}`, `/${dir}/`, `/${dir}/index.html`], redirectToDefaultReview, send);
+});
 
 app.get('/assets/images/complex-consolidations-homepage-visual.png', (_req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');

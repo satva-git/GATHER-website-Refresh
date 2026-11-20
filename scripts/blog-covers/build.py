@@ -491,20 +491,13 @@ def c_quadruple_entry():
     return out
 
 
-def clock_icon(cx, cy, color=MUTED):
-    return (f'<circle cx="{cx}" cy="{cy}" r="11" stroke="{color}" stroke-width="2.6"/>'
-            f'<path d="M{cx} {cy-6}v6l4 3" stroke="{color}" stroke-width="2.6" '
-            f'stroke-linecap="round" stroke-linejoin="round"/>')
-
-
 def c_chaos_to_control():
-    # Left: the month-end state; the same recharge sits at different amounts
-    # in each entity and the gap only surfaces at a late close. Centre: GATHER
-    # on the panel seam. Right: in-period control; both sides match as posted.
+    # Left: at month-end the two entities disagree (£150 gap). Centre: GATHER
+    # on the panel seam. Right: in-period, both sides match.
     panel = "M410 0H720V480H362z"
-    hub = (384, 228)
-    lx, rx, cw, ch = 24, 456, 244, 88
-    ya, yb = 108, 260                       # card tops (A, B)
+    hub = (384, 276)
+    lx, rx, cw, ch = 32, 440, 248, 92
+    ya, yb = 152, 308                       # card tops (A, B)
     out = [
         '<defs><pattern id="dotsl" width="18" height="18" patternUnits="userSpaceOnUse">'
         f'<circle cx="9" cy="9" r="1.3" fill="{WHITE}"/></pattern>'
@@ -512,63 +505,41 @@ def c_chaos_to_control():
         f'<path d="{panel}" fill="{TEAL}"/>',
         f'<path d="M640 0H720V480H570z" fill="{TEAL_DEEP}" opacity=".35"/>',
         f'<rect width="{W}" height="{H}" fill="url(#dotsl)" opacity=".10" clip-path="url(#panel)"/>',
-        text(lx, 80, "Month-end", 28, 700, MUTED),
-        text(rx, 80, "In-period", 28, 700, WHITE),
+        text(lx, 116, "Month-end", 30, 700, MUTED),
+        text(rx, 116, "In-period", 30, 700, WHITE),
     ]
-    # connectors: loose dotted feeds in, one solid line out to the match
-    # (the hub sits level with the gap between the cards)
-    for y in (ya, yb):
-        out.append(curve(lx + cw, y + ch / 2, hub[0] - 56, hub[1], LINE, 4, "2 9"))
-    out.append(line(hub[0] + 56, hub[1], rx + 24, hub[1], ON_TEAL, 4))
-    # entity link: broken on the left, solid on the right
-    out += [line(lx + 44, ya + ch, lx + 44, yb, SLATE, 3, "3 8"),
+    # one straight line through the hub, level with the gap between the cards
+    out += [line(lx + 64, hub[1], hub[0] - 56, hub[1], LINE, 4, "2 9"),
+            line(hub[0] + 56, hub[1], rx + 24, hub[1], ON_TEAL, 4),
+            # entity link: broken on the left, solid on the right
+            line(lx + 44, ya + ch, lx + 44, yb, SLATE, 3, "3 8"),
             line(rx + 44, ya + ch, rx + 44, yb, ON_TEAL, 4)]
 
-    def card(x, y, label, amt, side, dark):
-        # side: "Dr" (IC receivable) or "Cr" (IC payable), as on the quadruple-entry cover
-        fill, well, glyph, lc, ac, edge = ((TEAL_DEEP, TEAL, ON_TEAL, ON_TEAL, WHITE, TEAL_MID) if dark
-                                           else (WHITE, TINT, TEAL, MUTED, INK, LINE))
-        tx, ty = x + cw - 62, y + 14
-        tag = (rect(tx, ty, 46, 30, TEAL, 9, shadow=False) + text(tx + 23, ty + 22, side, 20, 700, WHITE, "middle")
-               if side == "Dr" else
-               f'<rect x="{tx+1}" y="{ty+1}" width="44" height="28" rx="8" fill="{fill}" stroke="{edge}" '
-               f'stroke-width="2"/>' + text(tx + 23, ty + 22, side, 20, 700, ON_TEAL if dark else TEAL, "middle"))
-        return (rect(x, y, cw, ch, fill, 22, shadow=True)
-                + f'<circle cx="{x+44}" cy="{y+ch/2}" r="26" fill="{well}"/>'
-                + building(x + 44, y + ch / 2, 0.86, glyph)
-                + text(x + 84, y + 37, label, 22, 600, lc)
-                + text(x + 84, y + 70, amt, 30, 700, ac) + tag)
+    def card(x, y, label, amt, dark):
+        fill, well, glyph, lc, ac = ((TEAL_DEEP, TEAL, ON_TEAL, ON_TEAL, WHITE) if dark
+                                     else (WHITE, TINT, TEAL, MUTED, INK))
+        return (rect(x, y, cw, ch, fill, 24, shadow=True)
+                + f'<circle cx="{x+46}" cy="{y+ch/2}" r="27" fill="{well}"/>'
+                + building(x + 46, y + ch / 2, 0.9, glyph)
+                + text(x + 90, y + 38, label, 22, 600, lc)
+                + text(x + 90, y + 72, amt, 32, 700, ac))
 
-    mid = (ya + ch + yb) / 2
-    out += [card(lx, ya, "Entity A", "£10,000", "Dr", False),
-            card(lx, yb, "Entity B", "£9,850", "Cr", False),
-            # mismatch flag beside the short amount
-            f'<circle cx="{lx+212}" cy="{yb+60}" r="14" fill="{INK}"/>',
-            text(lx + 212, yb + 67, "!", 20, 700, WHITE, "middle"),
+    mid = hub[1]
+    out += [card(lx, ya, "Entity A", "£10,000", False),
+            card(lx, yb, "Entity B", "£9,850", False),
             f'<circle cx="{lx+44}" cy="{mid}" r="20" fill="{BG}" stroke="{SLATE}" stroke-width="3" '
             f'stroke-dasharray="5 4"/>',
             f'<path d="M{lx+36} {mid-4}h16M{lx+36} {mid+4}h16M{lx+48} {mid-10}l-8 20" stroke="{MUTED}" '
             f'stroke-width="2.8" stroke-linecap="round"/>',
-            text(lx + 76, mid + 8, "£150 gap", 24, 700, MUTED),
-            card(rx, ya, "Entity A", "£10,000", "Dr", True),
-            card(rx, yb, "Entity B", "£10,000", "Cr", True),
-            f'<circle cx="{rx+44}" cy="{mid}" r="20" fill="{WHITE}" stroke="{TEAL}" stroke-width="4"/>',
-            check(rx + 44, mid, 15, WHITE, TEAL),
-            text(rx + 76, mid + 8, "Matched", 24, 700, WHITE)]
-    # outcome pills (wider than the cards; the seam leaves room at this height)
-    py, ph, pw = 382, 60, 286
-    px = 720 - 20 - pw
-    out += [f'<rect x="{lx}" y="{py}" width="{pw}" height="{ph}" rx="{ph/2}" fill="{BG}" '
-            f'stroke="{SLATE}" stroke-width="2.5" stroke-dasharray="7 6"/>',
-            clock_icon(lx + 34, py + ph / 2),
-            text(lx + 58, py + ph / 2 + 9, "Late close", 24, 600, MUTED),
-            rect(lx + pw - 96, py + 12, 82, 36, RULE, 18, shadow=False),
-            text(lx + pw - 55, py + 38, "Day 10", 22, 700, MUTED, "middle"),
-            rect(px, py, pw, ph, WHITE, ph / 2),
-            check(px + 34, py + ph / 2, 16),
-            text(px + 60, py + ph / 2 + 9, "Close ready", 24, 700, INK),
-            rect(px + pw - 70, py + 12, 56, 36, TINT, 18, shadow=False),
-            text(px + pw - 42, py + 38, "£0", 22, 700, TEAL, "middle")]
+            card(rx, ya, "Entity A", "£10,000", True),
+            card(rx, yb, "Entity B", "£10,000", True),
+            f'<circle cx="{rx+44}" cy="{mid}" r="20" fill="{WHITE}"/>',
+            check(rx + 44, mid, 15, WHITE, TEAL)]
+    # short labels on the link, set on a chip so the connector stays clean
+    out += [rect(lx + 72, mid - 19, 120, 38, BG, 19, shadow=False),
+            text(lx + 132, mid + 8, "£150 gap", 22, 700, MUTED, "middle"),
+            rect(rx + 72, mid - 19, 120, 38, TEAL, 19, shadow=False),
+            text(rx + 132, mid + 8, "Matched", 22, 700, WHITE, "middle")]
     # GATHER hub socket on the panel seam
     out += [f'<circle cx="{hub[0]}" cy="{hub[1]}" r="56" fill="{BG}" stroke="{LINE}" stroke-width="2"/>',
             f'<circle cx="{hub[0]}" cy="{hub[1]}" r="42" fill="{WHITE}" filter="url(#sh)"/>',
@@ -642,84 +613,44 @@ def c_fragmented_processes():
 
 
 def c_multi_entity_growth():
-    # Left: the group grows 1 -> 3 -> 8 entities; each bar is literally filled
-    # with entity tiles and a dashed trend rises over them. Right: GATHER (hub
-    # on the panel edge) turns that into one group view: a mini dashboard (the
-    # charts of the original artwork) over the four group responsibilities.
-    base, tile, pitch = 416, 38, 46
-    out = [text(28, 84, "Entities", 28, 700, INK),
-           line(12, base, 324, base, LINE, 4)]
-    tops = []
+    # Left: the group grows 1 -> 3 -> 8 entities; each bar holds that many
+    # entity tiles. GATHER links them to one group view covering the four
+    # group responsibilities.
+    base, tile, pitch = 392, 38, 46
+    out = [line(12, base, 324, base, LINE, 4)]
     for k, n in enumerate((1, 3, 8)):
         bx = 20 + k * 100
-        rows = (n + 1) // 2
-        top = base - rows * pitch - 4
-        tops.append((bx + 48, top))
+        top = base - (n + 1) // 2 * pitch - 4
         out.append(rect(bx, top, 96, base - top, WHITE, 16, shadow=True))
         for i in range(n):
             r, c = divmod(i, 2)
-            tx = bx + 6 + c * pitch
-            if n - i == 1 and n % 2:          # odd last tile sits centred
-                tx = bx + 29
+            tx = bx + 29 if (n - i == 1 and n % 2) else bx + 6 + c * pitch
             ty = base - 4 - tile - r * pitch
-            new = n == 8 and i >= 6           # the latest additions
-            out += [rect(tx, ty, tile, tile, TEAL if new else TINT, 10, shadow=False),
-                    building(tx + tile / 2, ty + tile / 2, 0.64, WHITE if new else TEAL)]
-        out.append(text(bx + 48, top - 14, str(n), 36, 700, TEAL, "middle"))
-    # rising trend over the counts: smooth dotted curve with an arrowhead
-    (x0, t0), (x1, t1), (x2, t2) = [(cx, t - 60) for cx, t in tops]
-    out += [f'<path d="M{x0} {t0}Q{x1 - 20} {t1 + 10} {x1} {t1}T{x2 + 10} {t2 - 14}" '
-            f'stroke="{TEAL_MID}" stroke-width="3.2" stroke-dasharray="1 9" stroke-linecap="round"/>',
-            f'<path d="M{x2 - 4} {t2 - 18}L{x2 + 12} {t2 - 16}L{x2 + 8} {t2 + 0}" stroke="{TEAL_MID}" '
-            f'stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>']
+            out += [rect(tx, ty, tile, tile, TINT, 10, shadow=False),
+                    building(tx + tile / 2, ty + tile / 2, 0.64)]
+        out.append(text(bx + 48, top - 14, str(n), 34, 700, TEAL, "middle"))
+    out.append(text(168, 440, "Entities", 26, 600, MUTED, "middle"))
 
-    # group view panel with a lighter white dot texture and a deeper corner
-    px, py, pw, ph = 396, 36, 292, 408
+    # group view panel with a light white dot texture for depth
+    px, py, pw, ph = 396, 56, 292, 368
     out += [f'<defs><pattern id="dotsw" width="16" height="16" patternUnits="userSpaceOnUse">'
             f'<circle cx="8" cy="8" r="1.2" fill="{WHITE}"/></pattern>'
             f'<clipPath id="gv"><rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="26"/></clipPath></defs>',
             rect(px, py, pw, ph, TEAL, 26),
-            f'<g clip-path="url(#gv)"><path d="M600 {py}H{px + pw}V{py + ph}H500z" fill="{TEAL_DEEP}" opacity=".3"/>'
-            f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" fill="url(#dotsw)" opacity=".13"/></g>',
-            text(424, 86, "Group view", 28, 700, WHITE)]
-    for k in range(3):  # window chrome, so the panel reads as a product screen
-        out.append(f'<circle cx="{620 + k * 16}" cy="77" r="5" fill="{WHITE}" opacity=".35"/>')
-    # mini dashboard: donut + rising area chart
-    out.append(rect(420, 104, 244, 100, WHITE, 16))
-    dcx, dcy, dr = 466, 154, 26
-    circ = 2 * 3.14159 * dr
-    off = 0
-    for frac, col in ((0.5, TEAL), (0.3, TEAL_MID), (0.2, LINE)):
-        out.append(f'<circle cx="{dcx}" cy="{dcy}" r="{dr}" stroke="{col}" stroke-width="12" '
-                   f'stroke-dasharray="{circ * frac - 2:.1f} {circ:.1f}" stroke-dashoffset="{-off:.1f}" '
-                   f'transform="rotate(-90 {dcx} {dcy})"/>')
-        off += circ * frac
-    ax0, ax1, ay = 512, 646, 186
-    vals = [10, 18, 14, 28, 26, 40, 54]
-    step = (ax1 - ax0) / (len(vals) - 1)
-    pl = [(ax0 + i * step, ay - v) for i, v in enumerate(vals)]
-    poly = " ".join(f"{x:.1f} {y}" for x, y in pl)
-    for gy in (132, 159):
-        out.append(line(ax0, gy, ax1, gy, RULE, 2))
-    out += [f'<path d="M{ax0} {ay}L{poly}L{ax1} {ay}z" fill="{TEAL}" opacity=".16"/>',
-            f'<path d="M{poly}" stroke="{TEAL}" stroke-width="3" stroke-linejoin="round" '
-            f'stroke-linecap="round"/>',
-            line(ax0, ay, ax1, ay, LINE, 2),
-            f'<circle cx="{pl[-1][0]:.1f}" cy="{pl[-1][1]}" r="5" fill="{TEAL}" stroke="{WHITE}" '
-            f'stroke-width="2.5"/>']
-    # the four group responsibilities, each with its own glyph
+            f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" fill="url(#dotsw)" opacity=".12" '
+            f'clip-path="url(#gv)"/>',
+            text(424, 108, "Group view", 28, 700, WHITE)]
     for i, (kind, label) in enumerate([("report", "Reporting"), ("plan", "Planning"),
                                        ("kpi", "KPIs"), ("recharge", "Intercompany")]):
-        y = 220 + i * 54
-        cy = y + 23
-        out += [rect(420, y, 244, 46, TEAL_DEEP, 14, shadow=False),
-                f'<circle cx="445" cy="{cy}" r="15" fill="{WHITE}"/>',
-                control_glyph(kind, 445, cy),
-                text(472, cy + 9, label, 26, 600, WHITE)]
-    # GATHER hub on the panel edge, fed by the growing group
-    hx, hy = 356, 300
+        y = 134 + i * 70
+        cy = y + 29
+        out += [rect(420, y, 244, 58, TEAL_DEEP, 14, shadow=False),
+                f'<circle cx="449" cy="{cy}" r="16" fill="{WHITE}"/>',
+                control_glyph(kind, 449, cy),
+                text(476, cy + 9, label, 26, 600, WHITE)]
+    # GATHER links the growing group to the group view
+    hx, hy = 356, 240
     out += [line(316, hy, px, hy, LINE, 4),
-            f'<circle cx="{hx}" cy="{hy}" r="38" stroke="{LINE}" stroke-width="2" stroke-dasharray="3 6"/>',
             f'<circle cx="{hx}" cy="{hy}" r="29" fill="{WHITE}" filter="url(#sh)"/>',
             gather_mark(hx - 18, hy - 16.7, 36)]
     return out
@@ -780,7 +711,7 @@ def font_face(weight, chars):
             f"src:url(data:font/ttf;base64,{b64}) format('truetype')}}")
 
 
-def build(slug, alt, body):
+def build(slug, alt, body, out=OUT):
     inner = "".join(body)
     used = {}
     for m in re.finditer(r'font-weight="(\d+)"[^>]*>([^<]*)</text>', inner):
@@ -790,7 +721,7 @@ def build(slug, alt, body):
            f'height="{H*2}" fill="none" role="img" aria-label="{esc(alt)}">'
            f"<style>{faces}text{{font-family:'FT','Figtree',Arial,sans-serif}}</style>"
            f'{DEFS}{background()}{inner}</svg>\n')
-    with open(os.path.join(OUT, slug + ".svg"), "w", encoding="utf-8", newline="\n") as fh:
+    with open(os.path.join(out, slug + ".svg"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(svg)
 
 

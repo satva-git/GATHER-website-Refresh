@@ -1,3 +1,57 @@
+/* ═════ MCP BETA: sitewide announcement bar + GATHER AI nav entry ═════
+ * Injected here so every page that loads this script gets them without
+ * per-page HTML edits. Must run before the nav dropdown wiring below. */
+(function () {
+  'use strict';
+  var script = document.currentScript;
+  var siteRoot = script && script.src ? new URL('../', script.src) : new URL('/', location.href);
+  var MCP_URL = new URL('mcp-beta.html', siteRoot).href;
+  var DISMISS_KEY = 'gn-ann-mcp-beta-dismissed';
+
+  // Reviewer mode: ?tbc=1 reveals placeholder copy awaiting business sign-off (?tbc=0 hides it again).
+  var tbc = new URLSearchParams(location.search).get('tbc');
+  try {
+    if (tbc !== null) sessionStorage.setItem('gn-show-tbc', tbc === '0' ? '' : '1');
+    if (sessionStorage.getItem('gn-show-tbc')) document.documentElement.classList.add('show-tbc');
+  } catch (e) { if (tbc && tbc !== '0') document.documentElement.classList.add('show-tbc'); }
+
+  var dismissed = false;
+  try { dismissed = localStorage.getItem(DISMISS_KEY) === '1'; } catch (e) {}
+  if (!dismissed && !document.body.classList.contains('wl-page')) {
+    var bar = document.createElement('div');
+    bar.className = 'ann-bar';
+    bar.setAttribute('role', 'region');
+    bar.setAttribute('aria-label', 'Announcement');
+    bar.innerHTML =
+      '<a href="' + MCP_URL + '"><b>NEW</b><span class="ann-long">The GATHER MCP beta waitlist is open. </span><span class="ann-short">GATHER MCP beta: </span><u>Join the waitlist</u></a>' +
+      '<button type="button" class="ann-close" aria-label="Dismiss announcement">&times;</button>';
+    document.body.insertBefore(bar, document.body.firstChild);
+    document.documentElement.classList.add('has-ann');
+    bar.querySelector('.ann-close').addEventListener('click', function () {
+      bar.remove();
+      document.documentElement.classList.remove('has-ann');
+      try { localStorage.setItem(DISMISS_KEY, '1'); } catch (e) {}
+    });
+  }
+
+  // Turn the flat "GATHER AI" nav link into a dropdown that also lists the MCP beta.
+  var aiLink = document.querySelector('#nav .nav-links > li > a.nav-link--caps');
+  if (aiLink && /GATHER\s*AI/i.test(aiLink.textContent)) {
+    var li = aiLink.parentNode;
+    li.className = 'nav-item--drop';
+    li.innerHTML =
+      '<button type="button" class="nav-drop-trigger nav-link--caps" aria-expanded="false" aria-haspopup="true">GATHER AI ' +
+        '<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '</button>' +
+      '<div class="nav-drop nav-drop--resources" role="menu" aria-label="GATHER AI">' +
+        '<div class="nav-resources-list">' +
+          '<a href="' + aiLink.getAttribute('href') + '" role="menuitem"><span class="nav-resources-ic nav-resources-ic--insights" aria-hidden="true"></span><span class="nav-resources-label">About GATHER AI</span></a>' +
+          '<a href="' + MCP_URL + '" role="menuitem"><span class="nav-resources-ic nav-resources-ic--updates" aria-hidden="true"></span><span class="nav-resources-label">MCP beta waitlist</span><span class="nav-new-tag">New</span></a>' +
+        '</div>' +
+      '</div>';
+  }
+})();
+
 (function () {
   'use strict';
 
@@ -534,4 +588,207 @@
       });
     });
   }
+})();
+
+/* ═════ MCP BETA WAITLIST FORM ═════
+ * Shared by the homepage #mcp-beta section and /mcp-beta.
+ * Spam: hidden honeypot field (bots that fill it get a fake success, nothing is
+ * sent) + time-to-submit sent as elapsed_ms for server-side filtering.
+ * Duplicates: remembered per browser (hashed email) and a 409 response from
+ * the endpoint is shown as "already on the list". */
+(function () {
+  'use strict';
+
+  // TBC: mailing-list provider not confirmed yet. Leave empty until it is:
+  // the form validates but sends nothing and shows a "not open yet" message.
+  // It will POST JSON: { list, email, consent_beta, consent_beta_text,
+  // consent_marketing, consent_marketing_text, source, submitted_at,
+  // elapsed_ms, utm_*, ref }.
+  var WAITLIST_ENDPOINT = '';
+  // TBC: confirm the production URL of the waitlist page.
+  var SHARE_URL = 'https://gather.nexus/mcp-beta';
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var JOINED_KEY = 'gn-waitlist-joined';
+  var UTM_KEY = 'gn-utm';
+
+  // Keep first-touch campaign params for the session, so a visitor who lands
+  // on another page from a shared link and signs up later is still attributed.
+  var params = {};
+  new URLSearchParams(location.search).forEach(function (v, k) {
+    if (/^utm_[a-z]+$|^ref$/.test(k)) params[k] = v.slice(0, 200);
+  });
+  try {
+    if (Object.keys(params).length) sessionStorage.setItem(UTM_KEY, JSON.stringify(params));
+    else params = JSON.parse(sessionStorage.getItem(UTM_KEY) || '{}');
+  } catch (e) {}
+
+  function hash(str) {
+    var h = 5381;
+    for (var i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+    return (h >>> 0).toString(36);
+  }
+  function joined() {
+    try { return JSON.parse(localStorage.getItem(JOINED_KEY) || '{}'); } catch (e) { return {}; }
+  }
+  function hasJoined(list, email) {
+    var j = joined();
+    return !!(j[list] && j[list].indexOf(hash(email)) > -1);
+  }
+  function rememberJoined(list, email) {
+    try {
+      var j = joined();
+      (j[list] = j[list] || []).push(hash(email));
+      localStorage.setItem(JOINED_KEY, JSON.stringify(j));
+    } catch (e) {}
+  }
+  function shareLink(source) {
+    return SHARE_URL + '?utm_source=' + source + '&utm_medium=referral&utm_campaign=mcp-beta';
+  }
+  function labelText(input) {
+    var span = input.closest('label').querySelector('[data-consent-text]');
+    return span ? span.textContent.replace(/\s+/g, ' ').trim() : '';
+  }
+
+  document.querySelectorAll('form[data-waitlist]').forEach(function (form) {
+    var list = form.getAttribute('data-waitlist');
+    var email = form.elements.email;
+    var beta = form.elements.consent_beta;
+    var marketing = form.elements.consent_marketing;
+    var honeypot = form.elements.website;
+    var button = form.querySelector('.wl-submit');
+    var status = form.querySelector('.wl-status');
+    var doneTitle = form.querySelector('.wl-done-title');
+    var doneText = form.querySelector('.wl-done-text');
+    var copyBtn = form.querySelector('[data-share="copy"]');
+    var nativeBtn = form.querySelector('[data-share="native"]');
+    var copyLabel = copyBtn ? copyBtn.querySelector('span').textContent : '';
+    var startedAt = Date.now();
+    var busy = false;
+
+    function say(msg, ok) {
+      status.textContent = msg;
+      status.className = 'wl-status ' + (msg ? (ok ? 'wl-status--ok' : 'wl-status--err') : '');
+    }
+    function invalid(input, on) {
+      if (on) input.setAttribute('aria-invalid', 'true');
+      else input.removeAttribute('aria-invalid');
+      if (input.type === 'checkbox') input.closest('.wl-consent').classList.toggle('is-invalid', on);
+    }
+    function showDone(addr, already) {
+      doneTitle.textContent = already ? "You're already on the waitlist" : "You're on the waitlist";
+      doneText.textContent = already
+        ? 'We already have ' + addr + ' on the GATHER MCP beta waitlist. No need to sign up again.'
+        : "Thanks! We'll email " + addr + ' about the GATHER MCP beta.';
+      form.classList.add('is-done');
+      say('', true);
+      doneTitle.focus();
+    }
+
+    email.addEventListener('input', function () { invalid(email, false); });
+    beta.addEventListener('change', function () { invalid(beta, false); });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (busy) return;
+      var addr = email.value.trim().toLowerCase();
+      var bad = [];
+      invalid(email, !EMAIL_RE.test(addr));
+      if (!EMAIL_RE.test(addr)) bad.push([email, 'Enter a valid email address, like name@company.com.']);
+      invalid(beta, !beta.checked);
+      if (!beta.checked) bad.push([beta, 'Tick the box to confirm you want to join the beta waitlist.']);
+      if (bad.length) {
+        say(bad.map(function (b) { return b[1]; }).join(' '), false);
+        bad[0][0].focus();
+        return;
+      }
+
+      // Honeypot: invisible to people, so anything in it is a bot. Fake success.
+      if (honeypot && honeypot.value) return showDone(addr, false);
+
+      if (hasJoined(list, addr)) return showDone(addr, true);
+
+      if (!WAITLIST_ENDPOINT) {
+        return say("The waitlist isn't open for sign-ups yet. Please check back soon.", false);
+      }
+
+      var payload = {
+        list: list,
+        email: addr,
+        consent_beta: true,
+        consent_beta_text: labelText(beta),
+        consent_marketing: !!(marketing && marketing.checked),
+        consent_marketing_text: marketing && marketing.checked ? labelText(marketing) : null,
+        source: location.pathname,
+        submitted_at: new Date().toISOString(),
+        elapsed_ms: Date.now() - startedAt
+      };
+      Object.keys(params).forEach(function (k) { payload[k] = params[k]; });
+
+      busy = true;
+      button.setAttribute('aria-disabled', 'true');
+      say('Adding you to the waitlist…', true);
+      fetch(WAITLIST_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (res.status === 409) { rememberJoined(list, addr); return showDone(addr, true); }
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        rememberJoined(list, addr);
+        showDone(addr, false);
+      }).catch(function () {
+        say("Sorry, we couldn't add you just now. Please try again in a moment.", false);
+      }).then(function () {
+        busy = false;
+        button.removeAttribute('aria-disabled');
+      });
+    });
+
+    // Post-signup sharing
+    var shareText = 'Join the GATHER MCP beta waitlist';
+    form.querySelectorAll('[data-share-to]').forEach(function (a) {
+      var kind = a.getAttribute('data-share-to');
+      var url = shareLink(kind);
+      a.href = kind === 'linkedin'
+        ? 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url)
+        : 'mailto:?subject=' + encodeURIComponent(shareText) + '&body=' + encodeURIComponent(shareText + ': ' + url);
+    });
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var url = shareLink('copy');
+        var ok = function () {
+          copyBtn.querySelector('span').textContent = 'Link copied';
+          say('Link copied to your clipboard.', true);
+          setTimeout(function () { copyBtn.querySelector('span').textContent = copyLabel; }, 2500);
+        };
+        var fallback = function () {
+          var t = document.createElement('textarea');
+          t.value = url; t.setAttribute('readonly', ''); t.style.position = 'absolute'; t.style.left = '-9999px';
+          document.body.appendChild(t); t.select();
+          try { document.execCommand('copy'); ok(); } catch (err) { say('Copy this link: ' + url, true); }
+          t.remove();
+        };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(ok, fallback);
+        else fallback();
+      });
+    }
+    if (nativeBtn && navigator.share) {
+      nativeBtn.hidden = false;
+      nativeBtn.addEventListener('click', function () {
+        navigator.share({ title: shareText, url: shareLink('native') }).catch(function () {});
+      });
+    }
+  });
+
+  // "Join the waitlist" buttons further down a page: scroll to the form and focus the email field.
+  document.querySelectorAll('[data-wl-focus]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var target = document.querySelector(a.getAttribute('href'));
+      var input = target && target.querySelector('form[data-waitlist] input[type="email"]');
+      if (!input) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(function () { input.focus({ preventScroll: true }); }, 400);
+    });
+  });
 })();

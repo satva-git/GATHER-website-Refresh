@@ -16,8 +16,11 @@ function extractHrefs(file) {
 }
 
 function resolve(from, href) {
-  if (/^https?:/.test(href)) return null;
-  return path.normalize(path.join(path.dirname(from), href.split('#')[0].split('?')[0]));
+  if (/^(https?|mailto|tel):/.test(href)) return null;
+  const target = path.normalize(path.join(path.dirname(from), href.split('#')[0].split('?')[0]));
+  // Folder URLs (e.g. compare/<slug>/) are served from their index.html.
+  if (fs.existsSync(target) && fs.statSync(target).isDirectory()) return path.join(target, 'index.html');
+  return target;
 }
 
 function collectPages(dir, acc) {
@@ -40,6 +43,7 @@ const pages = [
     collectPages(path.join(ROOT, 'modules'), modulePages);
     collectPages(path.join(ROOT, 'group-financial-reporting'), modulePages);
     collectPages(path.join(ROOT, 'knowledge-centre'), modulePages);
+    collectPages(path.join(ROOT, 'compare'), modulePages);
     return modulePages;
   })()
 ];
