@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const db = require('./db');
@@ -470,11 +471,16 @@ const FOLDER_PAGES = [
   'knowledge-centre/bulk-intercompany-recharge-setup',
   'knowledge-centre/consolidation-auditability-transaction-drill-down',
   'knowledge-centre/foreign-exchange-consolidation',
+  'knowledge-centre/fractional-cfo-client-report-access',
+  'knowledge-centre/intercompany-loan-accounting-xero-quickbooks',
   'knowledge-centre/intercompany-recharges-guide',
   'knowledge-centre/multi-ledger-multi-entity-consolidation',
   'knowledge-centre/multi-gaap-reporting-xero-quickbooks',
   'knowledge-centre/schedule-intercompany-recharges',
   'knowledge-centre/xero-tracking-categories-quickbooks-class-consolidation',
+  'blog',
+  'blog/group-ledger-multi-gaap-exit-readiness',
+  'blog/mayday-vs-gather-multi-entity-layer',
   'compare/gather-nexus-vs-spotlight-reporting',
   'compare/gather-nexus-vs-translucent'
 ];
@@ -496,6 +502,41 @@ app.get('/assets/images/complex-consolidations-homepage-visual.png', (_req, res)
 app.get('/assets/images/complex-consolidations-homepage-visual.gif', (_req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   res.redirect(302, '/assets/images/complex-consolidations-step-acquisition.gif?v=20260825k');
+});
+
+// Any folder with an index.html is a real page. The old allow-list missed
+// the pages added at the live addresses, so /about/ and the rest returned
+// "Not found" and the menu could not open them.
+const HIDDEN_TOP_FOLDERS = new Set([
+  'node_modules',
+  'server',
+  'scripts',
+  'exports',
+  '.website-project',
+  '.git'
+]);
+
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  let rel = '';
+  try {
+    rel = decodeURIComponent(req.path);
+  } catch (err) {
+    return next();
+  }
+  rel = rel.replace(/^\/+/, '').replace(/\/+$/, '');
+  if (!rel) return next();
+  const parts = rel.split('/');
+  if (parts.some((part) => !part || part === '.' || part === '..' || part.startsWith('.'))) return next();
+  if (HIDDEN_TOP_FOLDERS.has(parts[0])) return next();
+  const indexFile = path.resolve(ROOT, ...parts, 'index.html');
+  const fromRoot = path.relative(ROOT, indexFile);
+  if (fromRoot.startsWith('..') || path.isAbsolute(fromRoot)) return next();
+  if (!fs.existsSync(indexFile)) return next();
+  return redirectToDefaultReview(req, res, () => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.sendFile(indexFile);
+  });
 });
 
 app.use(express.static(ROOT, {

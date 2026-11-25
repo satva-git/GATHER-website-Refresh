@@ -1,0 +1,682 @@
+{
+  "summary": {
+    "fetchedAt": "2026-11-25T10:15:39.448Z",
+    "total": 84,
+    "ok": 84,
+    "failed": []
+  },
+  "results": [
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/complex-consolidations/",
+      "ok": true,
+      "status": 200,
+      "bytes": 252717,
+      "file": ".website-project\\research\\live-html\\complex-consolidations.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/",
+      "ok": true,
+      "status": 200,
+      "bytes": 356562,
+      "file": ".website-project\\research\\live-html\\home.html"
+    },
+    {
+      "group": "doc-categories",
+      "url": "https://gather.nexus/docs-category/group-financial-reporting/",
+      "ok": true,
+      "status": 200,
+      "bytes": 427415,
+      "file": ".website-project\\research\\live-html\\docs-category__group-financial-reporting.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/group-financial-reporting/",
+      "ok": true,
+      "status": 200,
+      "bytes": 260846,
+      "file": ".website-project\\research\\live-html\\group-financial-reporting.html"
+    },
+    {
+      "group": "doc-categories",
+      "url": "https://gather.nexus/docs-category/group-financial-reporting/group-reporting-templates/",
+      "ok": true,
+      "status": 200,
+      "bytes": 425040,
+      "file": ".website-project\\research\\live-html\\docs-category__group-financial-reporting__group-reporting-templates.html"
+    },
+    {
+      "group": "doc-categories",
+      "url": "https://gather.nexus/docs-category/grt/",
+      "ok": true,
+      "status": 200,
+      "bytes": 423667,
+      "file": ".website-project\\research\\live-html\\docs-category__grt.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/about/",
+      "ok": true,
+      "status": 200,
+      "bytes": 247719,
+      "file": ".website-project\\research\\live-html\\about.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/ai/",
+      "ok": true,
+      "status": 200,
+      "bytes": 236523,
+      "file": ".website-project\\research\\live-html\\ai.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/intercompany-control/",
+      "ok": true,
+      "status": 200,
+      "bytes": 255346,
+      "file": ".website-project\\research\\live-html\\intercompany-control.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/contact/",
+      "ok": true,
+      "status": 200,
+      "bytes": 244018,
+      "file": ".website-project\\research\\live-html\\contact.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/cookie-policy/",
+      "ok": true,
+      "status": 200,
+      "bytes": 213740,
+      "file": ".website-project\\research\\live-html\\cookie-policy.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/for-finance-teams/",
+      "ok": true,
+      "status": 200,
+      "bytes": 247546,
+      "file": ".website-project\\research\\live-html\\for-finance-teams.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/for-fractional-cfos/",
+      "ok": true,
+      "status": 200,
+      "bytes": 247708,
+      "file": ".website-project\\research\\live-html\\for-fractional-cfos.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/group-financial-planning/",
+      "ok": true,
+      "status": 200,
+      "bytes": 265377,
+      "file": ".website-project\\research\\live-html\\group-financial-planning.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/news-latest/",
+      "ok": true,
+      "status": 200,
+      "bytes": 209822,
+      "file": ".website-project\\research\\live-html\\news-latest.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/pricing/",
+      "ok": true,
+      "status": 200,
+      "bytes": 226809,
+      "file": ".website-project\\research\\live-html\\pricing.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/privacy-policy/",
+      "ok": true,
+      "status": 200,
+      "bytes": 226213,
+      "file": ".website-project\\research\\live-html\\privacy-policy.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/video/",
+      "ok": true,
+      "status": 200,
+      "bytes": 211543,
+      "file": ".website-project\\research\\live-html\\video.html"
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/website-terms-of-use/",
+      "ok": true,
+      "status": 200,
+      "bytes": 227018,
+      "file": ".website-project\\research\\live-html\\website-terms-of-use.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/",
+      "ok": true,
+      "status": 200,
+      "bytes": 244843,
+      "file": ".website-project\\research\\live-html\\product-updates.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/group-ap-ar-ageing-analysis/",
+      "ok": true,
+      "status": 200,
+      "bytes": 231848,
+      "file": ".website-project\\research\\live-html\\product-updates__group-ap-ar-ageing-analysis.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/intercompany-control-group-financial-reporting-updates/",
+      "ok": true,
+      "status": 200,
+      "bytes": 232328,
+      "file": ".website-project\\research\\live-html\\product-updates__intercompany-control-group-financial-reporting-updates.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/manual-fx-is-now-live-in-gather-nexus/",
+      "ok": true,
+      "status": 200,
+      "bytes": 227426,
+      "file": ".website-project\\research\\live-html\\product-updates__manual-fx-is-now-live-in-gather-nexus.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/complex-financial-consolidation/",
+      "ok": true,
+      "status": 200,
+      "bytes": 231301,
+      "file": ".website-project\\research\\live-html\\product-updates__complex-financial-consolidation.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/gather-platform-2-0/",
+      "ok": true,
+      "status": 200,
+      "bytes": 232628,
+      "file": ".website-project\\research\\live-html\\product-updates__gather-platform-2-0.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/gather-nexus-goes-live-with-158-currencies/",
+      "ok": true,
+      "status": 200,
+      "bytes": 229149,
+      "file": ".website-project\\research\\live-html\\product-updates__gather-nexus-goes-live-with-158-currencies.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/gather-nexus-announces-integration-with-intuit-quickbooks/",
+      "ok": true,
+      "status": 200,
+      "bytes": 231885,
+      "file": ".website-project\\research\\live-html\\product-updates__gather-nexus-announces-integration-with-intuit-quickbooks.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/gather-nexus-integrates-with-payments-platform-stripe/",
+      "ok": true,
+      "status": 200,
+      "bytes": 230037,
+      "file": ".website-project\\research\\live-html\\product-updates__gather-nexus-integrates-with-payments-platform-stripe.html"
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/introducing-gather-nexus/",
+      "ok": true,
+      "status": 200,
+      "bytes": 229832,
+      "file": ".website-project\\research\\live-html\\product-updates__introducing-gather-nexus.html"
+    },
+    {
+      "group": "landing-pages",
+      "url": "https://gather.nexus/lp/",
+      "ok": true,
+      "status": 200,
+      "bytes": 207818,
+      "file": ".website-project\\research\\live-html\\lp.html"
+    },
+    {
+      "group": "landing-pages",
+      "url": "https://gather.nexus/lp/usa_001_332026/",
+      "ok": true,
+      "status": 200,
+      "bytes": 133710,
+      "file": ".website-project\\research\\live-html\\lp__usa_001_332026.html"
+    },
+    {
+      "group": "integrations",
+      "url": "https://gather.nexus/integrations/quickbooks/",
+      "ok": true,
+      "status": 200,
+      "bytes": 252857,
+      "file": ".website-project\\research\\live-html\\integrations__quickbooks.html"
+    },
+    {
+      "group": "integrations",
+      "url": "https://gather.nexus/integrations/xero/",
+      "ok": true,
+      "status": 200,
+      "bytes": 251307,
+      "file": ".website-project\\research\\live-html\\integrations__xero.html"
+    },
+    {
+      "group": "categories",
+      "url": "https://gather.nexus/blog/category/consolidated-planning/",
+      "ok": true,
+      "status": 200,
+      "bytes": 210876,
+      "file": ".website-project\\research\\live-html\\blog__category__consolidated-planning.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/build-group-budget-xero-quickbooks/",
+      "ok": true,
+      "status": 200,
+      "bytes": 234551,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__build-group-budget-xero-quickbooks.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/group-budget-actual-common-reporting-structure/",
+      "ok": true,
+      "status": 200,
+      "bytes": 235106,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__group-budget-actual-common-reporting-structure.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/group-budget-vs-actual-analysis/",
+      "ok": true,
+      "status": 200,
+      "bytes": 232164,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__group-budget-vs-actual-analysis.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/financial-consolidation-xero-quickbooks-guide/",
+      "ok": true,
+      "status": 200,
+      "bytes": 239074,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__financial-consolidation-xero-quickbooks-guide.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/consolidation-working-papers-explained/",
+      "ok": true,
+      "status": 200,
+      "bytes": 237823,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__consolidation-working-papers-explained.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/aggregation-vs-consolidation/",
+      "ok": true,
+      "status": 200,
+      "bytes": 238188,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__aggregation-vs-consolidation.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/how-to-consolidate-acquired-company/",
+      "ok": true,
+      "status": 200,
+      "bytes": 236880,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__how-to-consolidate-acquired-company.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/map-charts-of-accounts-group-reporting/",
+      "ok": true,
+      "status": 200,
+      "bytes": 229455,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__map-charts-of-accounts-group-reporting.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/group-financial-planning/",
+      "ok": true,
+      "status": 200,
+      "bytes": 246479,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__group-financial-planning.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/unified-intercompany-recharges-reconciliations-eliminations/",
+      "ok": true,
+      "status": 200,
+      "bytes": 239235,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__unified-intercompany-recharges-reconciliations-eliminations.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-recharges-guide/",
+      "ok": true,
+      "status": 200,
+      "bytes": 243426,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__intercompany-recharges-guide.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/foreign-exchange-consolidation/",
+      "ok": true,
+      "status": 200,
+      "bytes": 236213,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__foreign-exchange-consolidation.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/transfer-pricing-intercompany-accounting-guide/",
+      "ok": true,
+      "status": 200,
+      "bytes": 238360,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__transfer-pricing-intercompany-accounting-guide.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-reconciliation-recharges-faq/",
+      "ok": true,
+      "status": 200,
+      "bytes": 254082,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__intercompany-reconciliation-recharges-faq.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/manual-vs-automated-intercompany-accounting/",
+      "ok": true,
+      "status": 200,
+      "bytes": 232235,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__manual-vs-automated-intercompany-accounting.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-reconciliation-guide/",
+      "ok": true,
+      "status": 200,
+      "bytes": 255511,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__intercompany-reconciliation-guide.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-vs-mayday/",
+      "ok": true,
+      "status": 200,
+      "bytes": 268397,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__gather-vs-mayday.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-vs-fathom/",
+      "ok": true,
+      "status": 200,
+      "bytes": 233322,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__gather-vs-fathom.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/consolidation-auditability-transaction-drill-down/",
+      "ok": true,
+      "status": 200,
+      "bytes": 239069,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__consolidation-auditability-transaction-drill-down.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/multi-gaap-reporting-xero-quickbooks/",
+      "ok": true,
+      "status": 200,
+      "bytes": 226627,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__multi-gaap-reporting-xero-quickbooks.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-nexus-vs-spotlight-reporting/",
+      "ok": true,
+      "status": 200,
+      "bytes": 230988,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__gather-nexus-vs-spotlight-reporting.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-nexus-vs-translucent/",
+      "ok": true,
+      "status": 200,
+      "bytes": 232108,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__gather-nexus-vs-translucent.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/bulk-intercompany-recharge-setup/",
+      "ok": true,
+      "status": 200,
+      "bytes": 227928,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__bulk-intercompany-recharge-setup.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/schedule-intercompany-recharges/",
+      "ok": true,
+      "status": 200,
+      "bytes": 233703,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__schedule-intercompany-recharges.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-vs-joiin/",
+      "ok": true,
+      "status": 200,
+      "bytes": 230670,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__gather-vs-joiin.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/group-financial-reporting/",
+      "ok": true,
+      "status": 200,
+      "bytes": 280708,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__group-financial-reporting.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-control/",
+      "ok": true,
+      "status": 200,
+      "bytes": 264892,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__intercompany-control.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-loan-accounting-xero-quickbooks/",
+      "ok": true,
+      "status": 200,
+      "bytes": 230299,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__intercompany-loan-accounting-xero-quickbooks.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/xero-tracking-categories-quickbooks-class-consolidation/",
+      "ok": true,
+      "status": 200,
+      "bytes": 238108,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__xero-tracking-categories-quickbooks-class-consolidation.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/multi-ledger-multi-entity-consolidation/",
+      "ok": true,
+      "status": 200,
+      "bytes": 237118,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__multi-ledger-multi-entity-consolidation.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/our-unified-platform/",
+      "ok": true,
+      "status": 200,
+      "bytes": 231442,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__our-unified-platform.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/fractional-cfos-outsourced-finance/",
+      "ok": true,
+      "status": 200,
+      "bytes": 231093,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__fractional-cfos-outsourced-finance.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/fractional-cfo-client-report-access/",
+      "ok": true,
+      "status": 200,
+      "bytes": 227875,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__fractional-cfo-client-report-access.html"
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-ai-and-mcp/",
+      "ok": true,
+      "status": 200,
+      "bytes": 232929,
+      "file": ".website-project\\research\\live-html\\knowledge-centre__gather-ai-and-mcp.html"
+    },
+    {
+      "group": "authors",
+      "url": "https://gather.nexus/blog/author/howard/",
+      "ok": true,
+      "status": 200,
+      "bytes": 253200,
+      "file": ".website-project\\research\\live-html\\blog__author__howard.html"
+    },
+    {
+      "group": "docs",
+      "url": "https://gather.nexus/docs/",
+      "ok": true,
+      "status": 200,
+      "bytes": 466937,
+      "file": ".website-project\\research\\live-html\\docs.html"
+    },
+    {
+      "group": "docs",
+      "url": "https://gather.nexus/docs/group-reporting-template-option-2-pl/",
+      "ok": true,
+      "status": 200,
+      "bytes": 442886,
+      "file": ".website-project\\research\\live-html\\docs__group-reporting-template-option-2-pl.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/",
+      "ok": true,
+      "status": 200,
+      "bytes": 256725,
+      "file": ".website-project\\research\\live-html\\blog.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/quickbooks-online-multi-entity-consolidation/",
+      "ok": true,
+      "status": 200,
+      "bytes": 255685,
+      "file": ".website-project\\research\\live-html\\blog__quickbooks-online-multi-entity-consolidation.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/xero-multi-entity-consolidation/",
+      "ok": true,
+      "status": 200,
+      "bytes": 255193,
+      "file": ".website-project\\research\\live-html\\blog__xero-multi-entity-consolidation.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/gather-nexus-for-fractional-cfos/",
+      "ok": true,
+      "status": 200,
+      "bytes": 251759,
+      "file": ".website-project\\research\\live-html\\blog__gather-nexus-for-fractional-cfos.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/xero-quickbooks-multi-entity-consolidation/",
+      "ok": true,
+      "status": 200,
+      "bytes": 274807,
+      "file": ".website-project\\research\\live-html\\blog__xero-quickbooks-multi-entity-consolidation.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/intercompany-accounting-controls-month-end-close/",
+      "ok": true,
+      "status": 200,
+      "bytes": 264073,
+      "file": ".website-project\\research\\live-html\\blog__intercompany-accounting-controls-month-end-close.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/bridging-the-gaap/",
+      "ok": true,
+      "status": 200,
+      "bytes": 265256,
+      "file": ".website-project\\research\\live-html\\blog__bridging-the-gaap.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/quadruple-entry-accounting-multi-entity-finance/",
+      "ok": true,
+      "status": 200,
+      "bytes": 253612,
+      "file": ".website-project\\research\\live-html\\blog__quadruple-entry-accounting-multi-entity-finance.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/from-intercompany-chaos-to-intercompany-control/",
+      "ok": true,
+      "status": 200,
+      "bytes": 251315,
+      "file": ".website-project\\research\\live-html\\blog__from-intercompany-chaos-to-intercompany-control.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/fragmented-processes-multi-entity-groups/",
+      "ok": true,
+      "status": 200,
+      "bytes": 256688,
+      "file": ".website-project\\research\\live-html\\blog__fragmented-processes-multi-entity-groups.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/group-ledger-multi-gaap-exit-readiness/",
+      "ok": true,
+      "status": 200,
+      "bytes": 257379,
+      "file": ".website-project\\research\\live-html\\blog__group-ledger-multi-gaap-exit-readiness.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/mayday-vs-gather-multi-entity-layer/",
+      "ok": true,
+      "status": 200,
+      "bytes": 262793,
+      "file": ".website-project\\research\\live-html\\blog__mayday-vs-gather-multi-entity-layer.html"
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/benefits-of-multi-entity-accounting-software/",
+      "ok": true,
+      "status": 200,
+      "bytes": 260865,
+      "file": ".website-project\\research\\live-html\\blog__benefits-of-multi-entity-accounting-software.html"
+    }
+  ]
+}

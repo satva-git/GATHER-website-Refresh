@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Intercompany Loans in Xero &amp; QuickBooks Online | GATHER.nexus</title>
+<meta name="description" content="Learn how to record and reconcile intercompany loans in Xero and QuickBooks Online, with journal entries and a worked example of a central FX correction."/>
+<link rel="canonical" href="https://gather.nexus/knowledge-centre/intercompany-loan-accounting-xero-quickbooks/"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/page-extensions.css?v=20261125c"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"How to record and reconcile intercompany loans in Xero and QuickBooks Online","description":"Learn how to record and reconcile intercompany loans in Xero and QuickBooks Online, with journal entries and a worked example of a central FX correction.","author":{"@type":"Person","name":"Howard Thompson","jobTitle":"Founder and CEO, GATHER.nexus","honorificSuffix":"FCA"},"publisher":{"@type":"Organization","name":"GATHER.nexus","url":"https://gather.nexus/"},"datePublished":"2026-11-23","dateModified":"2026-11-23","mainEntityOfPage":"https://gather.nexus/knowledge-centre/intercompany-loan-accounting-xero-quickbooks/","image":"https://gather.nexus/assets/images/kc-cover-intercompany-loans.svg"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Knowledge Centre","item":"https://gather.nexus/knowledge-centre/intercompany-control.html"},{"@type":"ListItem","position":2,"name":"Intercompany Control","item":"https://gather.nexus/knowledge-centre/intercompany-control.html"},{"@type":"ListItem","position":3,"name":"How to record and reconcile intercompany loans in Xero and QuickBooks Online","item":"https://gather.nexus/knowledge-centre/intercompany-loan-accounting-xero-quickbooks/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why don’t intercompany loan balances agree?","acceptedAnswer":{"@type":"Answer","text":"Common causes include a drawdown or repayment recorded by only one entity, different posting dates, an interest accrual missing from one side, or a missed FX revaluation. For a foreign-currency loan, compare the outstanding principal in the loan currency first. Then check the functional-currency carrying amounts and exchange rates."}},{"@type":"Question","name":"Can I post an intercompany FX correction without opening each Xero or QuickBooks Online company?","acceptedAnswer":{"@type":"Answer","text":"Yes. GATHER.nexus lets the group finance team post a correcting journal centrally and sync it to the relevant connected ledger. The team can then review the updated counterparty position in the same reconciliation workflow."}},{"@type":"Question","name":"What gets eliminated on consolidation?","acceptedAnswer":{"@type":"Answer","text":"Eliminate the reciprocal loan receivable and payable, along with any corresponding accrued interest balances and internal interest income and expense. Under IAS 21, account separately for genuine exchange differences arising from the loan."}}]}]}</script>
+<link rel="stylesheet" href="/assets/gn-system.css?v=20261125e"/>
+<link rel="stylesheet" href="/assets/gn-templates.css?v=20261125g"/>
+</head>
+<body class="kc-page gn-shell gn-kc-topic live-layout">
+<a class="skip-link" href="#content">Skip to content</a>
+
+<header class="gn-header" id="nav">
+  <div class="gn-header-inner">
+    <a href="/" class="gn-logo" aria-label="GATHER.nexus home">
+      <img src="/assets/images/gather-logo.webp" srcset="/assets/images/gather-logo@2x.webp 2x" alt="GATHER.nexus" width="205" height="56"/>
+    </a>
+
+    <nav class="gn-nav" aria-label="Main">
+      <ul class="gn-nav-list">
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-product">
+            Product
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel gn-nav-panel--product" id="gn-panel-product">
+            <div class="gn-product-grid">
+              <a class="gn-product-link" href="/group-financial-reporting/">
+                <span class="gn-product-thumb"><img src="/assets/images/consolidated-reports.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Group Financial Reporting</span><span class="gn-menu-desc">Consolidation with multi-level drill-down and a full audit trail.</span></span>
+              </a>
+              <a class="gn-product-link" href="/intercompany-control/">
+                <span class="gn-product-thumb"><img src="/assets/images/intercompany-matrix-view.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Intercompany Control</span><span class="gn-menu-desc">Automated recharges, counterparty balances and reconciliations.</span></span>
+              </a>
+              <a class="gn-product-link" href="/complex-consolidations/">
+                <span class="gn-product-thumb"><img src="/assets/images/group-structure-configuration.webp" alt="" width="568" height="386" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Complex Consolidations</span><span class="gn-menu-desc">Acquisitions, disposals and layered ownership structures.</span></span>
+              </a>
+              <a class="gn-product-link" href="/group-financial-planning/">
+                <span class="gn-product-thumb"><img src="/assets/images/group-budget-rollup.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Group Financial Planning</span><span class="gn-menu-desc">Divisional and functional budgets that roll up to the Group.</span></span>
+              </a>
+            </div>
+            <div class="gn-nav-panel-foot">
+              <a class="gn-link" href="/ai/">GATHER AI and the MCP beta <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="gn-link" href="https://app.gather.nexus/auth/user/signup">Start 30-day free trial <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-solutions">
+            Solutions
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-solutions">
+            <a class="gn-menu-link" href="/for-finance-teams/"><span class="gn-menu-title">For Finance Teams</span><span class="gn-menu-desc">In-house finance in multi-entity groups.</span></a>
+            <a class="gn-menu-link" href="/for-fractional-cfos/"><span class="gn-menu-title">For Fractional CFOs</span><span class="gn-menu-desc">Multiple client Groups from one subscription.</span></a>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-integrations">
+            Integrations
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-integrations">
+            <a class="gn-menu-link" href="/integrations/xero/"><span class="gn-menu-title">Xero</span><span class="gn-menu-desc">Connect every Xero entity in a single click.</span></a>
+            <a class="gn-menu-link" href="/integrations/quickbooks/"><span class="gn-menu-title">QuickBooks</span><span class="gn-menu-desc">Connect every QuickBooks entity in a single click.</span></a>
+          </div>
+        </li>
+        <li class="gn-nav-item"><a class="gn-nav-link" href="/pricing/">Pricing</a></li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-resources">
+            Resources
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel gn-nav-panel--resources" id="gn-panel-resources">
+            <div class="gn-two-col">
+              <div>
+                <span class="gn-menu-group-label">Learn</span>
+                <a class="gn-menu-link" href="/knowledge-centre.html"><span class="gn-menu-title">Knowledge Centre</span></a>
+                <a class="gn-menu-link" href="/blog/"><span class="gn-menu-title">Expert Insights</span></a>
+                <a class="gn-menu-link" href="/product-updates/"><span class="gn-menu-title">Product Updates</span></a>
+                <a class="gn-menu-link" href="/video/"><span class="gn-menu-title">Video Tutorials</span></a>
+                <a class="gn-menu-link" href="https://help.gather.nexus/en"><span class="gn-menu-title">User Guides</span></a>
+              </div>
+              <div>
+                <span class="gn-menu-group-label">Knowledge Centre topics</span>
+                <a class="gn-menu-link" href="/knowledge-centre/our-unified-platform/"><span class="gn-menu-title">Our Unified Platform</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/intercompany-control/"><span class="gn-menu-title">Intercompany Control</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/group-financial-reporting/"><span class="gn-menu-title">Group Financial Reporting</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/group-financial-planning/"><span class="gn-menu-title">Group Financial Planning</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/fractional-cfos-outsourced-finance/"><span class="gn-menu-title">Fractional CFOs and Outsourced Finance</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/gather-ai-and-mcp/"><span class="gn-menu-title">GATHER AI and the MCP</span></a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-company">
+            Company
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-company">
+            <a class="gn-menu-link" href="/about/"><span class="gn-menu-title">About</span></a>
+            <a class="gn-menu-link" href="/news-latest/"><span class="gn-menu-title">News</span></a>
+            <a class="gn-menu-link" href="/contact/"><span class="gn-menu-title">Contact</span></a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="gn-header-actions">
+      <a class="gn-login" href="https://app.gather.nexus">Log in</a>
+      <a class="gn-btn gn-btn--primary gn-btn--sm" href="https://app.gather.nexus/auth/user/signup">Start free trial</a>
+      <button type="button" class="gn-menu-toggle" aria-expanded="false" aria-controls="gn-drawer" aria-label="Open menu"><span class="gn-menu-toggle-bars" aria-hidden="true"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="gn-drawer" id="gn-drawer">
+  <nav aria-label="Mobile">
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-product">Product <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-product" hidden>
+        <a href="/group-financial-reporting/">Group Financial Reporting<span>Consolidation with multi-level drill-down</span></a>
+        <a href="/intercompany-control/">Intercompany Control<span>Recharges, balances and reconciliations</span></a>
+        <a href="/complex-consolidations/">Complex Consolidations<span>Acquisitions, disposals and ownership layers</span></a>
+        <a href="/group-financial-planning/">Group Financial Planning<span>Budgets that roll up to the Group</span></a>
+        <a href="/ai/">GATHER AI and the MCP beta</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-solutions">Solutions <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-solutions" hidden>
+        <a href="/for-finance-teams/">For Finance Teams</a>
+        <a href="/for-fractional-cfos/">For Fractional CFOs</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-integrations">Integrations <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-integrations" hidden>
+        <a href="/integrations/xero/">Xero</a>
+        <a href="/integrations/quickbooks/">QuickBooks</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group"><a class="gn-drawer-link" href="/pricing/">Pricing</a></div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-resources">Resources <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-resources" hidden>
+        <a href="/knowledge-centre.html">Knowledge Centre</a>
+        <a href="/blog/">Expert Insights</a>
+        <a href="/product-updates/">Product Updates</a>
+        <a href="/video/">Video Tutorials</a>
+        <a href="https://help.gather.nexus/en">User Guides</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-company">Company <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-company" hidden>
+        <a href="/about/">About</a>
+        <a href="/news-latest/">News</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="gn-drawer-actions">
+      <a class="gn-btn gn-btn--primary" href="https://app.gather.nexus/auth/user/signup">Start 30-day free trial</a>
+      <a class="gn-btn gn-btn--secondary" href="https://app.gather.nexus">Log in</a>
+    </div>
+  </nav>
+</div>
+
+<section class="mod-hero kc-hero">
+  <div class="wrap">
+    <div class="mod-hero-content sr in">
+      <nav class="kc-crumbs" aria-label="Breadcrumb">
+        <a href="../intercompany-control.html">Knowledge Centre</a>
+        <span class="kc-crumbs-sep" aria-hidden="true">/</span>
+        <a href="../intercompany-control.html">Intercompany Control</a>
+        <span class="kc-crumbs-sep" aria-hidden="true">/</span>
+        <span aria-current="page">Guide</span>
+      </nav>
+      <div class="wf-pill">Guide</div>
+      <h1 class="h1">How to record and reconcile intercompany loans in Xero and QuickBooks Online</h1>
+      <p class="lead">An intercompany loan creates a receivable in the lender’s books and a payable in the borrower’s books. Both entities should agree on the outstanding amount in the loan currency.</p>
+    </div>
+  </div>
+</section>
+
+<section class="kc-section">
+  <div class="wrap kc-layout">
+    <nav class="kc-toc" aria-label="On this page">
+      <p class="kc-toc-label">On this page</p>
+      <a href="#record">Recording a loan</a>
+      <a href="#fx-example">FX mismatch example</a>
+      <a href="#gather">Tracking and resolving differences</a>
+      <a href="#faqs">FAQs</a>
+    </nav>
+
+    <article class="kc-prose" data-kc-content="" data-kc-title="How to record and reconcile intercompany loans in Xero and QuickBooks Online">
+      <section class="kc-block" id="intro">
+        <p class="body">An intercompany loan creates a receivable in the lender’s books and a payable in the borrower’s books. Both entities should agree on the outstanding amount in the loan currency. When they use different functional currencies, the finance team also needs to check that each side has been valued correctly at month end.</p>
+        <p class="body"><strong>GATHER.nexus tracks intercompany loan balances throughout the month, automatically matches corresponding transactions and keeps unresolved differences visible. When an FX mismatch needs a correcting journal, the finance team can post it centrally from GATHER.nexus and sync it to the relevant Xero or QuickBooks Online ledger.</strong> That lets the team fix the underlying balance before it reaches the consolidation working papers. <a href="../../modules/intercompany-control.html">See how central correction works in GATHER.nexus</a>.</p>
+      </section>
+
+      <section class="kc-block" id="record">
+        <h2 class="h2">How do you record an intercompany loan?</h2>
+        <p class="body">Set up a loan receivable account for the lender and a corresponding loan payable account for the borrower.</p>
+        <p class="body">Use consistent counterparty names and loan references across both ledgers, especially where the same entities have multiple loans or trade balances.</p>
+        <div class="kc-table-wrap">
+          <table class="kc-table" aria-label="Intercompany loan journal entries for the lender and borrower">
+          <thead>
+          <tr><th scope="col">Event</th><th scope="col">Lender</th><th scope="col">Borrower</th></tr>
+          </thead>
+          <tbody>
+          <tr><th scope="row">£100,000 drawdown</th><td data-label="Lender">Debit intercompany loan receivable £100,000. Credit bank £100,000.</td><td data-label="Borrower">Debit bank £100,000. Credit intercompany loan payable £100,000.</td></tr>
+          <tr><th scope="row">£500 interest accrued</th><td data-label="Lender">Debit intercompany interest receivable £500. Credit interest income £500.</td><td data-label="Borrower">Debit interest expense £500. Credit intercompany interest payable £500.</td></tr>
+          <tr><th scope="row">£20,000 principal repayment</th><td data-label="Lender">Debit bank £20,000. Credit intercompany loan receivable £20,000.</td><td data-label="Borrower">Debit intercompany loan payable £20,000. Credit bank £20,000.</td></tr>
+          </tbody>
+          </table>
+        </div>
+        <p class="body">In QuickBooks Online, intercompany balances are sometimes labelled <strong>Due from</strong> and <strong>Due to.</strong></p><p class="body">The table shows the entries for a £100,000 loan between two GBP entities.</p><p class="body">After these entries, both ledgers should show <strong>£80,000 of outstanding principal</strong> and <strong>£500 of accrued interest.</strong></p><p class="body">Tracking those amounts separately makes it easier to identify whether a difference comes from funding, a repayment or an interest accrual.</p>
+      </section>
+
+      <section class="kc-block" id="fx-example">
+        <h2 class="h2">Worked example of an FX mismatch on an intercompany loan</h2>
+        <p class="body">A UK parent lends <strong>£100,000</strong> to a US subsidiary. The loan is denominated in GBP, the parent’s functional currency is GBP and the subsidiary’s functional currency is USD.</p>
+        <div class="kc-table-wrap kc-table-wrap--figures">
+          <table class="kc-table kc-table--figures" aria-label="Intercompany loan FX reconciliation check between the UK parent and US subsidiary">
+            <thead>
+              <tr><th scope="col">Reconciliation check</th><th scope="col" class="kc-num">UK parent</th><th scope="col" class="kc-num">US subsidiary</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Outstanding principal in the loan currency</th><td class="kc-num">£100,000 receivable</td><td class="kc-num">£100,000 payable</td></tr>
+              <tr><th scope="row">Functional-currency balance at drawdown, at $1.25 per £1</th><td class="kc-num">£100,000</td><td class="kc-num">$125,000</td></tr>
+              <tr><th scope="row">Expected balance at month end, at $1.28 per £1</th><td class="kc-num">£100,000</td><td class="kc-num">$128,000</td></tr>
+              <tr><th scope="row">Balance recorded before correction</th><td class="kc-num">£100,000</td><td class="kc-num">$125,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="body">Assume there are no repayments or interest in this example.</p>
+        <p class="body">Both companies agree that <strong>£100,000 is outstanding</strong>. The reconciliation difference comes from the US subsidiary still carrying the liability at the drawdown rate.</p>
+        <div class="kc-table-wrap kc-table-wrap--figures">
+          <table class="kc-table kc-table--figures" aria-label="US subsidiary $3,000 FX correcting journal">
+            <thead>
+              <tr><th scope="col">US subsidiary journal</th><th scope="col" class="kc-num">Debit</th><th scope="col" class="kc-num">Credit</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">FX loss</th><td class="kc-num">$3,000</td><td class="kc-num"></td></tr>
+              <tr><th scope="row">Intercompany loan payable</th><td class="kc-num"></td><td class="kc-num">$3,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="body">At the closing rate, its $125,000 balance translates to approximately <strong>£97,656,</strong> leaving an apparent mismatch of <strong>£2,344</strong> against the parent’s £100,000 receivable.</p><p class="body">Once the team confirms the subsidiary hasn’t already recorded the revaluation, it can post the <strong>$3,000 correcting journal</strong> centrally from GATHER.nexus to the subsidiary’s connected ledger.</p><p class="body">The subsidiary’s payable is now <strong>$128,000,</strong> which translates to <strong>£100,000</strong> at the closing rate. The two principal balances agree and can be eliminated on consolidation. Under IAS 21, the genuine exchange difference generally remains in consolidated profit or loss.</p><p class="body">A qualifying loan that forms part of the net investment in a foreign operation can have a different treatment. <a href="https://www.ifrs.org/content/dam/ifrs/publications/html-standards/english/2023/issued/ias21.html" target="_blank" rel="noopener">IAS 21, paragraphs 32–33 and 45</a>.</p>
+      </section>
+
+      <section class="kc-block" id="gather">
+        <h2 class="h2">How GATHER.nexus tracks and resolves intercompany loan differences</h2>
+        <p class="body">A repayment booked on one side only, a late interest accrual and a missed FX revaluation can all show up as a difference between the same two companies. GATHER.nexus gives the group finance team one place to follow the balance and investigate the transactions behind it.</p>
+        <ol class="body">
+          <li><strong>Spot the difference during the month.</strong> The counterparty matrix shows which entity pairs have outstanding differences. The timeline shows when a particular pair moved out of balance, narrowing the search to the relevant period.</li>
+          <li><strong>Review the unmatched transactions.</strong> GATHER.nexus continuously matches corresponding entries and keeps unmatched items visible. The team can check whether the difference is due to a missing entry, timing, an incorrect amount or FX.</li>
+          <li><strong>Post the FX correction centrally.</strong> Once the team confirms the cause and amount, it can post the correcting journal from GATHER.nexus and sync it to the relevant Xero or QuickBooks Online ledger. In the example above, the correction goes to the US subsidiary, where the loan payable needs to be revalued.</li>
+          <li><strong>Validate the corrected position against the consolidation working papers.</strong> Check that the reconciled principal and any accrued interest agree with the amounts being eliminated before signing off group reporting.</li>
+        </ol>
+        <p class="body"><a href="https://gather.nexus/knowledge-centre/intercompany-reconciliation-guide/">Read the Intercompany Reconciliation Guide</a>.</p>
+      </section>
+
+      <section class="kc-block" id="faqs">
+        <h2 class="h2">Frequently asked questions</h2>
+        <div class="faq-stack">
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3 class="faq-q-text">Why don’t intercompany loan balances agree?</h3>
+              <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
+            </summary>
+            <div class="faq-a">
+              <p>Common causes include a drawdown or repayment recorded by only one entity, different posting dates, an interest accrual missing from one side, or a missed FX revaluation. For a foreign-currency loan, compare the outstanding principal in the loan currency first. Then check the functional-currency carrying amounts and exchange rates.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3 class="faq-q-text">Can I post an intercompany FX correction without opening each Xero or QuickBooks Online company?</h3>
+              <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
+            </summary>
+            <div class="faq-a">
+              <p>Yes. GATHER.nexus lets the group finance team post a correcting journal centrally and sync it to the relevant connected ledger. The team can then review the updated counterparty position in the same reconciliation workflow.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3 class="faq-q-text">What gets eliminated on consolidation?</h3>
+              <span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
+            </summary>
+            <div class="faq-a">
+              <p>Eliminate the reciprocal loan receivable and payable, along with any corresponding accrued interest balances and internal interest income and expense. Under IAS 21, account separately for genuine exchange differences arising from the loan.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section class="kc-block" id="explore">
+        <p class="body"><a href="../../modules/intercompany-control.html">Explore Intercompany Control in GATHER.nexus</a>.</p>
+      </section>
+
+      <div class="kc-related">
+        <div class="kc-group-label">Also in this collection</div>
+        <a class="kc-resource" href="https://gather.nexus/knowledge-centre/intercompany-reconciliation-guide/">
+          <span class="kc-type">Guide</span>
+          <div>
+            <h3>Intercompany Reconciliation Guide</h3>
+            <p>A practical guide for multi-entity groups using Xero and QuickBooks</p>
+          </div>
+          <svg class="kc-resource-go" width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+        <a class="kc-resource" href="../intercompany-recharges-guide/">
+          <span class="kc-type">Guide</span>
+          <div>
+            <h3>Intercompany recharges explained: journal entries, cost allocations and worked examples</h3>
+            <p>A practical guide to calculating, posting and reconciling intercompany recharges, with worked examples from supplier bill through to consolidation.</p>
+          </div>
+          <svg class="kc-resource-go" width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+        <a class="kc-resource" href="../schedule-intercompany-recharges/">
+          <span class="kc-type">Guide</span>
+          <div>
+            <h3>How to schedule intercompany recharges in GATHER.nexus</h3>
+            <p>GATHER.nexus helps finance teams schedule recurring intercompany recharges across Xero and QuickBooks Online companies.</p>
+          </div>
+          <svg class="kc-resource-go" width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="mod-cta-band">
+  <div class="wrap">
+    <h2 class="h2">Ready for Audit-Ready Consolidation?</h2>
+    <p class="lead">Start your 30-day free trial, full access, no credit card required.</p>
+    <div class="btns">
+      <a href="../../index.html#top" class="btn btn--primary">Start Free Trial</a>
+      <a href="../intercompany-control.html" class="btn btn--ghost-light">Back to Intercompany Control</a>
+    </div>
+  </div>
+</section>
+
+<footer class="gn-footer">
+  <div class="gn-container gn-container--wide">
+    <div class="gn-footer-top">
+      <div class="gn-footer-brand">
+        <img src="/assets/images/gather-logo.webp" srcset="/assets/images/gather-logo@2x.webp 2x" alt="GATHER.nexus" width="205" height="56" loading="lazy" decoding="async"/>
+        <p>One Powerful Platform Unifying All Your Multi-Entity Workflows. Built for Fractional CFOs and Finance Teams using Xero and QuickBooks.</p>
+        <div class="gn-footer-social">
+          <a href="https://www.linkedin.com/company/gather-nexus/" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></a>
+          <a href="https://youtube.com/@gather-nexus" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on YouTube (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+          <a href="https://www.facebook.com/people/GATHERnexus/61582393529276/" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on Facebook (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></a>
+        </div>
+        <div class="gn-footer-news">
+          <label for="footer-newsletter">Stay up to date with our newsletter</label>
+          <div class="gn-footer-news-row">
+            <input class="gn-field" type="email" id="footer-newsletter" placeholder="Your email address" autocomplete="email"/>
+            <button class="gn-btn gn-btn--primary" type="button">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="gn-footer-cols">
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_a4ddb81b97">Product</h2>
+          <ul>
+            <li><a href="/group-financial-reporting/">Group Financial Reporting</a></li>
+            <li><a href="/complex-consolidations/">Complex Consolidations</a></li>
+            <li><a href="/intercompany-control/">Intercompany Control</a></li>
+            <li><a href="/group-financial-planning/">Group Financial Planning</a></li>
+            <li><a href="/ai/">GATHER AI</a></li>
+            <li><a href="/mcp-beta.html">MCP Beta Waitlist</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_f53b69cefe">Solutions</h2>
+          <ul>
+            <li><a href="/for-finance-teams/">For Finance Teams</a></li>
+            <li><a href="/for-fractional-cfos/">For Fractional CFOs</a></li>
+            <li><a href="/integrations/xero/">Xero Integration</a></li>
+            <li><a href="/integrations/quickbooks/">QuickBooks Integration</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_26769fe8ab">Resources</h2>
+          <ul>
+            <li><a href="/knowledge-centre.html">Knowledge Centre</a></li>
+            <li><a href="/blog/">Expert Insights</a></li>
+            <li><a href="/product-updates/">Product Updates</a></li>
+            <li><a href="/video/">Video Tutorials</a></li>
+            <li><a href="https://help.gather.nexus/en">User Guides</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_7cb1eb68e3">Company</h2>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/news-latest/">News</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="https://app.gather.nexus/auth/user/signup">Start Free Trial</a></li>
+            <li><a href="https://calendly.com/gather-support-" target="_blank" rel="noopener noreferrer">Book a Demo</a></li>
+            <li><a href="https://app.gather.nexus">Log in</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="gn-footer-bottom">
+      <p>&copy; 2026 GATHER.nexus. All rights reserved. Supported platforms: Xero and QuickBooks.</p>
+      <div class="gn-footer-legal">
+        <a href="/privacy-policy/">Privacy Policy</a>
+        <a href="/cookie-policy/">Cookie Policy</a>
+        <a href="/website-terms-of-use/">Website Terms of Use</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('.sr').forEach(function(el,i){
+  el.style.transitionDelay=(i%3)*0.06+'s';
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.08,rootMargin:'-30px 0px'});
+  io.observe(el);
+});
+</script>
+<script src="../../assets/page-extensions.js?v=20260901c" defer></script>
+<link rel="stylesheet" href="../../review/review.css?v=20260907a"/>
+<script src="../../review/review.js?v=20260907a" defer></script>
+</body>
+</html>

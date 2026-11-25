@@ -44,6 +44,7 @@ const pages = [
     collectPages(path.join(ROOT, 'group-financial-reporting'), modulePages);
     collectPages(path.join(ROOT, 'knowledge-centre'), modulePages);
     collectPages(path.join(ROOT, 'compare'), modulePages);
+    collectPages(path.join(ROOT, 'blog'), modulePages);
     return modulePages;
   })()
 ];

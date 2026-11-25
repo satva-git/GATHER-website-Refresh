@@ -1,0 +1,79 @@
+/* Shared shell offset and page-type rhythm. Header/footer live in gn-system.css. */
+
+body.gn-shell {
+  font-family: "Onest", ui-sans-serif, system-ui, sans-serif;
+}
+body.gn-shell:not(.kc-page) {
+  padding-top: var(--gn-header-h, 72px);
+}
+html.has-ann body.gn-shell:not(.kc-page) {
+  padding-top: calc(var(--gn-header-h, 72px) + var(--ann-h, 40px));
+}
+body.gn-shell.review-mode:not(.kc-page) {
+  padding-top: calc(52px + var(--gn-header-h, 72px));
+}
+html.has-ann body.gn-shell.review-mode:not(.kc-page) {
+  padding-top: calc(52px + var(--gn-header-h, 72px) + var(--ann-h, 40px));
+}
+@media (max-width: 640px) {
+  body.gn-shell.review-mode:not(.kc-page) {
+    padding-top: calc(48px + var(--gn-header-h, 64px));
+  }
+  html.has-ann body.gn-shell.review-mode:not(.kc-page) {
+    padding-top: calc(48px + var(--gn-header-h, 64px) + var(--ann-h, 40px));
+  }
+}
+
+/* Simple reading column — never on KC hubs, KC guides, or blog layouts with side TOC */
+body.gn-reading .prose,
+body.gn-article .prose:not(:has(.published-resources-box)):not(:has(.resource-card)):not(:has(.hero-title)):not(:has(.post-title-box)):not(:has(.table-of-content)):not(:has(.content-grid-bg)):not(:has(.collection-card)) {
+  max-width: 720px;
+  margin-inline: auto;
+  padding: 48px 24px 96px;
+}
+body.gn-reading .prose h1,
+body.gn-reading .post-title,
+body.gn-article .prose h1,
+body.gn-article .post-title {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* KC topic listings + live-layout pages: full-width prose inside .wrap */
+body.gn-kc-topic .prose,
+body.gn-kc-guide .prose,
+body.live-layout .prose {
+  max-width: none;
+  margin-inline: 0;
+  padding: 0;
+}
+body.kc-page .wrap,
+body.gn-kc-topic .wrap,
+body.gn-kc-guide .wrap {
+  max-width: 1000px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 40px);
+}
+body.public-page:not(.gn-kc-topic):not(.gn-kc-guide) .wrap {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 40px);
+}
+
+/* Product, audience, integration: quieter headings, brand type */
+body.gn-product h1,
+body.gn-audience h1,
+body.gn-integration h1,
+body.gn-pricing h1,
+body.gn-utility h1,
+body.gn-hub h1 {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+body.gn-shell a:focus-visible,
+body.gn-shell button:focus-visible {
+  outline: 2px solid #2B7869;
+  outline-offset: 3px;
+}

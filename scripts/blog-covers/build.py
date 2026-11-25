@@ -44,7 +44,7 @@ def _logo(name):
     return "data:image/svg+xml;base64," + base64.b64encode(s.encode()).decode()
 
 
-LOGO = {k: _logo(k + ".svg") for k in ("gather", "xero", "quickbooks")}
+LOGO = {k: _logo(k + ".svg") for k in ("gather", "xero", "quickbooks", "mayday")}
 
 
 def esc(s):
@@ -613,51 +613,172 @@ def c_fragmented_processes():
 
 
 def c_multi_entity_growth():
-    # Left: the group grows 1 -> 3 -> 8 entities; each bar holds that many
-    # entity tiles. GATHER links them to one group view covering the four
-    # group responsibilities.
-    base, tile, pitch = 392, 38, 46
-    out = [line(12, base, 324, base, LINE, 4)]
+    # Full-bleed white panel (same system as c_group_ledger_uses): GATHER header
+    # with the Xero / QuickBooks sources, then two tiles. Left: the group grows
+    # 1 -> 3 -> 8 entities. Right: one teal "Group view" whose four rows each
+    # carry a small live-looking result (chart, trend, KPI, matched check).
+    out = [rect(0, 0, W, H, WHITE, shadow=False),
+           f'<circle cx="64" cy="60" r="32" fill="{TINT}"/>',
+           gather_mark(40, 38, 48),
+           text(112, 72, "Multi-entity platform", 32, 700, INK),
+           text(556, 69, "Sources", 24, 600, MUTED, "end")]
+    for logo, lx in (("xero", 604), ("quickbooks", 664)):
+        out += [f'<circle cx="{lx}" cy="60" r="26" fill="{WHITE}" filter="url(#sh)"/>',
+                image(LOGO[logo], lx - 22, 38, 44, 44)]
+    out.append(line(32, 112, 688, 112, RULE, 2))
+
+    ty, th = 132, 324
+    # left tile: entity count growing
+    lx, lw = 32, 300
+    out += [rect(lx, ty, lw, th, BG, 24, shadow=False),
+            text(lx + 24, ty + 48, "Entities", 28, 700, INK)]
+    base, tile, pitch, cw, gap = ty + th - 70, 30, 36, 82, 14
+    x0 = lx + (lw - (3 * cw + 2 * gap)) / 2
+    out.append(line(x0 - 4, base, x0 + 3 * cw + 2 * gap + 4, base, LINE, 3))
     for k, n in enumerate((1, 3, 8)):
-        bx = 20 + k * 100
-        top = base - (n + 1) // 2 * pitch - 4
-        out.append(rect(bx, top, 96, base - top, WHITE, 16, shadow=True))
+        bx = x0 + k * (cw + gap)
+        top = base - (n + 1) // 2 * pitch - 12
+        out.append(rect(bx, top, cw, base - top, WHITE, 14, shadow=True))
         for i in range(n):
             r, c = divmod(i, 2)
-            tx = bx + 29 if (n - i == 1 and n % 2) else bx + 6 + c * pitch
-            ty = base - 4 - tile - r * pitch
-            out += [rect(tx, ty, tile, tile, TINT, 10, shadow=False),
-                    building(tx + tile / 2, ty + tile / 2, 0.64)]
-        out.append(text(bx + 48, top - 14, str(n), 34, 700, TEAL, "middle"))
-    out.append(text(168, 440, "Entities", 26, 600, MUTED, "middle"))
+            tx = bx + (cw - tile) / 2 if (n - i == 1 and n % 2) else bx + 8 + c * pitch
+            ty2 = base - 8 - tile - r * pitch
+            out += [rect(tx, ty2, tile, tile, TINT, 8, shadow=False),
+                    building(tx + tile / 2, ty2 + tile / 2, 0.54)]
+        out.append(text(bx + cw / 2, base + 40, str(n), 28, 700, TEAL if n == 8 else MUTED, "middle"))
 
-    # group view panel with a light white dot texture for depth
-    px, py, pw, ph = 396, 56, 292, 368
-    out += [f'<defs><pattern id="dotsw" width="16" height="16" patternUnits="userSpaceOnUse">'
-            f'<circle cx="8" cy="8" r="1.2" fill="{WHITE}"/></pattern>'
-            f'<clipPath id="gv"><rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="26"/></clipPath></defs>',
-            rect(px, py, pw, ph, TEAL, 26),
-            f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" fill="url(#dotsw)" opacity=".12" '
-            f'clip-path="url(#gv)"/>',
-            text(424, 108, "Group view", 28, 700, WHITE)]
+    # right tile: one group view
+    rx, rw = 348, 340
+    out += [rect(rx, ty, rw, th, TEAL, 24, shadow=False),
+            text(rx + 24, ty + 48, "Group view", 28, 700, WHITE)]
     for i, (kind, label) in enumerate([("report", "Reporting"), ("plan", "Planning"),
                                        ("kpi", "KPIs"), ("recharge", "Intercompany")]):
-        y = 134 + i * 70
-        cy = y + 29
-        out += [rect(420, y, 244, 58, TEAL_DEEP, 14, shadow=False),
-                f'<circle cx="449" cy="{cy}" r="16" fill="{WHITE}"/>',
-                control_glyph(kind, 449, cy),
-                text(476, cy + 9, label, 26, 600, WHITE)]
-    # GATHER links the growing group to the group view
-    hx, hy = 356, 240
-    out += [line(316, hy, px, hy, LINE, 4),
-            f'<circle cx="{hx}" cy="{hy}" r="29" fill="{WHITE}" filter="url(#sh)"/>',
-            gather_mark(hx - 18, hy - 16.7, 36)]
+        x, y, h = rx + 16, ty + 68 + i * 62, 52
+        cy, end = y + h / 2, rx + rw - 36
+        out += [rect(x, y, rw - 32, h, WHITE, 16, shadow=False),
+                f'<circle cx="{x + 32}" cy="{cy}" r="18" fill="{TINT}"/>',
+                control_glyph(kind, x + 32, cy),
+                text(x + 62, cy + 8, label, 24, 600, INK)]
+        if kind == "report":
+            for j, bh in enumerate((10, 16, 13, 24)):
+                out.append(rect(end - 47 + j * 13, cy + 12 - bh, 8, bh, LINE if j < 3 else TEAL, 2,
+                                shadow=False))
+        elif kind == "plan":
+            out.append(f'<path d="M{end - 50} {cy + 9}l13-8 11 5 26-15" stroke="{TEAL}" '
+                       f'stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>')
+        elif kind == "kpi":
+            out.append(text(end, cy + 8, "+12%", 22, 700, TEAL, "end"))
+        else:
+            out.append(check(end - 12, cy, 13))
+    # bridge between the tiles
+    out += [f'<circle cx="{(lx + lw + rx) / 2}" cy="{ty + th / 2}" r="20" fill="{WHITE}" filter="url(#sh)"/>',
+            arrow_right((lx + lw + rx) / 2, ty + th / 2, TEAL, .7)]
+    return out
+
+
+def c_group_ledger_uses():
+    # Full-bleed white panel (covers the shared dot-grid canvas): one GATHER
+    # group ledger header fed by Xero and QuickBooks Online, and the article's
+    # two uses as tiles, each a two-step "from -> to" stepper ending in a check.
+    out = [rect(0, 0, W, H, WHITE, shadow=False),
+           f'<circle cx="70" cy="66" r="36" fill="{TINT}"/>',
+           gather_mark(43, 41, 54),
+           text(124, 78, "Group ledger", 34, 700, INK),
+           text(556, 75, "Sources", 24, 600, MUTED, "end")]
+    for logo, lx in (("xero", 604), ("quickbooks", 664)):
+        out += [f'<circle cx="{lx}" cy="66" r="28" fill="{WHITE}" filter="url(#sh)"/>',
+                image(LOGO[logo], lx - 24, 42, 48, 48)]
+    out.append(line(32, 128, 688, 128, RULE, 2))
+    tiles = [  # x, fill, title, subtitle, from, to, (title, sub, step, rail)
+        (32, BG, "Multi-GAAP", "Second reporting basis", "UK GAAP", "IFRS", (INK, MUTED, MUTED, LINE)),
+        (370, TEAL, "Exit readiness", "Normalised earnings", "Reported", "Adjusted",
+         (WHITE, ON_TEAL, ON_TEAL, TEAL_MID)),
+    ]
+    ty, tw, th = 152, 318, 300
+    for tx, fill, title, sub, a, b, (tc, sc, stc, rail) in tiles:
+        out += [rect(tx, ty, tw, th, fill, 24, shadow=False),
+                text(tx + 28, ty + 60, title, 32, 700, tc),
+                text(tx + 28, ty + 98, sub, 24, 600, sc),
+                line(tx + 48, ty + 178, tx + 48, ty + 214, rail, 3),
+                f'<circle cx="{tx + 48}" cy="{ty + 164}" r="12" stroke="{stc}" stroke-width="3"/>',
+                text(tx + 78, ty + 173, a, 26, 600, stc),
+                rect(tx + 18, ty + 210, tw - 36, 64, WHITE, 20, shadow=fill == BG),
+                check(tx + 48, ty + 242, 15),
+                text(tx + 78, ty + 252, b, 28, 700, INK)]
+    return out
+
+
+# Drawn-ink bounds of each logo inside its viewBox (x0, y0, x1, y1, vb_w, vb_h),
+# measured from a 10x render, so logos centre on their ink, not their padding.
+LOGO_INK = {"gather": (2.2, 2.0, 261.8, 71.9, 264, 74),
+            "mayday": (0.0, 0.0, 149.6, 38.0, 150, 38)}
+
+
+def centred_logo(name, cx, cy, width):
+    x0, y0, x1, y1, vw, vh = LOGO_INK[name]
+    k = width / vw
+    x = cx - (x0 + x1) / 2 * k
+    y = cy - (y0 + y1) / 2 * k
+    return image(LOGO[name], round(x, 2), round(y, 2), width, round(vh * k, 2))
+
+
+MAYDAY = "#FF4461"       # Mayday brand red (from their logo), used only for its scope bar
+MAYDAY_TINT = "#FFE9ED"
+
+
+def text_width(s, size, weight):
+    """Advance width of s in Figtree at size px (kerning ignored; Figtree's is small)."""
+    f = TTFont(os.path.join(HERE, "fonts", f"Figtree-{weight}.ttf"))
+    cmap, hmtx, upm = f.getBestCmap(), f["hmtx"], f["head"].unitsPerEm
+    return sum(hmtx[cmap[ord(c)]][0] for c in s) * size / upm
+
+
+def c_mayday_vs_gather():
+    # Big white card. Header: the two real logos with a "vs" badge. Body: the
+    # article's worked example as one intercompany event moving through five
+    # stages, with a scope bar under each product showing how far it carries
+    # that work (Mayday: the close; GATHER.nexus: recharge through to planning).
+    # Everything sits between y=40 and y=440 so the 16:10 / 16:9 card crops keep it.
+    out = [rect(8, 8, W - 16, H - 16, WHITE, 28),
+           # logo header
+           rect(40, 48, 280, 84, BG, 20, shadow=False),
+           centred_logo("mayday", 180, 90, 200),
+           rect(400, 48, 280, 84, BG, 20, shadow=False),
+           centred_logo("gather", 540, 90, 212),
+           f'<circle cx="360" cy="90" r="30" fill="{TEAL_DEEP}"/>',
+           text(360, 99, "vs", 26, 700, WHITE, "middle"),
+           text(360, 182, "One intercompany event, end to end", 22, 600, MUTED, "middle")]
+    stages = ["Recharge", "Reconcile", "Eliminate", "Report", "Plan"]
+    xs = [96 + i * 132 for i in range(5)]
+    cy = 230
+    out.append(line(xs[0], cy, xs[-1], cy, LINE, 4))
+    for i, (x, label) in enumerate(zip(xs, stages)):
+        out += [f'<circle cx="{x}" cy="{cy}" r="30" fill="{WHITE}" filter="url(#sh)"/>',
+                num(x, cy, i + 1, 22, TEAL, WHITE, 22),
+                text(x, cy + 62, label, 22, 700, INK, "middle")]
+    # scope bars
+    # Pill widths come from the measured label width so the right padding
+    # matches the left (dot inset 24, then label, then 28).
+    bx = xs[0] - 44
+    pad_l, pad_r = 42, 28
+    may_w = pad_l + text_width("Month-end close", 22, 700) + pad_r
+    out += [rect(bx, 322, round(may_w), 46, MAYDAY_TINT, 23, shadow=False),
+            f'<circle cx="{bx + 24}" cy="345" r="7" fill="{MAYDAY}"/>',
+            text(bx + 42, 353, "Month-end close", 22, 700, "#B3172F"),
+            rect(bx, 380, xs[-1] + 44 - bx, 50, TEAL, 25),
+            f'<circle cx="{bx + 24}" cy="405" r="7" fill="{WHITE}"/>',
+            text(bx + 42, 413, "Multi-entity layer: intercompany to planning", 24, 700, WHITE)]
     return out
 
 
 COVERS = [
     # (slug, replaces WP file, alt text, builder)
+    ("mayday-vs-gather-multi-entity-layer", None,
+     "Mayday organised around the month-end close compared with GATHER.nexus organised around the group, "
+     "connecting intercompany control, consolidation, group reporting and planning", c_mayday_vs_gather),
+    ("group-ledger-multi-gaap-exit-readiness", None,
+     "Xero and QuickBooks Online ledgers feeding one GATHER.nexus group ledger used for UK GAAP to IFRS "
+     "reporting and exit-readiness normalisation from reported to adjusted earnings", c_group_ledger_uses),
     ("quickbooks-online-multi-entity-consolidation",
      "2026/08/quickbooks-multi-entity-consolidation-gather-nexus.webp",
      "Three QuickBooks Online entities consolidated by GATHER.nexus into one group report", c_quickbooks),

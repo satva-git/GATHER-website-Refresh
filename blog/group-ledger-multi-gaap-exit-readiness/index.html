@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Group Ledger for Multi-GAAP and Exit Readiness | GATHER.nexus</title>
+<meta name="description" content="See how GATHER.nexus uses a group ledger above Xero and QuickBooks Online for multi-GAAP reporting, earnings normalisation and working capital at month end."/>
+<link rel="canonical" href="https://gather.nexus/blog/group-ledger-multi-gaap-exit-readiness/"/>
+<meta property="og:title" content="Group Ledger for Multi-GAAP and Exit Readiness | GATHER.nexus"/>
+<meta property="og:description" content="See how GATHER.nexus uses a group ledger above Xero and QuickBooks Online for multi-GAAP reporting, earnings normalisation and working capital at month end."/>
+<meta property="og:url" content="https://gather.nexus/blog/group-ledger-multi-gaap-exit-readiness/"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://gather.nexus/assets/images/blog/group-ledger-multi-gaap-exit-readiness.webp"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Group Ledger for Multi-GAAP and Exit Readiness | GATHER.nexus"/>
+<meta name="twitter:description" content="See how GATHER.nexus uses a group ledger above Xero and QuickBooks Online for multi-GAAP reporting, earnings normalisation and working capital at month end."/>
+<meta name="twitter:image" content="https://gather.nexus/assets/images/blog/group-ledger-multi-gaap-exit-readiness.webp"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../../assets/page-extensions.css?v=20261125b"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"How a group ledger supports multi-GAAP reporting and exit readiness","description":"See how GATHER.nexus uses a group ledger above Xero and QuickBooks Online for multi-GAAP reporting, earnings normalisation and working capital at month end.","author":{"@type":"Person","name":"Howard Thompson","honorificSuffix":"FCA","jobTitle":"Founder, GATHER.nexus"},"publisher":{"@type":"Organization","name":"GATHER.nexus","url":"https://gather.nexus/"},"datePublished":"2026-11-23","dateModified":"2026-11-23","mainEntityOfPage":"https://gather.nexus/blog/group-ledger-multi-gaap-exit-readiness/","image":"https://gather.nexus/assets/images/blog/group-ledger-multi-gaap-exit-readiness.webp"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Expert Insights","item":"https://gather.nexus/blog/"},{"@type":"ListItem","position":2,"name":"How a group ledger supports multi-GAAP reporting and exit readiness","item":"https://gather.nexus/blog/group-ledger-multi-gaap-exit-readiness/"}]}]}</script>
+<link rel="stylesheet" href="/assets/gn-system.css?v=20261125e"/>
+<link rel="stylesheet" href="/assets/gn-templates.css?v=20261125f"/>
+</head>
+<body class="kc-page gn-shell gn-article">
+<a class="skip-link" href="#content">Skip to content</a>
+
+<header class="gn-header" id="nav">
+  <div class="gn-header-inner">
+    <a href="/" class="gn-logo" aria-label="GATHER.nexus home">
+      <img src="/assets/images/gather-logo.webp" srcset="/assets/images/gather-logo@2x.webp 2x" alt="GATHER.nexus" width="205" height="56"/>
+    </a>
+
+    <nav class="gn-nav" aria-label="Main">
+      <ul class="gn-nav-list">
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-product">
+            Product
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel gn-nav-panel--product" id="gn-panel-product">
+            <div class="gn-product-grid">
+              <a class="gn-product-link" href="/group-financial-reporting/">
+                <span class="gn-product-thumb"><img src="/assets/images/consolidated-reports.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Group Financial Reporting</span><span class="gn-menu-desc">Consolidation with multi-level drill-down and a full audit trail.</span></span>
+              </a>
+              <a class="gn-product-link" href="/intercompany-control/">
+                <span class="gn-product-thumb"><img src="/assets/images/intercompany-matrix-view.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Intercompany Control</span><span class="gn-menu-desc">Automated recharges, counterparty balances and reconciliations.</span></span>
+              </a>
+              <a class="gn-product-link" href="/complex-consolidations/">
+                <span class="gn-product-thumb"><img src="/assets/images/group-structure-configuration.webp" alt="" width="568" height="386" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Complex Consolidations</span><span class="gn-menu-desc">Acquisitions, disposals and layered ownership structures.</span></span>
+              </a>
+              <a class="gn-product-link" href="/group-financial-planning/">
+                <span class="gn-product-thumb"><img src="/assets/images/group-budget-rollup.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Group Financial Planning</span><span class="gn-menu-desc">Divisional and functional budgets that roll up to the Group.</span></span>
+              </a>
+            </div>
+            <div class="gn-nav-panel-foot">
+              <a class="gn-link" href="/ai/">GATHER AI and the MCP beta <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="gn-link" href="https://app.gather.nexus/auth/user/signup">Start 30-day free trial <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-solutions">
+            Solutions
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-solutions">
+            <a class="gn-menu-link" href="/for-finance-teams/"><span class="gn-menu-title">For Finance Teams</span><span class="gn-menu-desc">In-house finance in multi-entity groups.</span></a>
+            <a class="gn-menu-link" href="/for-fractional-cfos/"><span class="gn-menu-title">For Fractional CFOs</span><span class="gn-menu-desc">Multiple client Groups from one subscription.</span></a>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-integrations">
+            Integrations
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-integrations">
+            <a class="gn-menu-link" href="/integrations/xero/"><span class="gn-menu-title">Xero</span><span class="gn-menu-desc">Connect every Xero entity in a single click.</span></a>
+            <a class="gn-menu-link" href="/integrations/quickbooks/"><span class="gn-menu-title">QuickBooks</span><span class="gn-menu-desc">Connect every QuickBooks entity in a single click.</span></a>
+          </div>
+        </li>
+        <li class="gn-nav-item"><a class="gn-nav-link" href="/pricing/">Pricing</a></li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-resources">
+            Resources
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel gn-nav-panel--resources" id="gn-panel-resources">
+            <div class="gn-two-col">
+              <div>
+                <span class="gn-menu-group-label">Learn</span>
+                <a class="gn-menu-link" href="/knowledge-centre.html"><span class="gn-menu-title">Knowledge Centre</span></a>
+                <a class="gn-menu-link" href="/blog/"><span class="gn-menu-title">Expert Insights</span></a>
+                <a class="gn-menu-link" href="/product-updates/"><span class="gn-menu-title">Product Updates</span></a>
+                <a class="gn-menu-link" href="/video/"><span class="gn-menu-title">Video Tutorials</span></a>
+                <a class="gn-menu-link" href="https://help.gather.nexus/en"><span class="gn-menu-title">User Guides</span></a>
+              </div>
+              <div>
+                <span class="gn-menu-group-label">Knowledge Centre topics</span>
+                <a class="gn-menu-link" href="/knowledge-centre/our-unified-platform/"><span class="gn-menu-title">Our Unified Platform</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/intercompany-control/"><span class="gn-menu-title">Intercompany Control</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/group-financial-reporting/"><span class="gn-menu-title">Group Financial Reporting</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/group-financial-planning/"><span class="gn-menu-title">Group Financial Planning</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/fractional-cfos-outsourced-finance/"><span class="gn-menu-title">Fractional CFOs and Outsourced Finance</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/gather-ai-and-mcp/"><span class="gn-menu-title">GATHER AI and the MCP</span></a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-company">
+            Company
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-company">
+            <a class="gn-menu-link" href="/about/"><span class="gn-menu-title">About</span></a>
+            <a class="gn-menu-link" href="/news-latest/"><span class="gn-menu-title">News</span></a>
+            <a class="gn-menu-link" href="/contact/"><span class="gn-menu-title">Contact</span></a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="gn-header-actions">
+      <a class="gn-login" href="https://app.gather.nexus">Log in</a>
+      <a class="gn-btn gn-btn--primary gn-btn--sm" href="https://app.gather.nexus/auth/user/signup">Start free trial</a>
+      <button type="button" class="gn-menu-toggle" aria-expanded="false" aria-controls="gn-drawer" aria-label="Open menu"><span class="gn-menu-toggle-bars" aria-hidden="true"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="gn-drawer" id="gn-drawer">
+  <nav aria-label="Mobile">
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-product">Product <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-product" hidden>
+        <a href="/group-financial-reporting/">Group Financial Reporting<span>Consolidation with multi-level drill-down</span></a>
+        <a href="/intercompany-control/">Intercompany Control<span>Recharges, balances and reconciliations</span></a>
+        <a href="/complex-consolidations/">Complex Consolidations<span>Acquisitions, disposals and ownership layers</span></a>
+        <a href="/group-financial-planning/">Group Financial Planning<span>Budgets that roll up to the Group</span></a>
+        <a href="/ai/">GATHER AI and the MCP beta</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-solutions">Solutions <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-solutions" hidden>
+        <a href="/for-finance-teams/">For Finance Teams</a>
+        <a href="/for-fractional-cfos/">For Fractional CFOs</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-integrations">Integrations <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-integrations" hidden>
+        <a href="/integrations/xero/">Xero</a>
+        <a href="/integrations/quickbooks/">QuickBooks</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group"><a class="gn-drawer-link" href="/pricing/">Pricing</a></div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-resources">Resources <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-resources" hidden>
+        <a href="/knowledge-centre.html">Knowledge Centre</a>
+        <a href="/blog/">Expert Insights</a>
+        <a href="/product-updates/">Product Updates</a>
+        <a href="/video/">Video Tutorials</a>
+        <a href="https://help.gather.nexus/en">User Guides</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-company">Company <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-company" hidden>
+        <a href="/about/">About</a>
+        <a href="/news-latest/">News</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="gn-drawer-actions">
+      <a class="gn-btn gn-btn--primary" href="https://app.gather.nexus/auth/user/signup">Start 30-day free trial</a>
+      <a class="gn-btn gn-btn--secondary" href="https://app.gather.nexus">Log in</a>
+    </div>
+  </nav>
+</div>
+
+<section class="mod-hero kc-hero">
+  <div class="wrap">
+    <div class="mod-hero-content sr in">
+      <nav class="kc-crumbs" aria-label="Breadcrumb">
+        <a href="../">Expert Insights</a>
+        <span class="kc-crumbs-sep" aria-hidden="true">/</span>
+        <span aria-current="page">Article</span>
+      </nav>
+      <div class="wf-pill">Expert Insights</div>
+      <h1 class="h1">How a group ledger supports multi-GAAP reporting and exit readiness</h1>
+      <p class="lead">A group-level ledger brings together balances from underlying accounting systems such as Xero and QuickBooks Online and gives finance teams a place to post and reconcile reporting adjustments.</p>
+      <p class="body">Howard Thompson, FCA, founder of GATHER.nexus · 23 November 2026</p>
+    </div>
+  </div>
+</section>
+
+<section class="kc-section">
+  <div class="wrap kc-layout">
+    <nav class="kc-toc" aria-label="On this page">
+      <p class="kc-toc-label">On this page</p>
+      <a href="#two-frameworks">Two accounting frameworks</a>
+      <a href="#exit-normalisations">Exit normalisations</a>
+      <a href="#month-end-close">Month-end close</a>
+    </nav>
+
+    <article class="kc-prose" data-kc-content data-kc-title="How a group ledger supports multi-GAAP reporting and exit readiness">
+      <section class="kc-block" id="intro">
+        <p class="body"><strong>A <a href="../../modules/group-reporting.html">group-level ledger</a> brings together balances from underlying accounting systems such as Xero and QuickBooks Online and gives finance teams a place to post and reconcile reporting adjustments. In GATHER.nexus, that means the same ledger can support consolidation, <a href="../../knowledge-centre/multi-gaap-reporting-xero-quickbooks/">multi-GAAP reporting for one company</a> and monthly normalisations for a future sale.</strong></p>
+        <p class="body">When we built GATHER.nexus, we had a particular finance problem in mind. Teams running multiple companies in Xero or QuickBooks Online needed a way to bring their ledgers together, post eliminations and adjustments, and explain how the group numbers were derived.</p>
+        <p class="body">That meant building a fully developed group-level ledger above the underlying company ledgers. Source balances flow into a common reporting structure, and finance teams can post manual journals at the reporting layer. The resulting figures can be traced back to the mapped balances and the adjustments that produced them.</p>
+        <p class="body">Some of the most interesting uses of that architecture are ones we had not envisaged at the outset. A single company can use it for single-entity multi-GAAP reporting. A group preparing for a future sale can use it to build a history of earnings normalisation and working capital normalisation. Both can become part of the standard month-end close.</p>
+      </section>
+
+      <section class="kc-block" id="two-frameworks">
+        <h2 class="h2">How can one company report under two accounting frameworks?</h2>
+        <p class="body">Take a UK subsidiary that keeps its books in Xero under UK GAAP and submits an IFRS reporting pack to its parent. Each month, the finance team needs to explain how it gets from its local trial balance to the figures in that pack.</p>
+        <p class="body">In GATHER.nexus, the subsidiary can be set up as a group with one entity. The team uses the company’s local ledger currency as the group reporting currency and maps its chart of accounts to a Group Reporting Template aligned with the parent’s reporting pack. It then posts balanced manual journals in that currency for the differences between the two accounting frameworks.</p>
+        <p class="body">Mapping determines where each balance appears in the pack. A journal records a difference in recognition, measurement or classification where one applies. For example, the team might need to record an adjustment for a difference in lease accounting and roll it forward each month as the lease balance moves.</p>
+        <p class="body">At close, the controller can reconcile the mapped balances to the source trial balance, review the adjustments and <a href="../../knowledge-centre/consolidation-auditability-transaction-drill-down/">trace the reported figures</a> back to both. The local ledger continues to support local reporting, and the group ledger carries the bridge to the second accounting basis. A group ledger turns out to be useful even when the group consists of one company.</p>
+      </section>
+
+      <section class="kc-block" id="exit-normalisations">
+        <h2 class="h2">How can a group track exit normalisations before a sale?</h2>
+        <p class="body">A group that expects to sell to an acquirer in a few years has a different problem. By the time diligence begins, it may need to explain several years of monthly performance. That is much easier if the finance team captured the rationale and evidence for potential adjustments while the underlying events were still fresh.</p>
+        <p class="body">On the P&amp;L, the team can maintain a bridge from reported earnings to normalised earnings, such as adjusted EBITDA where that is the measure used. For example, if the group incurred a one-off cost to exit a site, the team could record a proposed adjustment, reference the underlying invoices and explain why it considers the cost non-recurring. The same review can identify one-off gains that would reduce normalised earnings.</p>
+        <p class="body">On the balance sheet, the question is what belongs in the historical measure of operating working capital. An accrued fee for a transaction adviser, for example, may need to be identified separately from ordinary supplier accruals. Capturing the amount, supporting detail and proposed treatment each month lets the team reconstruct the working capital series under different definitions. The deal-specific definition and any working capital target are matters for the transaction, and the same item needs consistent treatment across working capital and any debt-like adjustments.</p>
+        <p class="body">An item can affect both analyses. A fee could be considered for an earnings adjustment in the month it is expensed and tracked in the working capital bridge while it remains unpaid. The P&amp;L records the charge for the period. The balance sheet tracks the obligation until it is settled. Linking the two helps the team explain why the amounts can move differently from month to month.</p>
+      </section>
+
+      <section class="kc-block" id="month-end-close">
+        <h2 class="h2">What should finance teams review at each month-end close?</h2>
+        <p class="body">The monthly routine is similar in both cases. Start with the closed source balances and reconcile them to the reporting layer. Record each adjustment with its period, rationale and supporting calculation. Review the adjusted figures against the reported numbers, then carry forward or reverse entries as appropriate.</p>
+        <p class="body">The purpose of the adjustments differs. A GAAP conversion follows the requirements of the target accounting framework. Exit normalisations reflect judgements that an adviser or buyer may challenge. A monthly record gives the finance team the evidence to revisit those judgements and show what changes under a different treatment.</p>
+        <p class="body">That is the interesting consequence of putting a ledger above the core ledgers. The same architecture that lets a group explain its consolidated numbers also lets a single company explain a second reporting basis, or a future seller show how its view of underlying earnings and working capital was built, one close at a time.</p>
+      </section>
+
+      <div class="kc-related">
+        <div class="kc-group-label">Related reading</div>
+        <a class="kc-resource" href="../../knowledge-centre/multi-gaap-reporting-xero-quickbooks/">
+          <span class="kc-type">Guide</span>
+          <div>
+            <h3>How to set up multi-GAAP reporting for one company</h3>
+            <p>Map a Xero or QuickBooks Online company and post local-currency adjustments for a second reporting framework.</p>
+          </div>
+          <svg class="kc-resource-go" width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="kc-resource" href="../../modules/group-reporting.html">
+          <span class="kc-type">Product</span>
+          <div>
+            <h3>Group Financial Reporting</h3>
+            <p>The group-level ledger for consolidation, adjustments and drill-down across Xero and QuickBooks Online.</p>
+          </div>
+          <svg class="kc-resource-go" width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="kc-resource" href="../../knowledge-centre/consolidation-auditability-transaction-drill-down/">
+          <span class="kc-type">Guide</span>
+          <div>
+            <h3>Auditability and transaction drill-down</h3>
+            <p>Trace reported figures back to mapped balances, journals and source transactions.</p>
+          </div>
+          <svg class="kc-resource-go" width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="mod-cta-band">
+  <div class="wrap">
+    <h2 class="h2">Ready for Audit-Ready Consolidation?</h2>
+    <p class="lead">Start your 30-day free trial, full access, no credit card required.</p>
+    <div class="btns">
+      <a href="../../index.html#top" class="btn btn--primary">Start Free Trial</a>
+      <a href="../" class="btn btn--ghost-light">Back to Expert Insights</a>
+    </div>
+  </div>
+</section>
+
+<footer class="gn-footer">
+  <div class="gn-container gn-container--wide">
+    <div class="gn-footer-top">
+      <div class="gn-footer-brand">
+        <img src="/assets/images/gather-logo.webp" srcset="/assets/images/gather-logo@2x.webp 2x" alt="GATHER.nexus" width="205" height="56" loading="lazy" decoding="async"/>
+        <p>One Powerful Platform Unifying All Your Multi-Entity Workflows. Built for Fractional CFOs and Finance Teams using Xero and QuickBooks.</p>
+        <div class="gn-footer-social">
+          <a href="https://www.linkedin.com/company/gather-nexus/" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></a>
+          <a href="https://youtube.com/@gather-nexus" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on YouTube (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+          <a href="https://www.facebook.com/people/GATHERnexus/61582393529276/" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on Facebook (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></a>
+        </div>
+        <div class="gn-footer-news">
+          <label for="footer-newsletter">Stay up to date with our newsletter</label>
+          <div class="gn-footer-news-row">
+            <input class="gn-field" type="email" id="footer-newsletter" placeholder="Your email address" autocomplete="email"/>
+            <button class="gn-btn gn-btn--primary" type="button">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="gn-footer-cols">
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_a4ddb81b97">Product</h2>
+          <ul>
+            <li><a href="/group-financial-reporting/">Group Financial Reporting</a></li>
+            <li><a href="/complex-consolidations/">Complex Consolidations</a></li>
+            <li><a href="/intercompany-control/">Intercompany Control</a></li>
+            <li><a href="/group-financial-planning/">Group Financial Planning</a></li>
+            <li><a href="/ai/">GATHER AI</a></li>
+            <li><a href="/mcp-beta.html">MCP Beta Waitlist</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_f53b69cefe">Solutions</h2>
+          <ul>
+            <li><a href="/for-finance-teams/">For Finance Teams</a></li>
+            <li><a href="/for-fractional-cfos/">For Fractional CFOs</a></li>
+            <li><a href="/integrations/xero/">Xero Integration</a></li>
+            <li><a href="/integrations/quickbooks/">QuickBooks Integration</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_26769fe8ab">Resources</h2>
+          <ul>
+            <li><a href="/knowledge-centre.html">Knowledge Centre</a></li>
+            <li><a href="/blog/">Expert Insights</a></li>
+            <li><a href="/product-updates/">Product Updates</a></li>
+            <li><a href="/video/">Video Tutorials</a></li>
+            <li><a href="https://help.gather.nexus/en">User Guides</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_7cb1eb68e3">Company</h2>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/news-latest/">News</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="https://app.gather.nexus/auth/user/signup">Start Free Trial</a></li>
+            <li><a href="https://calendly.com/gather-support-" target="_blank" rel="noopener noreferrer">Book a Demo</a></li>
+            <li><a href="https://app.gather.nexus">Log in</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="gn-footer-bottom">
+      <p>&copy; 2026 GATHER.nexus. All rights reserved. Supported platforms: Xero and QuickBooks.</p>
+      <div class="gn-footer-legal">
+        <a href="/privacy-policy/">Privacy Policy</a>
+        <a href="/cookie-policy/">Cookie Policy</a>
+        <a href="/website-terms-of-use/">Website Terms of Use</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('.sr').forEach(function(el,i){
+  el.style.transitionDelay=(i%3)*0.06+'s';
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.08,rootMargin:'-30px 0px'});
+  io.observe(el);
+});
+</script>
+<script src="../../assets/page-extensions.js?v=20260901c" defer></script>
+<link rel="stylesheet" href="../../review/review.css?v=20260907a"/>
+<script src="../../review/review.js?v=20260907a" defer></script>
+</body>
+</html>

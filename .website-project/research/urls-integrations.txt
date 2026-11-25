@@ -1,0 +1,2 @@
+https://gather.nexus/integrations/quickbooks/
+https://gather.nexus/integrations/xero/

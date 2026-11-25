@@ -1,0 +1,130 @@
+{
+  "h1": "Audit-ready Group Financial Reporting",
+  "headings": [
+    "Group Financial Reporting",
+    "A structured and audit-ready workflow for Consolidated Group Financial Reporting",
+    "GRT & AI Mapping",
+    "Autojournals & Working Papers",
+    "Transaction level drill down",
+    "Management, Investor and Statutory Reporting",
+    "Build Your Group Reporting Template",
+    "AI-Assisted General Ledger Mapping",
+    "Audit ready automated eliminations",
+    "Multi-level drill down for data validation and audit traceability",
+    "GAAP adjustments, reclassifications and other Group level topside adjustments",
+    "Highly configurable Reports – with multi-level Drill down for ease of variance analysis",
+    "Stay up to date with the latest news from GATHER.nexus"
+  ],
+  "paras": [
+    "No Credit Card Required",
+    "Module 02: Group Financial Reporting",
+    "A structured audit-ready workflow for consolidated Group Financial Reporting. Full data validation and visibility built into each step.",
+    "Workflow Overview",
+    "From Group Reporting Template setup through AI assisted mapping, automated elimination journals, working papers review and validation, and final report generation, every step is connected in one auditable workflow.",
+    "Define your Group Reporting Template and map entity GL accounts from Xero and QuickBooks with GATHER AI assistance.",
+    "Automated consolidation journals feed into a central Working Papers hub to create a permanent audit trail for eliminations, adjustments, and FX in Reserves tracking.",
+    "Validate your financial data with multi-level drill down within your Working Papers – all the way from Group Financials to Transaction level data",
+    "Sign off your Working Papers once complete then create highly configurable Reports – with multi-level drill down to speed up variance analysis",
+    "1 Step 1: Create GRT",
+    "Create Group Reporting Templates (GRT) according to your management team, investor and auditor requirements",
+    "2 Map your GRT with the help of GATHER AI",
+    "Map each entity’s General Ledger to your GRT with a drag-and-drop interface. GATHER AI recommends matches from underlying Xero or QuickBooks GL codes with a confidence score and clear logic, so mapping is fast, consistent, fully reviewable, and underpinned by a clear audit trail.",
+    "3 Automated Elimination Journals",
+    "Set up autojournals that generate elimination entries automatically each period, including intercompany eliminations, Foreign Exchange Differences in Reserves, and other recurring consolidation level adjustments.",
+    "4 Step 4: Review Working Papers",
+    "Working Papers is the central hub for Finance teams to review and sign off on the integrity of their Group level close",
+    "5 Step 5: Manual Topside Adjustments",
+    "Fully integrated manual journal functionality allows Finance teams to make any further required adjustments to their Group level close – from GAAP adjustments to reclassifications",
+    "6 Step 6: Generate Reports",
+    "Produce consolidated group reports directly from validated working papers, with industry-specific templates and formats your board, investors, and auditors expect. Every report line connects back to source data through the same connected workflow.",
+    "Subscribe to our mailing list for the latest on new product features, expert insights from around the GATHER network and more!",
+    "This form is not connected yet. It will not send a message until a delivery method is approved.",
+    "I agree to receive email updates about new products, promotions, company news and industry insights from GATHER.nexus",
+    "Please refer to our Privacy Policy on this website"
+  ],
+  "lists": [
+    [
+      "Start from pre-defined industry templates or build a custom Group Reporting Template",
+      "Upload your own Group Reporting Template via CSV",
+      "Create multiple templates for a single Group for different audiences – management, investors, statutory reporting",
+      "Tailor existing templates to other client Groups/sub Groups"
+    ],
+    [
+      "GATHER AI mapping recommendations with confidence scoring and clear audit trail",
+      "Drag-and-drop from entity General Ledger to Group Reporting Template codes",
+      "No financial data shared with GATHER AI",
+      "GATHER tracks new and unmapped ledger codes and alerts the user in our GRT summary screen"
+    ],
+    [
+      "Rules-based autojournal templates for recurring consolidation entries",
+      "Intercompany eliminations and Foreign Exchange Differences in Reserves journals generated automatically",
+      "Full audit trail of every autojournal calculation and posting, including Foreign Exchange Differences in Reserves"
+    ],
+    [
+      "Validate the underlying Entity level data with Drill down by Entity, by General Ledger Code and by individual transaction",
+      "Click through to Xero/QuickBooks Online to review or amend individual transactions",
+      "Full audit trail of consolidation level journals",
+      "Full backing calculations for all FX Differences in Reserves postings",
+      "Sign off Consolidation Working Papers as completed – and ready to generate Reports"
+    ],
+    [
+      "Full audit record of manual topside adjustments – meaning GATHER is the trusted System of Record – rather than spreadsheets",
+      "Integrated P&L and Balance Sheet Journals with carry forward impact and roll forward to Earnings in Reserves",
+      "Set up one-off or recurring journals – and tag journals by Type",
+      "Completely removes the need for spreadsheets – even in the most complex scenarios"
+    ],
+    [
+      "Industry-specific consolidated Group Reporting Templates",
+      "Reports generated from validated Working Papers, with Completion Status flags",
+      "Full multi-level drill down from consolidated financials to transaction level data to accelerate variance analysis",
+      "Full flexibility around Reporting Presentation currency"
+    ]
+  ],
+  "images": [
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/audit-ready-group-financial-reporting-dashboard.webp",
+      "alt": "Audit-ready group financial reporting dashboard showing consolidated P&L, drill-down accounts, and monthly sign-off status"
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/plus-icon-feature-card.webp",
+      "alt": "GATHER.nexus plus icon representing additional features, benefits, and capabilities within a multi-entity financial management platform."
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/transaction-document-icon.webp",
+      "alt": "Transaction document icon representing financial records, accounting entries, invoices, and transaction-level reporting"
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/financial-performance-chart-icon.webp",
+      "alt": "Financial performance chart icon representing analytics, reporting, business growth, and accounting performance insights"
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/financial-dashboard-monitor-icon.webp",
+      "alt": "Financial dashboard monitor icon representing reporting, accounting software, business insights, and data visualization"
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/group-reporting-template-setup-dashboard.webp",
+      "alt": "Group reporting template dashboard for creating, importing, and managing financial reporting structures and account mappings"
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/ai-assisted-general-ledger-mapping-dashboard.webp",
+      "alt": "AI-assisted general ledger mapping dashboard for automating account mapping, improving accuracy, and group reporting."
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/automated-intercompany-journal-elimination-dashboard.webp",
+      "alt": "GATHER.nexus automated intercompany journal elimination dashboard showing financial adjustments, transaction matching, and consolidation entries."
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/consolidation-working-papers-drill-down.gif",
+      "alt": "GATHER.nexus consolidation working papers showing detailed financial drill-down, transaction breakdowns, and multi-entity reporting."
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/group-financial-journals-management-dashboard.webp",
+      "alt": "Group financial journals dashboard showing GAAP adjustments, FX journals, eliminations, reclassifications, and workflows"
+    },
+    {
+      "src": "https://gather.nexus/wp-content/uploads/2026/07/consolidated-profit-and-loss-report-dashboard.webp",
+      "alt": "Consolidated profit and loss dashboard with drill-down reporting, exchange rates, and multi-entity financial analysis"
+    }
+  ],
+  "form": "<form id=\"mc4wp-form-1\" class=\"mc4wp-form mc4wp-form-2230\" method=\"post\" data-id=\"2230\" data-name=\"Newsletters\" action=\"\" data-unwired=\"true\"><div class=\"mc4wp-form-fields\"><div class=\"form-box\"><div class=\"input-box\"> <label for=\"email\"> <input type=\"email\" id=\"email\" name=\"EMAIL\" placeholder=\"Enter your email address\" required=\"\"> </label></div><div class=\"subscribe-btn\"> <input type=\"submit\" value=\"Subscribe\"></div></div><p> <label class=\"checkbox-box\"> <input type=\"checkbox\" name=\"AGREE_TO_TERMS\" value=\"1\" required=\"\"> <span>I agree to receive email updates about new products, promotions, company news and industry insights from GATHER.nexus</span> </label></p><p class=\"privacy-policy_text\">Please refer to our <a href=\"/privacy-policy/\">Privacy Policy</a> on this website</p></div><label style=\"display: none !important;\">Leave this field empty if you're human: <input type=\"text\" name=\"_mc4wp_honeypot\" value=\"\" tabindex=\"-1\" autocomplete=\"off\"></label><input type=\"hidden\" name=\"_mc4wp_timestamp\" value=\"1795586386\"><input type=\"hidden\" name=\"_mc4wp_form_id\" value=\"2230\"><input type=\"hidden\" name=\"_mc4wp_form_element_id\" value=\"mc4wp-form-1\"><div class=\"mc4wp-response\"></div></form>"
+}

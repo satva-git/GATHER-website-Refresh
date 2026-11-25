@@ -1,0 +1,3119 @@
+{
+  "generatedAt": "2026-11-25T10:30:04.998Z",
+  "sitemapUrls": 84,
+  "rebuiltCompared": 70,
+  "customCompared": 13,
+  "skipped": [
+    {
+      "url": "https://gather.nexus/",
+      "rel": "index.html",
+      "reason": "homepage excluded from 70-page rebuild set"
+    }
+  ],
+  "rebuiltTally": {
+    "Exact match": 66,
+    "Expected difference": 4
+  },
+  "customTally": {
+    "Missing content": 13
+  },
+  "rebuilt": [
+    {
+      "group": "doc-categories",
+      "url": "https://gather.nexus/docs-category/group-financial-reporting/",
+      "file": "docs-category/group-financial-reporting/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 0,
+        "localParas": 0,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "doc-categories",
+      "url": "https://gather.nexus/docs-category/group-financial-reporting/group-reporting-templates/",
+      "file": "docs-category/group-financial-reporting/group-reporting-templates/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 0,
+        "localParas": 0,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "doc-categories",
+      "url": "https://gather.nexus/docs-category/grt/",
+      "file": "docs-category/grt/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 0,
+        "localParas": 0,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/group-financial-reporting/",
+      "file": "group-financial-reporting/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 14,
+        "localHeadings": 14,
+        "liveParas": 24,
+        "localParas": 24,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 11,
+        "localImages": 11,
+        "liveCtas": 3,
+        "localCtas": 3
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/complex-consolidations/",
+      "file": "complex-consolidations/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 15,
+        "localHeadings": 15,
+        "liveParas": 16,
+        "localParas": 16,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 9,
+        "localImages": 9,
+        "liveCtas": 3,
+        "localCtas": 3
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/about/",
+      "file": "about/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 11,
+        "localHeadings": 6,
+        "liveParas": 18,
+        "localParas": 12,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 2,
+        "localImages": 2,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/ai/",
+      "file": "ai/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 7,
+        "localHeadings": 7,
+        "liveParas": 7,
+        "localParas": 7,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 3,
+        "localImages": 2,
+        "liveCtas": 4,
+        "localCtas": 4
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/intercompany-control/",
+      "file": "intercompany-control/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 12,
+        "localHeadings": 12,
+        "liveParas": 20,
+        "localParas": 20,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 9,
+        "localImages": 9,
+        "liveCtas": 3,
+        "localCtas": 3
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/contact/",
+      "file": "contact/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 0,
+        "localParas": 0,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/cookie-policy/",
+      "file": "cookie-policy/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 4,
+        "localHeadings": 4,
+        "liveParas": 12,
+        "localParas": 12,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/for-finance-teams/",
+      "file": "for-finance-teams/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 14,
+        "localHeadings": 11,
+        "liveParas": 15,
+        "localParas": 15,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 5,
+        "localImages": 5,
+        "liveCtas": 2,
+        "localCtas": 2
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/for-fractional-cfos/",
+      "file": "for-fractional-cfos/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 14,
+        "localHeadings": 11,
+        "liveParas": 18,
+        "localParas": 18,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 5,
+        "localImages": 5,
+        "liveCtas": 3,
+        "localCtas": 3
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/group-financial-planning/",
+      "file": "group-financial-planning/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 18,
+        "localHeadings": 17,
+        "liveParas": 18,
+        "localParas": 18,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 9,
+        "localImages": 9,
+        "liveCtas": 3,
+        "localCtas": 3
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/news-latest/",
+      "file": "news-latest/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 3,
+        "localParas": 3,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/pricing/",
+      "file": "pricing/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 4,
+        "localHeadings": 4,
+        "liveParas": 21,
+        "localParas": 21,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/privacy-policy/",
+      "file": "privacy-policy/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 19,
+        "localHeadings": 19,
+        "liveParas": 7,
+        "localParas": 7,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/video/",
+      "file": "video/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 2,
+        "localHeadings": 2,
+        "liveParas": 4,
+        "localParas": 4,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "pages",
+      "url": "https://gather.nexus/website-terms-of-use/",
+      "file": "website-terms-of-use/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 18,
+        "localHeadings": 18,
+        "liveParas": 49,
+        "localParas": 49,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/",
+      "file": "product-updates/index.html",
+      "buildStatus": "built from live text",
+      "status": "Expected difference",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 1,
+        "localParas": 1,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 1,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/intercompany-control-group-financial-reporting-updates/",
+      "file": "product-updates/intercompany-control-group-financial-reporting-updates/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 6,
+        "localHeadings": 6,
+        "liveParas": 11,
+        "localParas": 11,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/group-ap-ar-ageing-analysis/",
+      "file": "product-updates/group-ap-ar-ageing-analysis/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 6,
+        "localHeadings": 6,
+        "liveParas": 9,
+        "localParas": 9,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/manual-fx-is-now-live-in-gather-nexus/",
+      "file": "product-updates/manual-fx-is-now-live-in-gather-nexus/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 3,
+        "localHeadings": 3,
+        "liveParas": 5,
+        "localParas": 5,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/complex-financial-consolidation/",
+      "file": "product-updates/complex-financial-consolidation/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 4,
+        "localHeadings": 3,
+        "liveParas": 9,
+        "localParas": 9,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/gather-platform-2-0/",
+      "file": "product-updates/gather-platform-2-0/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 10,
+        "localHeadings": 10,
+        "liveParas": 8,
+        "localParas": 8,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/gather-nexus-goes-live-with-158-currencies/",
+      "file": "product-updates/gather-nexus-goes-live-with-158-currencies/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 5,
+        "localHeadings": 5,
+        "liveParas": 5,
+        "localParas": 5,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/gather-nexus-integrates-with-payments-platform-stripe/",
+      "file": "product-updates/gather-nexus-integrates-with-payments-platform-stripe/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 7,
+        "localHeadings": 7,
+        "liveParas": 7,
+        "localParas": 7,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/gather-nexus-announces-integration-with-intuit-quickbooks/",
+      "file": "product-updates/gather-nexus-announces-integration-with-intuit-quickbooks/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 8,
+        "localHeadings": 8,
+        "liveParas": 11,
+        "localParas": 11,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "product-updates",
+      "url": "https://gather.nexus/product-updates/introducing-gather-nexus/",
+      "file": "product-updates/introducing-gather-nexus/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 7,
+        "localHeadings": 7,
+        "liveParas": 9,
+        "localParas": 9,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "landing-pages",
+      "url": "https://gather.nexus/lp/",
+      "file": "lp/index.html",
+      "buildStatus": "built from live text",
+      "status": "Expected difference",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 1,
+        "localParas": 1,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "landing-pages",
+      "url": "https://gather.nexus/lp/usa_001_332026/",
+      "file": "lp/usa_001_332026/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 19,
+        "localHeadings": 19,
+        "liveParas": 49,
+        "localParas": 49,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 11,
+        "localImages": 11,
+        "liveCtas": 4,
+        "localCtas": 4
+      }
+    },
+    {
+      "group": "integrations",
+      "url": "https://gather.nexus/integrations/quickbooks/",
+      "file": "integrations/quickbooks/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 13,
+        "liveParas": 36,
+        "localParas": 36,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 4,
+        "localImages": 4,
+        "liveCtas": 4,
+        "localCtas": 4
+      }
+    },
+    {
+      "group": "integrations",
+      "url": "https://gather.nexus/integrations/xero/",
+      "file": "integrations/xero/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 15,
+        "localHeadings": 15,
+        "liveParas": 33,
+        "localParas": 33,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 4,
+        "localImages": 4,
+        "liveCtas": 5,
+        "localCtas": 5
+      }
+    },
+    {
+      "group": "categories",
+      "url": "https://gather.nexus/blog/category/consolidated-planning/",
+      "file": "blog/category/consolidated-planning/index.html",
+      "buildStatus": "built from live text",
+      "status": "Expected difference",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 1,
+        "localParas": 1,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 1,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/build-group-budget-xero-quickbooks/",
+      "file": "knowledge-centre/build-group-budget-xero-quickbooks/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 16,
+        "liveParas": 37,
+        "localParas": 37,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/group-budget-actual-common-reporting-structure/",
+      "file": "knowledge-centre/group-budget-actual-common-reporting-structure/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 16,
+        "liveParas": 31,
+        "localParas": 31,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/group-budget-vs-actual-analysis/",
+      "file": "knowledge-centre/group-budget-vs-actual-analysis/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 16,
+        "liveParas": 41,
+        "localParas": 41,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/financial-consolidation-xero-quickbooks-guide/",
+      "file": "knowledge-centre/financial-consolidation-xero-quickbooks-guide/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 18,
+        "localHeadings": 18,
+        "liveParas": 52,
+        "localParas": 52,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 2,
+        "localTables": 2,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/consolidation-working-papers-explained/",
+      "file": "knowledge-centre/consolidation-working-papers-explained/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 17,
+        "localHeadings": 17,
+        "liveParas": 47,
+        "localParas": 47,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 2,
+        "localTables": 2,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/aggregation-vs-consolidation/",
+      "file": "knowledge-centre/aggregation-vs-consolidation/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 18,
+        "localHeadings": 18,
+        "liveParas": 51,
+        "localParas": 51,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 2,
+        "localTables": 2,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/how-to-consolidate-acquired-company/",
+      "file": "knowledge-centre/how-to-consolidate-acquired-company/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 16,
+        "liveParas": 45,
+        "localParas": 45,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/map-charts-of-accounts-group-reporting/",
+      "file": "knowledge-centre/map-charts-of-accounts-group-reporting/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 16,
+        "liveParas": 39,
+        "localParas": 39,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/group-financial-planning/",
+      "file": "knowledge-centre/group-financial-planning/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 7,
+        "localHeadings": 7,
+        "liveParas": 8,
+        "localParas": 8,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 5,
+        "localImages": 5,
+        "liveCtas": 10,
+        "localCtas": 10
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/unified-intercompany-recharges-reconciliations-eliminations/",
+      "file": "knowledge-centre/unified-intercompany-recharges-reconciliations-eliminations/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 30,
+        "localHeadings": 30,
+        "liveParas": 63,
+        "localParas": 63,
+        "liveFaqs": 6,
+        "localFaqs": 6,
+        "liveTables": 2,
+        "localTables": 2,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/transfer-pricing-intercompany-accounting-guide/",
+      "file": "knowledge-centre/transfer-pricing-intercompany-accounting-guide/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 13,
+        "localHeadings": 13,
+        "liveParas": 72,
+        "localParas": 72,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-reconciliation-recharges-faq/",
+      "file": "knowledge-centre/intercompany-reconciliation-recharges-faq/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 40,
+        "localHeadings": 40,
+        "liveParas": 34,
+        "localParas": 34,
+        "liveFaqs": 30,
+        "localFaqs": 30,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/manual-vs-automated-intercompany-accounting/",
+      "file": "knowledge-centre/manual-vs-automated-intercompany-accounting/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 11,
+        "localHeadings": 11,
+        "liveParas": 29,
+        "localParas": 29,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 4,
+        "localTables": 4,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-reconciliation-guide/",
+      "file": "knowledge-centre/intercompany-reconciliation-guide/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 29,
+        "localHeadings": 29,
+        "liveParas": 90,
+        "localParas": 90,
+        "liveFaqs": 5,
+        "localFaqs": 5,
+        "liveTables": 6,
+        "localTables": 6,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-vs-mayday/",
+      "file": "knowledge-centre/gather-vs-mayday/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 44,
+        "localHeadings": 44,
+        "liveParas": 100,
+        "localParas": 100,
+        "liveFaqs": 15,
+        "localFaqs": 15,
+        "liveTables": 2,
+        "localTables": 2,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-vs-fathom/",
+      "file": "knowledge-centre/gather-vs-fathom/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 19,
+        "localHeadings": 19,
+        "liveParas": 35,
+        "localParas": 35,
+        "liveFaqs": 5,
+        "localFaqs": 5,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-nexus-vs-spotlight-reporting/",
+      "file": "knowledge-centre/gather-nexus-vs-spotlight-reporting/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 15,
+        "liveParas": 39,
+        "localParas": 39,
+        "liveFaqs": 4,
+        "localFaqs": 4,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-nexus-vs-translucent/",
+      "file": "knowledge-centre/gather-nexus-vs-translucent/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 17,
+        "localHeadings": 17,
+        "liveParas": 45,
+        "localParas": 45,
+        "liveFaqs": 4,
+        "localFaqs": 4,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/group-financial-reporting/",
+      "file": "knowledge-centre/group-financial-reporting/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 16,
+        "liveParas": 16,
+        "localParas": 16,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 14,
+        "localImages": 14,
+        "liveCtas": 28,
+        "localCtas": 28
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-vs-joiin/",
+      "file": "knowledge-centre/gather-vs-joiin/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 16,
+        "localHeadings": 16,
+        "liveParas": 38,
+        "localParas": 38,
+        "liveFaqs": 5,
+        "localFaqs": 5,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-control/",
+      "file": "knowledge-centre/intercompany-control/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 12,
+        "localHeadings": 12,
+        "liveParas": 13,
+        "localParas": 13,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 10,
+        "localImages": 10,
+        "liveCtas": 20,
+        "localCtas": 20
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/our-unified-platform/",
+      "file": "knowledge-centre/our-unified-platform/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 3,
+        "localHeadings": 3,
+        "liveParas": 3,
+        "localParas": 3,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 1,
+        "localImages": 1,
+        "liveCtas": 2,
+        "localCtas": 2
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/fractional-cfos-outsourced-finance/",
+      "file": "knowledge-centre/fractional-cfos-outsourced-finance/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 3,
+        "localHeadings": 3,
+        "liveParas": 3,
+        "localParas": 3,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 1,
+        "localImages": 1,
+        "liveCtas": 2,
+        "localCtas": 2
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/gather-ai-and-mcp/",
+      "file": "knowledge-centre/gather-ai-and-mcp/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 4,
+        "localHeadings": 4,
+        "liveParas": 3,
+        "localParas": 3,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 2,
+        "localImages": 2,
+        "liveCtas": 4,
+        "localCtas": 4
+      }
+    },
+    {
+      "group": "authors",
+      "url": "https://gather.nexus/blog/author/howard/",
+      "file": "blog/author/howard/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 12,
+        "localHeadings": 12,
+        "liveParas": 10,
+        "localParas": 10,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 1,
+        "localImages": 1,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "docs",
+      "url": "https://gather.nexus/docs/",
+      "file": "docs/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 0,
+        "localParas": 0,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "docs",
+      "url": "https://gather.nexus/docs/group-reporting-template-option-2-pl/",
+      "file": "docs/group-reporting-template-option-2-pl/index.html",
+      "buildStatus": "built from live text",
+      "status": "Expected difference",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 1,
+        "liveParas": 0,
+        "localParas": 0,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/quickbooks-online-multi-entity-consolidation/",
+      "file": "blog/quickbooks-online-multi-entity-consolidation/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 10,
+        "localHeadings": 10,
+        "liveParas": 29,
+        "localParas": 29,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/xero-multi-entity-consolidation/",
+      "file": "blog/xero-multi-entity-consolidation/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 10,
+        "localHeadings": 10,
+        "liveParas": 28,
+        "localParas": 28,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/gather-nexus-for-fractional-cfos/",
+      "file": "blog/gather-nexus-for-fractional-cfos/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 5,
+        "localHeadings": 5,
+        "liveParas": 16,
+        "localParas": 16,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/xero-quickbooks-multi-entity-consolidation/",
+      "file": "blog/xero-quickbooks-multi-entity-consolidation/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 18,
+        "localHeadings": 18,
+        "liveParas": 48,
+        "localParas": 48,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/intercompany-accounting-controls-month-end-close/",
+      "file": "blog/intercompany-accounting-controls-month-end-close/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 14,
+        "localHeadings": 13,
+        "liveParas": 44,
+        "localParas": 44,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/bridging-the-gaap/",
+      "file": "blog/bridging-the-gaap/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 15,
+        "localHeadings": 15,
+        "liveParas": 64,
+        "localParas": 64,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 2,
+        "localCtas": 2
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/quadruple-entry-accounting-multi-entity-finance/",
+      "file": "blog/quadruple-entry-accounting-multi-entity-finance/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 8,
+        "localHeadings": 8,
+        "liveParas": 25,
+        "localParas": 25,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/from-intercompany-chaos-to-intercompany-control/",
+      "file": "blog/from-intercompany-chaos-to-intercompany-control/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 11,
+        "localHeadings": 11,
+        "liveParas": 18,
+        "localParas": 18,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 2,
+        "localCtas": 2
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/fragmented-processes-multi-entity-groups/",
+      "file": "blog/fragmented-processes-multi-entity-groups/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 13,
+        "localHeadings": 13,
+        "liveParas": 32,
+        "localParas": 32,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/benefits-of-multi-entity-accounting-software/",
+      "file": "blog/benefits-of-multi-entity-accounting-software/index.html",
+      "buildStatus": "built from live text",
+      "status": "Exact match",
+      "findings": [
+        {
+          "kind": "Exact match",
+          "detail": "Title, H1, headings and body paragraphs match live (chrome/nav/footer expected to differ)."
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        }
+      ],
+      "counts": {
+        "liveHeadings": 12,
+        "localHeadings": 12,
+        "liveParas": 29,
+        "localParas": 29,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 1
+      }
+    }
+  ],
+  "customKcGuides": [
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-recharges-guide/",
+      "file": "knowledge-centre/intercompany-recharges-guide/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Requires manual review",
+          "detail": "Title differs. Live: \"Intercompany Recharges: Journal Entries & Examples | GATHER.nexus\" Local: \"Intercompany Recharges: Journal Entries & Examples | Knowledge Centre | GATHER.nexus\""
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (2): Example | Manual vs automated intercompany accounting"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (1): Transfer Pricing and Intercompany Accounting"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "8 live paragraph(s) not found locally. First: \"Journal entries cost allocations and worked examples. A practical guide for multi-entity groups using Xero and QuickBooks Online.\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "20 local paragraph(s) not on live. First: \"An allocation determines each company's share of a cost. A recharge records the charge between companies. Settlement clears the amount owed,\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 28,
+        "localHeadings": 27,
+        "liveParas": 75,
+        "localParas": 74,
+        "liveFaqs": 6,
+        "localFaqs": 6,
+        "liveTables": 11,
+        "localTables": 11,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/foreign-exchange-consolidation/",
+      "file": "knowledge-centre/foreign-exchange-consolidation/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Requires manual review",
+          "detail": "Title differs. Live: \"FX Consolidation Issues and Solutions | GATHER.nexus\" Local: \"FX Consolidation Issues and Solutions | Knowledge Centre | GATHER.nexus\""
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (2): Intercompany Reconciliations and Recharges FAQs | Manual vs automated intercompany accounting"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (2): Auditability and transaction-level drill-down | Multi-ledger, multi-entity consolidation"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "2 live paragraph(s) not found locally. First: \"Reconciliation, recharges, Xero, QuickBooks Online and FX.\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "2 local paragraph(s) not on live. First: \"Why audit trails and drill-down are essential for Xero and QuickBooks consolidation.\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 27,
+        "localHeadings": 21,
+        "liveParas": 65,
+        "localParas": 51,
+        "liveFaqs": 5,
+        "localFaqs": 5,
+        "liveTables": 3,
+        "localTables": 3,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/consolidation-auditability-transaction-drill-down/",
+      "file": "knowledge-centre/consolidation-auditability-transaction-drill-down/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Requires manual review",
+          "detail": "Title differs. Live: \"Xero & QuickBooks Consolidation: Audit Trails & Drill-Down | GATHER.nexus\" Local: \"Xero & QuickBooks Consolidation: Audit Trails & Drill-Down | Knowledge Centre | GATHER.nexus\""
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (2): Transfer Pricing and Intercompany Accounting | Intercompany Reconciliations & Recharges"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (2): Consolidation working papers explained | Foreign exchange in consolidation"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "2 live paragraph(s) not found locally. First: \"Transfer-pricing policy, cost-plus recharges, automation and intercompany accounting for multi-entity Groups.\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "2 local paragraph(s) not on live. First: \"How working papers bridge entity balances to the consolidated result.\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 22,
+        "localHeadings": 21,
+        "liveParas": 68,
+        "localParas": 62,
+        "liveFaqs": 5,
+        "localFaqs": 5,
+        "liveTables": 2,
+        "localTables": 2,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/multi-gaap-reporting-xero-quickbooks/",
+      "file": "knowledge-centre/multi-gaap-reporting-xero-quickbooks/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (2): GATHER.nexus vs Fathom | GATHER.nexus vs Joiin"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (3): How to map different charts of accounts for group reporting | Consolidation working papers explained | Xero tracking category and QuickBooks class consolidation"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "2 live paragraph(s) not found locally. First: \"Consolidation control or reporting and forecasting?\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "3 local paragraph(s) not on live. First: \"Connect each company’s chart of accounts to a common group reporting structure.\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 14,
+        "localHeadings": 14,
+        "liveParas": 30,
+        "localParas": 19,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/bulk-intercompany-recharge-setup/",
+      "file": "knowledge-centre/bulk-intercompany-recharge-setup/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (3): Worked example | How does manual intercompany accounting compare to the intercompany process with GATHER.nexus? | A practical guide for multi-entity groups using Xero and QuickBooks"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (3): How to schedule intercompany recharges in GATHER.nexus | Intercompany recharges explained: journal entries, cost allocations and worked examples | Manual vs automated intercompany accounting"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "2 live paragraph(s) not found locally. First: \"Journal entries cost allocations and worked examples. A practical guide for multi-entity groups using Xero and QuickBooks Online.\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "3 local paragraph(s) not on live. First: \"Schedule recurring recharges, document them, review proposals centrally and post to the connected ledgers.\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 13,
+        "localHeadings": 12,
+        "liveParas": 27,
+        "localParas": 15,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/schedule-intercompany-recharges/",
+      "file": "knowledge-centre/schedule-intercompany-recharges/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (2): Unifying intercompany recharges, reconciliations and eliminations | Intercompany Reconciliations & Recharges"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (3): How to set up intercompany recharges in bulk with GATHER.nexus | Intercompany Reconciliation Guide | Intercompany recharges explained: journal entries, cost allocations and worked examples"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "3 live paragraph(s) not found locally. First: \"You can source costs by ledger account, vendor, Xero Tracking Category option or QuickBooks Online Class. .\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "3 local paragraph(s) not on live. First: \"Configure several recharge rules together using ledger accounts, vendors, Xero Tracking Categories or QuickBooks Online Classes.\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 15,
+        "localHeadings": 15,
+        "liveParas": 30,
+        "localParas": 18,
+        "liveFaqs": 4,
+        "localFaqs": 4,
+        "liveTables": 3,
+        "localTables": 3,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/intercompany-loan-accounting-xero-quickbooks/",
+      "file": "knowledge-centre/intercompany-loan-accounting-xero-quickbooks/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (1): How to set up intercompany recharges in bulk with GATHER.nexus"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (2): Intercompany Reconciliation Guide | Intercompany recharges explained: journal entries, cost allocations and worked examples"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "1 live paragraph(s) not found locally. First: \"GATHER.nexus lets finance teams configure multiple intercompany recharges in one setup workflow.\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "2 local paragraph(s) not on live. First: \"A practical guide for multi-entity groups using Xero and QuickBooks\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 11,
+        "localHeadings": 11,
+        "liveParas": 26,
+        "localParas": 24,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 3,
+        "localTables": 3,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/xero-tracking-categories-quickbooks-class-consolidation/",
+      "file": "knowledge-centre/xero-tracking-categories-quickbooks-class-consolidation/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Requires manual review",
+          "detail": "Title differs. Live: \"Xero Tracking Categories & QuickBooks Class Consolidation | GATHER.nexus\" Local: \"Xero Tracking Categories & QuickBooks Class Consolidation\""
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (2): Financial consolidation for Xero and QuickBooks Online groups | Consolidation working papers explained"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (2): Multi-ledger, multi-entity consolidation | Multi-GAAP reporting for one company"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "3 live paragraph(s) not found locally. First: \"This creates inconsistent definitions, spreadsheet maintenance, errors and difficulty comparing divisions especially after acquisitions.\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "2 local paragraph(s) not on live. First: \"Bringing Xero and QuickBooks Online groups together in one consolidation workflow.\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 34,
+        "localHeadings": 33,
+        "liveParas": 50,
+        "localParas": 30,
+        "liveFaqs": 8,
+        "localFaqs": 8,
+        "liveTables": 5,
+        "localTables": 5,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/multi-ledger-multi-entity-consolidation/",
+      "file": "knowledge-centre/multi-ledger-multi-entity-consolidation/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Requires manual review",
+          "detail": "Title differs. Live: \"Xero & QuickBooks Multi-Ledger Consolidation | GATHER.nexus\" Local: \"Xero & QuickBooks Multi-Ledger Consolidation | Knowledge Centre | GATHER.nexus\""
+        },
+        {
+          "kind": "Missing content",
+          "detail": "3 live paragraph(s) not found locally. First: \"GATHER.nexus is fully compatible with both Xero and QuickBooks Online for group reporting and consolidation including groups that use both p\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "3 local paragraph(s) not on live. First: \"GATHER.nexus is fully compatible with both Xero and QuickBooks Online for group reporting and consolidation-including groups that use both p\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 24,
+        "localHeadings": 23,
+        "liveParas": 72,
+        "localParas": 63,
+        "liveFaqs": 6,
+        "localFaqs": 6,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "knowledge-centre",
+      "url": "https://gather.nexus/knowledge-centre/fractional-cfo-client-report-access/",
+      "file": "knowledge-centre/fractional-cfo-client-report-access/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (2): Financial consolidation for Xero and QuickBooks Online groups | Consolidation working papers explained"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "5 live paragraph(s) not found locally. First: \"Yes. A fractional CFO platform can give clients access to their own financial reports if it lets the firm control which client groups each u\""
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Live images 2; local resolved src 0. Rebuilt pages inherit WordPress lazy-load placeholders (data-src)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 12,
+        "localHeadings": 8,
+        "liveParas": 27,
+        "localParas": 21,
+        "liveFaqs": 3,
+        "localFaqs": 3,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 2,
+        "localImages": 0,
+        "liveCtas": 0,
+        "localCtas": 0
+      }
+    }
+  ],
+  "otherCustom": [
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/",
+      "file": "blog/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "H1 differs. Live: \"GATHER Insights\" Local: \"Expert Insights\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (18): Group Financial Reporting | Intercompany Control | Group Financial Planning | QuickBooks | Xero | Expert Insights | Latest insights | How a group ledger supports multi-GAAP reporting and exit readiness"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "1 live paragraph(s) not found locally. First: \"November 24, 2026\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "20 local paragraph(s) not on live. First: \"Consolidated Financial Reporting with multi-level Drill Down for data validation and analysis. Full audit trail with user logs\""
+        }
+      ],
+      "counts": {
+        "liveHeadings": 1,
+        "localHeadings": 20,
+        "liveParas": 1,
+        "localParas": 24,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 1,
+        "localImages": 14,
+        "liveCtas": 0,
+        "localCtas": 2
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/group-ledger-multi-gaap-exit-readiness/",
+      "file": "blog/group-ledger-multi-gaap-exit-readiness/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Headings on live not found locally (1): Introduction"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (3): How to set up multi-GAAP reporting for one company | Group Financial Reporting | Auditability and transaction drill-down"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "9 live paragraph(s) not found locally. First: \"In GATHER.nexus, that means the same ledger can support consolidation, single-entity multi-GAAP reporting and monthly normalisations for a f\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "4 local paragraph(s) not on live. First: \"Some of the most interesting uses of that architecture are ones we had not envisaged at the outset. A single company can use it for single-e\""
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Live has 1 CTA(s); local main/prose has none (may live in footer/hero)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 8,
+        "localHeadings": 7,
+        "liveParas": 44,
+        "localParas": 18,
+        "liveFaqs": 0,
+        "localFaqs": 0,
+        "liveTables": 0,
+        "localTables": 0,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 0
+      }
+    },
+    {
+      "group": "posts",
+      "url": "https://gather.nexus/blog/mayday-vs-gather-multi-entity-layer/",
+      "file": "blog/mayday-vs-gather-multi-entity-layer/index.html",
+      "buildStatus": "custom layout kept",
+      "status": "Missing content",
+      "findings": [
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved mega-menu (not live WordPress header)"
+        },
+        {
+          "kind": "Expected difference",
+          "detail": "Local uses approved site-foot (not live WordPress footer)"
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "Local headings not on live (5): What is the difference between Mayday and GATHER.nexus? | How does intercompany reconciliation differ from elimination? | GATHER vs Mayday: Intercompany Accounting Software Compared | Intercompany Control | Group Financial Reporting"
+        },
+        {
+          "kind": "Missing content",
+          "detail": "8 live paragraph(s) not found locally. First: \"Month-end close and the multi-entity finance layer\""
+        },
+        {
+          "kind": "Unexpected content",
+          "detail": "3 local paragraph(s) not on live. First: \"GATHER.nexus and Mayday both automate intercompany accounting for multi-entity finance teams using Xero and QuickBooks Online.\""
+        },
+        {
+          "kind": "Missing content",
+          "detail": "Live has 1 CTA(s); local main/prose has none (may live in footer/hero)."
+        }
+      ],
+      "counts": {
+        "liveHeadings": 9,
+        "localHeadings": 11,
+        "liveParas": 37,
+        "localParas": 14,
+        "liveFaqs": 0,
+        "localFaqs": 2,
+        "liveTables": 1,
+        "localTables": 1,
+        "liveImages": 0,
+        "localImages": 0,
+        "liveCtas": 1,
+        "localCtas": 0
+      }
+    }
+  ]
+}

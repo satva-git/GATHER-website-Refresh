@@ -1,0 +1,131 @@
+{
+  "generatedAt": "2026-11-25T10:24:06.164Z",
+  "guides": [
+    {
+      "file": "knowledge-centre/bulk-intercompany-recharge-setup/index.html",
+      "changes": [
+        "Updated hero lead from live",
+        "Updated table cell under \"How does bulk recharge setup save time?\"",
+        "Updated table cell under \"How does bulk recharge setup save time?\"",
+        "Updated FAQ JSON-LD to match live questions/answers"
+      ],
+      "unmapped": [],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/consolidation-auditability-transaction-drill-down/index.html",
+      "changes": [
+        "Updated hero lead from live"
+      ],
+      "unmapped": [],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/foreign-exchange-consolidation/index.html",
+      "changes": [
+        "Updated hero lead from live"
+      ],
+      "unmapped": [],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/fractional-cfo-client-report-access/index.html",
+      "changes": [
+        "Appended live paragraph under \"How does GATHER.nexus keep client reporting separate?\"",
+        "Appended live paragraph under \"How does GATHER.nexus keep client reporting separate?\"",
+        "Appended live paragraph under \"How does GATHER.nexus keep client reporting separate?\"",
+        "Appended live paragraph under \"What does this look like in practice?\"",
+        "Appended live paragraph under \"What does this look like in practice?\"",
+        "Appended live paragraph under \"What does this look like in practice?\"",
+        "Appended live paragraph under \"What does this look like in practice?\"",
+        "Appended live paragraph under \"What happens when the client hires a full-time CFO?\"",
+        "Appended live paragraph under \"What happens when the client hires a full-time CFO?\"",
+        "Updated FAQ JSON-LD to match live questions/answers"
+      ],
+      "unmapped": [],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/intercompany-loan-accounting-xero-quickbooks/index.html",
+      "changes": [
+        "Appended live paragraph under \"How do you record an intercompany loan?\"",
+        "Appended live paragraph under \"How do you record an intercompany loan?\"",
+        "Appended live paragraph under \"How do you record an intercompany loan?\"",
+        "Appended live paragraph under \"Worked example of an FX mismatch on an intercompany loan\"",
+        "Appended live paragraph under \"Worked example of an FX mismatch on an intercompany loan\"",
+        "Appended live paragraph under \"Worked example of an FX mismatch on an intercompany loan\"",
+        "Updated FAQ JSON-LD to match live questions/answers"
+      ],
+      "unmapped": [],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/intercompany-recharges-guide/index.html",
+      "changes": [
+        "Updated H1 from live",
+        "Updated hero lead from live",
+        "Appended live paragraph under \"What is the difference between a recharge, an allocation and a settlement?\"",
+        "Updated table cell under \"What is the difference between a recharge, an allocation and a settlement?\"",
+        "Appended live paragraph under \"Worked example: allocating a shared software bill between three companies\"",
+        "Appended live paragraph under \"Worked example: allocating a shared software bill between three companies\"",
+        "Aligned H3: Step 3: record the receiving companies’ entries",
+        "Appended live paragraph under \"Worked example: management services with a mark-up\"",
+        "Updated paragraph under \"How GATHER.nexus supports intercompany recharges\"",
+        "Appended live paragraph under \"How GATHER.nexus supports intercompany recharges\"",
+        "Updated FAQ answer: Do intercompany recharges affect group profit?",
+        "Updated FAQ answer: Does consolidation elimination clear an intercompany debt?",
+        "Updated FAQ JSON-LD to match live questions/answers"
+      ],
+      "unmapped": [
+        "Live H3 not mapped under \"What is an intercompany recharge?\": Example"
+      ],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/multi-gaap-reporting-xero-quickbooks/index.html",
+      "changes": [
+        "Updated hero lead from live",
+        "Aligned H2 wording: 1: Set up the company as a single-entity group",
+        "Aligned H2 wording: 2: Map the local chart of accounts to the Group Reporting Template",
+        "Aligned H2 wording: 3: Post manual GAAP adjustments in the local currency",
+        "Aligned H2 wording: 4: Reconcile and review the GAAP-adjusted figures",
+        "Updated FAQ JSON-LD to match live questions/answers"
+      ],
+      "unmapped": [],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/multi-ledger-multi-entity-consolidation/index.html",
+      "changes": [
+        "Updated hero lead from live"
+      ],
+      "unmapped": [],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/schedule-intercompany-recharges/index.html",
+      "changes": [
+        "Updated hero lead from live",
+        "Updated FAQ JSON-LD to match live questions/answers"
+      ],
+      "unmapped": [
+        "Table shape differs under \"How does a scheduled intercompany recharge work?\" (live 13 cells, local 12)",
+        "Table shape differs under \"What dates can you choose when scheduling a recharge?\" (live 13 cells, local 12)",
+        "Table shape differs under \"What posting statuses are available in Xero and QuickBooks Online?\" (live 9 cells, local 8)"
+      ],
+      "skipped": []
+    },
+    {
+      "file": "knowledge-centre/xero-tracking-categories-quickbooks-class-consolidation/index.html",
+      "changes": [
+        "Aligned H3: Step 1: Retain source classifications",
+        "Aligned H3: Step 2: Attribute eliminations using Xero/QBO concepts",
+        "Aligned H3: Step 3: Map to GATHER Group Classes",
+        "Aligned H3: Step 4: Roll up adjusted results",
+        "Updated FAQ JSON-LD to match live questions/answers"
+      ],
+      "unmapped": [],
+      "skipped": []
+    }
+  ]
+}

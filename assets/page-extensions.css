@@ -7,12 +7,12 @@
   --ink-2: #0f2340;
   --paper: #ffffff;
   --paper-2: #f6f8fb;
-  --teal: #2d7261;
-  --teal-2: #3a8572;
-  --teal-deep: #245a4e;
-  --teal-tint: #e9f2ef;
+  --teal: #2B7869;
+  --teal-2: #1D5449;
+  --teal-deep: #1D5449;
+  --teal-tint: #EDF4F2;
   --teal-line: #c5ddd6;
-  --teal-rgb: 45, 114, 97;
+  --teal-rgb: 43, 120, 105;
   --text: #0a1b30;
   --text-mid: #4a5b70;
   --text-muted: #7787a0;
@@ -21,7 +21,7 @@
   --line: #e2e8f0;
   --line-2: #d8e0eb;
   --line-dark: rgba(255, 255, 255, 0.1);
-  --font: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font: 'Onest', ui-sans-serif, system-ui, sans-serif;
   --r-sm: 6px;
   --r-md: 10px;
   --r-lg: 16px;
@@ -34,6 +34,20 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -40px;
+  background: #fff;
+  color: var(--ink);
+  padding: 8px 12px;
+  z-index: 10000;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.skip-link:focus { top: 16px; }
+
 body {
   font-family: var(--font);
   background: var(--paper);
@@ -70,15 +84,13 @@ ul { list-style: none; }
 .btn--ghost-light { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.28); }
 .btn--ghost-light:hover { border-color: #fff; background: rgba(255, 255, 255, 0.06); }
 .btn--demo-orange {
-  background: linear-gradient(90deg, #ff5b2e 0%, #ff8235 100%);
+  background: #2B7869;
   color: #fff;
   border-color: transparent;
 }
 .btn--demo-orange:hover {
-  background: linear-gradient(90deg, #ef4f24 0%, #f07428 100%);
+  background: #1D5449;
   border-color: transparent;
-  transform: scale(1.02);
-  box-shadow: 0 6px 20px rgba(255, 91, 46, 0.4);
 }
 .btn--demo-orange .btn-demo-chevs {
   display: inline-flex;
@@ -831,8 +843,9 @@ ul { list-style: none; }
 .nav-resources-ic--insights{background-position:0 0}
 .nav-resources-ic--updates{background-position:-96px 0}
 .nav-resources-ic--video{background-position:-141px 0}
-/* Knowledge Centre menu: one 5-icon sprite in menu order, 47px pitch */
-.nav-drop[aria-label="Knowledge Centre"] .nav-resources-ic{background-image:url(images/kc-nav-sprite.webp)}
+/* Knowledge Centre menu: one 6-icon sprite, 47px pitch (fractional CFO icon appended last) */
+.nav-drop[aria-label="Knowledge Centre"] .nav-resources-ic{background-image:url(images/kc-nav-sprite.webp?v=20261124b)}
+.nav-drop[aria-label="Knowledge Centre"] .nav-resources-ic--cfo{background-position:-235px 0}
 .nav-drop[aria-label="Knowledge Centre"] .nav-resources-ic--platform{background-position:0 0}
 .nav-drop[aria-label="Knowledge Centre"] .nav-resources-ic--ai{background-position:-47px 0}
 .nav-drop[aria-label="Knowledge Centre"] .nav-resources-ic--guides{background-position:-94px 0}
@@ -1635,6 +1648,10 @@ body.journey-lightbox-open {
    The landing uses a collection-shelf layout, not a blog card grid.
 ============================================================ */
 body.kc-page { background: var(--paper); }
+body.kc-page .wrap {
+  max-width: 1000px;
+  margin-inline: auto;
+}
 
 .kc-hero.mod-hero { padding-bottom: 56px; }
 .kc-hero .mod-hero-content { max-width: 720px; }
@@ -2078,7 +2095,7 @@ a.kc-card:focus-visible {
 .kc-shelf-list { display: flex; flex-direction: column; }
 .kc-lib-item {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr) auto;
+  grid-template-columns: 204px minmax(0, 1fr) auto;
   gap: 20px 28px;
   align-items: center;
   padding: 20px 24px;
@@ -2097,19 +2114,23 @@ a.kc-card:focus-visible {
   outline-offset: -2px;
 }
 .kc-lib-item-media {
-  width: 320px;
-  aspect-ratio: 16 / 10;
-  border-radius: var(--r-md);
+  width: 204px;
+  max-width: 204px;
+  aspect-ratio: 640 / 400;
+  border-radius: 10px;
   overflow: hidden;
   background: #e8f1ee;
   border: 1px solid var(--line);
   flex-shrink: 0;
 }
 .kc-lib-item-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
   display: block;
+  margin: 0 auto;
 }
 .kc-lib-item-body {
   display: flex;
@@ -2860,10 +2881,10 @@ a.kc-resource:focus-visible {
   }
   .kc-lib-index { display: none; }
   .kc-lib-item {
-    grid-template-columns: 260px minmax(0, 1fr);
+    grid-template-columns: 204px minmax(0, 1fr);
     gap: 16px 20px;
   }
-  .kc-lib-item-media { width: 260px; }
+  .kc-lib-item-media { width: 204px; max-width: 204px; }
   .kc-lib-item-action { display: none; }
   .kc-shelf-head {
     flex-direction: column;

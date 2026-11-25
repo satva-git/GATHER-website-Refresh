@@ -199,6 +199,7 @@
       if (!img || img.tagName !== 'IMG') return false;
       if (img.classList.contains('journey-lightbox-img')) return false;
       if (img.classList.contains('featured-logo')) return false;
+      if (img.hasAttribute('data-no-zoom')) return false;
       if (img.closest('.journey-lightbox, header, .subpage-nav, footer, .subpage-foot, nav')) return false;
       if (img.closest('.journey-visual-frame, .screenshot-frame--filled')) return true;
       var src = img.getAttribute('src') || '';
@@ -588,6 +589,118 @@
       });
     });
   }
+})();
+
+/* ═════ GN SITE HEADER: desktop menus + mobile drawer ═════
+ * Only runs on pages that use the gn-system header (.gn-header). */
+(function () {
+  'use strict';
+  var header = document.querySelector('.gn-header');
+  if (!header || header.dataset.gnBound) return;
+  header.dataset.gnBound = '1';
+
+  var hoverMq = window.matchMedia('(hover: hover) and (pointer: fine)');
+  var items = Array.prototype.slice.call(header.querySelectorAll('.gn-nav-item'));
+
+  function setItem(item, open) {
+    item.classList.toggle('is-open', open);
+    var t = item.querySelector('.gn-nav-trigger');
+    if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeAll(except) {
+    items.forEach(function (item) { if (item !== except) setItem(item, false); });
+  }
+
+  items.forEach(function (item) {
+    var trigger = item.querySelector('.gn-nav-trigger');
+    if (!trigger) return;
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      var open = !item.classList.contains('is-open');
+      closeAll(item);
+      setItem(item, open);
+    });
+    item.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && item.classList.contains('is-open')) {
+        e.stopPropagation();
+        setItem(item, false);
+        trigger.focus();
+      }
+    });
+    item.addEventListener('focusout', function (e) {
+      if (!item.contains(e.relatedTarget)) setItem(item, false);
+    });
+    item.addEventListener('mouseleave', function () {
+      if (hoverMq.matches && !item.contains(document.activeElement)) setItem(item, false);
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!header.contains(e.target)) closeAll();
+  });
+
+  /* Mobile drawer */
+  var toggle = header.querySelector('.gn-menu-toggle');
+  var drawer = toggle ? document.getElementById(toggle.getAttribute('aria-controls')) : null;
+  if (!toggle || !drawer) return;
+  var desktopMq = window.matchMedia('(min-width: 1081px)');
+
+  function focusables() {
+    return [toggle].concat(Array.prototype.slice.call(
+      drawer.querySelectorAll('a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])')
+    ).filter(function (el) { return el.offsetParent !== null; }));
+  }
+  function setDrawer(open, restoreFocus) {
+    drawer.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    header.classList.toggle('is-menu-open', open);
+    document.body.classList.toggle('gn-drawer-open', open);
+    if (open) {
+      var first = drawer.querySelector('.gn-drawer-trigger, .gn-drawer-link');
+      if (first) first.focus();
+    } else if (restoreFocus) {
+      toggle.focus();
+    }
+  }
+
+  toggle.addEventListener('click', function () {
+    setDrawer(!drawer.classList.contains('is-open'), true);
+  });
+
+  drawer.querySelectorAll('.gn-drawer-trigger').forEach(function (btn) {
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (!panel) return;
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.hidden = !open;
+    });
+  });
+
+  drawer.addEventListener('click', function (e) {
+    if (e.target.closest('a[href]')) setDrawer(false, false);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!drawer.classList.contains('is-open')) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setDrawer(false, true);
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    var list = focusables();
+    if (!list.length) return;
+    var first = list[0];
+    var last = list[list.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  desktopMq.addEventListener('change', function (e) {
+    if (e.matches && drawer.classList.contains('is-open')) setDrawer(false, false);
+  });
 })();
 
 /* ═════ MCP BETA WAITLIST FORM ═════

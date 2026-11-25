@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Intercompany Reconciliation Guide for Xero &amp; QuickBooks | GATHER.nexus</title>
+<meta name="description" content="Learn how to reconcile intercompany balances, investigate differences and prepare for consolidation, with practical examples for Xero and QuickBooks groups."/>
+<link rel="canonical" href="https://gather.nexus/knowledge-centre/intercompany-reconciliation-guide/"/>
+<meta property="og:title" content="Intercompany Reconciliation Guide for Xero &amp; QuickBooks | GATHER.nexus"/>
+<meta property="og:description" content="Learn how to reconcile intercompany balances, investigate differences and prepare for consolidation, with practical examples for Xero and QuickBooks groups."/>
+<meta property="og:url" content="https://gather.nexus/knowledge-centre/intercompany-reconciliation-guide/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://gather.nexus/wp-content/uploads/2026/09/read-arrow-hover.webp"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/assets/page-extensions.css?v=20261125c"/>
+<link rel="stylesheet" href="/assets/public-pages.css?v=20261125e"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","headline":"A practical guide for multi-entity groups using Xero and QuickBooks","description":"Learn how to reconcile intercompany balances, investigate differences and prepare for consolidation, with practical examples for Xero and QuickBooks groups.","url":"https://gather.nexus/knowledge-centre/intercompany-reconciliation-guide/","isPartOf":{"@type":"WebSite","name":"GATHER.nexus","url":"https://gather.nexus/"},"publisher":{"@type":"Organization","name":"GATHER.nexus","url":"https://gather.nexus/"}}</script>
+<link rel="stylesheet" href="/assets/gn-system.css?v=20261125e"/>
+<link rel="stylesheet" href="/assets/gn-templates.css?v=20261125g"/>
+</head>
+<body class="public-page gn-shell gn-kc-guide live-layout">
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="gn-header" id="nav">
+  <div class="gn-header-inner">
+    <a href="/" class="gn-logo" aria-label="GATHER.nexus home">
+      <img src="/assets/images/gather-logo.webp" srcset="/assets/images/gather-logo@2x.webp 2x" alt="GATHER.nexus" width="205" height="56"/>
+    </a>
+
+    <nav class="gn-nav" aria-label="Main">
+      <ul class="gn-nav-list">
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-product">
+            Product
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel gn-nav-panel--product" id="gn-panel-product">
+            <div class="gn-product-grid">
+              <a class="gn-product-link" href="/group-financial-reporting/">
+                <span class="gn-product-thumb"><img src="/assets/images/consolidated-reports.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Group Financial Reporting</span><span class="gn-menu-desc">Consolidation with multi-level drill-down and a full audit trail.</span></span>
+              </a>
+              <a class="gn-product-link" href="/intercompany-control/">
+                <span class="gn-product-thumb"><img src="/assets/images/intercompany-matrix-view.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Intercompany Control</span><span class="gn-menu-desc">Automated recharges, counterparty balances and reconciliations.</span></span>
+              </a>
+              <a class="gn-product-link" href="/complex-consolidations/">
+                <span class="gn-product-thumb"><img src="/assets/images/group-structure-configuration.webp" alt="" width="568" height="386" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Complex Consolidations</span><span class="gn-menu-desc">Acquisitions, disposals and layered ownership structures.</span></span>
+              </a>
+              <a class="gn-product-link" href="/group-financial-planning/">
+                <span class="gn-product-thumb"><img src="/assets/images/group-budget-rollup.webp" alt="" width="516" height="343" loading="lazy" decoding="async"/></span>
+                <span><span class="gn-menu-title">Group Financial Planning</span><span class="gn-menu-desc">Divisional and functional budgets that roll up to the Group.</span></span>
+              </a>
+            </div>
+            <div class="gn-nav-panel-foot">
+              <a class="gn-link" href="/ai/">GATHER AI and the MCP beta <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="gn-link" href="https://app.gather.nexus/auth/user/signup">Start 30-day free trial <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-solutions">
+            Solutions
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-solutions">
+            <a class="gn-menu-link" href="/for-finance-teams/"><span class="gn-menu-title">For Finance Teams</span><span class="gn-menu-desc">In-house finance in multi-entity groups.</span></a>
+            <a class="gn-menu-link" href="/for-fractional-cfos/"><span class="gn-menu-title">For Fractional CFOs</span><span class="gn-menu-desc">Multiple client Groups from one subscription.</span></a>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-integrations">
+            Integrations
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-integrations">
+            <a class="gn-menu-link" href="/integrations/xero/"><span class="gn-menu-title">Xero</span><span class="gn-menu-desc">Connect every Xero entity in a single click.</span></a>
+            <a class="gn-menu-link" href="/integrations/quickbooks/"><span class="gn-menu-title">QuickBooks</span><span class="gn-menu-desc">Connect every QuickBooks entity in a single click.</span></a>
+          </div>
+        </li>
+        <li class="gn-nav-item"><a class="gn-nav-link" href="/pricing/">Pricing</a></li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-resources">
+            Resources
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel gn-nav-panel--resources" id="gn-panel-resources">
+            <div class="gn-two-col">
+              <div>
+                <span class="gn-menu-group-label">Learn</span>
+                <a class="gn-menu-link" href="/knowledge-centre.html"><span class="gn-menu-title">Knowledge Centre</span></a>
+                <a class="gn-menu-link" href="/blog/"><span class="gn-menu-title">Expert Insights</span></a>
+                <a class="gn-menu-link" href="/product-updates/"><span class="gn-menu-title">Product Updates</span></a>
+                <a class="gn-menu-link" href="/video/"><span class="gn-menu-title">Video Tutorials</span></a>
+                <a class="gn-menu-link" href="https://help.gather.nexus/en"><span class="gn-menu-title">User Guides</span></a>
+              </div>
+              <div>
+                <span class="gn-menu-group-label">Knowledge Centre topics</span>
+                <a class="gn-menu-link" href="/knowledge-centre/our-unified-platform/"><span class="gn-menu-title">Our Unified Platform</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/intercompany-control/"><span class="gn-menu-title">Intercompany Control</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/group-financial-reporting/"><span class="gn-menu-title">Group Financial Reporting</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/group-financial-planning/"><span class="gn-menu-title">Group Financial Planning</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/fractional-cfos-outsourced-finance/"><span class="gn-menu-title">Fractional CFOs and Outsourced Finance</span></a>
+                <a class="gn-menu-link" href="/knowledge-centre/gather-ai-and-mcp/"><span class="gn-menu-title">GATHER AI and the MCP</span></a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="gn-nav-item">
+          <button type="button" class="gn-nav-trigger" aria-expanded="false" aria-controls="gn-panel-company">
+            Company
+            <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gn-nav-panel" id="gn-panel-company">
+            <a class="gn-menu-link" href="/about/"><span class="gn-menu-title">About</span></a>
+            <a class="gn-menu-link" href="/news-latest/"><span class="gn-menu-title">News</span></a>
+            <a class="gn-menu-link" href="/contact/"><span class="gn-menu-title">Contact</span></a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="gn-header-actions">
+      <a class="gn-login" href="https://app.gather.nexus">Log in</a>
+      <a class="gn-btn gn-btn--primary gn-btn--sm" href="https://app.gather.nexus/auth/user/signup">Start free trial</a>
+      <button type="button" class="gn-menu-toggle" aria-expanded="false" aria-controls="gn-drawer" aria-label="Open menu"><span class="gn-menu-toggle-bars" aria-hidden="true"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="gn-drawer" id="gn-drawer">
+  <nav aria-label="Mobile">
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-product">Product <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-product" hidden>
+        <a href="/group-financial-reporting/">Group Financial Reporting<span>Consolidation with multi-level drill-down</span></a>
+        <a href="/intercompany-control/">Intercompany Control<span>Recharges, balances and reconciliations</span></a>
+        <a href="/complex-consolidations/">Complex Consolidations<span>Acquisitions, disposals and ownership layers</span></a>
+        <a href="/group-financial-planning/">Group Financial Planning<span>Budgets that roll up to the Group</span></a>
+        <a href="/ai/">GATHER AI and the MCP beta</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-solutions">Solutions <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-solutions" hidden>
+        <a href="/for-finance-teams/">For Finance Teams</a>
+        <a href="/for-fractional-cfos/">For Fractional CFOs</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-integrations">Integrations <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-integrations" hidden>
+        <a href="/integrations/xero/">Xero</a>
+        <a href="/integrations/quickbooks/">QuickBooks</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group"><a class="gn-drawer-link" href="/pricing/">Pricing</a></div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-resources">Resources <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-resources" hidden>
+        <a href="/knowledge-centre.html">Knowledge Centre</a>
+        <a href="/blog/">Expert Insights</a>
+        <a href="/product-updates/">Product Updates</a>
+        <a href="/video/">Video Tutorials</a>
+        <a href="https://help.gather.nexus/en">User Guides</a>
+      </div>
+    </div>
+    <div class="gn-drawer-group">
+      <button type="button" class="gn-drawer-trigger" aria-expanded="false" aria-controls="gn-drawer-company">Company <svg class="gn-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="gn-drawer-panel" id="gn-drawer-company" hidden>
+        <a href="/about/">About</a>
+        <a href="/news-latest/">News</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="gn-drawer-actions">
+      <a class="gn-btn gn-btn--primary" href="https://app.gather.nexus/auth/user/signup">Start 30-day free trial</a>
+      <a class="gn-btn gn-btn--secondary" href="https://app.gather.nexus">Log in</a>
+    </div>
+  </nav>
+</div>
+<main id="content">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/knowledge-centre/">knowledge centre</a> <span aria-hidden="true">/</span> <span aria-current="page">intercompany reconciliation guide</span></nav>
+    
+    <div class="prose"><article><div class=""><div><div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-8f761849 wp-block-columns-is-layout-flex"><div class="wp-block-column full-width-background is-layout-flow wp-block-column-is-layout-flow"><div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-8f761849 wp-block-columns-is-layout-flex"><div class="wp-block-column container top-space bottom-space is-layout-flow wp-block-column-is-layout-flow"> <nav class="breadcrumb" aria-label="Breadcrumb"> <a href="#">Knowledge Centre</a> <span class="breadcrumb-separator">/</span> <a href="/knowledge-centre/intercompany-control/">Intercompany Control</a> <span class="breadcrumb-separator">/</span> <span class="breadcrumb-current">A practical guide for multi-entity groups using Xero and QuickBooks</span></nav><h1 id="Introduction" class="wp-block-heading hero-title">A practical guide for multi-entity groups using Xero and QuickBooks</h1><p class="hero-description wp-block-paragraph">Intercompany reconciliation is the process of comparing transactions and balances between companies in the same group, identifying differences and resolving them before the group accounts are consolidated.</p></div></div><div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-8f761849 wp-block-columns-is-layout-flex"><div class="wp-block-column container top-space bottom-space is-layout-flow wp-block-column-is-layout-flow"><div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-8f761849 wp-block-columns-is-layout-flex"><div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:25%"><p class="table-of-content  table-of-content-title wp-block-paragraph">On this page</p><ul class="wp-block-list on-this-page  top"><li><a href="#what-is-intercompany-reconciliation" data-type="internal" data-id="#what-is-intercompany-reconciliation">What Is Intercompany Reconciliation?</a></li><li><a href="#why-is-intercompany-reconciliation-important" data-type="internal" data-id="#why-is-intercompany-reconciliation-important">Why Is It Important?</a></li><li><a href="#why-do-intercompany-balances-not-agree" data-type="internal" data-id="#why-do-intercompany-balances-not-agree">Why Do Balances Differ?</a></li><li><a href="#how-to-reconcile-intercompany-accounts" data-type="internal" data-id="#how-to-reconcile-intercompany-accounts">How to Reconcile Intercompany Accounts</a></li><li><a href="#intercompany-reconciliation-example" data-type="internal" data-id="#intercompany-reconciliation-example">Practical Example</a></li><li><a href="#intercompany-reconciliation-vs-intercompany-elimination" data-type="internal" data-id="#intercompany-reconciliation-vs-intercompany-elimination">Reconciliation vs Elimination</a></li><li><a href="#how-to-reconcile-intercompany-accounts-in-xero" data-type="internal" data-id="#how-to-reconcile-intercompany-accounts-in-xero">Reconciliation in Xero</a></li><li><a href="#how-to-reconcile-intercompany-accounts-in-quickbooks-online" data-type="internal" data-id="#how-to-reconcile-intercompany-accounts-in-quickbooks-online">Reconciliation in QuickBooks Online</a></li><li><a href="#when-should-a-group-move-beyond-spreadsheets" data-type="internal" data-id="#when-should-a-group-move-beyond-spreadsheets">Beyond Spreadsheets</a></li><li><a href="#how-gather-nexus-supports-intercompany-reconciliation" data-type="internal" data-id="#how-gather-nexus-supports-intercompany-reconciliation">How GATHER.nexus Helps</a></li><li><a href="#frequently-asked-questions" data-type="internal" data-id="#frequently-asked-questions">FAQs</a></li></ul></div><div class="wp-block-column knowledge-content is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:75%"><p class="wp-block-paragraph">For finance teams managing multiple entities, it can also be one of the most time-consuming parts of the month-end close.</p><p class="wp-block-paragraph">A missing invoice, a transaction posted in the wrong period or an unexplained foreign exchange difference can send the team searching through multiple ledgers and spreadsheets.</p><p class="wp-block-paragraph">The good news is that intercompany reconciliation does not have to be a month-end detective exercise.</p><p class="wp-block-paragraph">With clear processes, regular monitoring and the right tools, groups can identify differences earlier and build a more reliable path from individual company records to consolidated financial statements.</p><p class="wp-block-paragraph">This guide explains how intercompany reconciliation works, why balances differ and how finance teams using Xero or QuickBooks Online can manage the process more effectively.</p><h2 id="what-is-intercompany-reconciliation" class="wp-block-heading"><strong>What is intercompany reconciliation?</strong></h2><p class="wp-block-paragraph">Intercompany reconciliation compares the transactions and balances recorded by two companies within the same group.</p><p class="wp-block-paragraph">For example, if Company A records £10,000 as owed by Company B, Company B should normally record a corresponding £10,000 as owed to Company A. If the two balances do not agree, the finance team needs to understand why.</p><p class="wp-block-paragraph">The objective is to establish that both sides of each intercompany relationship are complete and accurate, and to identify any differences that need to be corrected or explained.</p><p class="wp-block-paragraph"><strong>Intercompany reconciliation commonly covers:</strong></p><ul class="wp-block-list"><li>Intercompany receivables and payables</li><li>Management charges and shared cost recharges</li><li>Sales and purchases between group companies</li><li>Intercompany loans and funding</li><li>Other transactions and balances between related entities</li></ul><p class="wp-block-paragraph">The process is particularly important before consolidation, when intercompany balances and transactions are eliminated from the group financial statements.</p><h2 id="why-is-intercompany-reconciliation-important" class="wp-block-heading"><strong>Why is intercompany reconciliation important?</strong></h2><p class="wp-block-paragraph">Intercompany reconciliation helps finance teams identify errors that may otherwise remain hidden in individual company ledgers or create unexplained differences in group reporting.</p><ul class="wp-block-list"><li><strong>Improve the accuracy of individual company accounts:</strong> missing, duplicated or incorrectly coded transactions can be identified and corrected.</li><li><strong>Prepare more reliable consolidated accounts:</strong> reconciled balances provide a stronger basis for intercompany eliminations.</li><li><strong>Reduce month-end delays:</strong> differences identified during the month can be resolved before the close becomes time-critical.</li><li><strong>Strengthen the audit trail:</strong> finance teams can show what was matched, what remained outstanding and how exceptions were resolved.</li><li><strong>Improve visibility across the group:</strong> controllers can see where intercompany issues are arising and which entity pairs need attention.</li></ul><p class="wp-block-paragraph">As a group grows, the number of potential intercompany relationships grows with it.</p><p class="wp-block-paragraph">Even a relatively small group can quickly find itself managing a significant number of balances, transactions and allocation rules across multiple ledgers.</p><h2 id="-why-do-intercompany-balances-not-agree" class="wp-block-heading"><strong>Why do intercompany balances not agree?</strong></h2><p class="wp-block-paragraph">Intercompany differences can arise for many reasons.</p><p class="wp-block-paragraph">Some reflect errors; others result from timing or foreign currency movements that need to be understood and accounted for appropriately.</p> <div class="common-table-wrap"><table class="common-table"><thead><tr class="common-table-title"><th>Cause</th><th>What happens</th><th>How to investigate</th></tr></thead><tbody><tr><td>Missing transaction</td><td>One company records an invoice or journal, but the counterparty has not recorded its corresponding entry.</td><td>Compare underlying transactions and check whether the document or journal reached the other entity.</td></tr><tr><td>Timing difference</td><td>The two companies record the transaction in different accounting periods.</td><td>Compare posting dates and determine whether the difference is expected or requires correction.</td></tr><tr><td>Incorrect amount</td><td>The two sides are recorded at different values.</td><td>Check the source invoice, allocation calculation and corresponding postings.</td></tr><tr><td>Duplicate entry</td><td>One company records the same transaction twice.</td><td>Search for repeated invoice numbers, dates and amounts.</td></tr><tr><td>Incorrect account or counterparty</td><td>A transaction is posted to the wrong intercompany account or attributed to the wrong entity.</td><td>Review the account coding and counterparty details.</td></tr><tr><td>Settlement difference</td><td>A payment is recorded by one company but not yet by the other.</td><td>Check payment dates, bank records and cash in transit.</td></tr><tr><td>Foreign exchange difference</td><td>The same foreign currency transaction is reflected at different amounts in the entities’ functional currencies.</td><td>Compare the underlying currency amount, rates, dates and remeasurement entries.</td></tr><tr><td>Opening balance issue</td><td>A difference has been carried forward from a previous period.</td><td>Trace the discrepancy to the earliest period in which it appeared.</td></tr></tbody></table></div><p class="wp-block-paragraph">A crucial first step is to distinguish between a genuine transaction mismatch and a difference caused by timing or currency.</p><p class="wp-block-paragraph">Treating every difference as an error can lead to unnecessary or incorrect journals.</p><h2 id="how-to-reconcile-intercompany-accounts" class="wp-block-heading"><strong>How to reconcile intercompany accounts</strong></h2><p class="wp-block-paragraph">A consistent reconciliation process gives finance teams a clear route from identifying balances to resolving exceptions and supporting consolidation.</p><h3 class="wp-block-heading"><strong>1. Identify the entities and intercompany accounts</strong></h3><p class="wp-block-paragraph">Start by identifying the companies in the group and the accounts used to record transactions with each counterparty.</p><p class="wp-block-paragraph">&nbsp;For example, Company A may have separate accounts for amounts due from Company B and Company C.</p><p class="wp-block-paragraph">Each counterparty should be identifiable so that reciprocal balances can be compared.</p><p class="wp-block-paragraph">Where a single account contains balances with several group companies, the finance team will need a reliable way to identify the underlying counterparty for each transaction.</p><h3 class="wp-block-heading"><strong>2. Compare reciprocal balances</strong></h3><p class="wp-block-paragraph">Compare the amount recorded by each company at the same reporting date.</p><p class="wp-block-paragraph">If Company A shows a receivable from Company B, Company B should show the corresponding payable to Company A, subject to any differences that need to be investigated.</p><p class="wp-block-paragraph">At this stage, a balance comparison tells you where a difference exists. It does not necessarily tell you what caused it.</p><h3 class="wp-block-heading"><strong>3. Match the underlying transactions</strong></h3><p class="wp-block-paragraph">Compare the transactions that make up each balance. Useful matching information may include counterparty, invoice or reference number, transaction date, posting period, currency, amount and transaction type.</p><p class="wp-block-paragraph">Some transactions may match one-to-one. Others may require one-to-many or many-to-one matching for example, where a single payment settles several intercompany invoices.</p><p class="wp-block-paragraph">Matching the underlying activity is important even when the closing balances agree.</p><p class="wp-block-paragraph">Two equal balances can contain offsetting errors or unrelated transactions.</p><h3 class="wp-block-heading"><strong>4. Investigate unmatched items</strong></h3><p class="wp-block-paragraph">Review transactions that do not have a corresponding entry and determine the cause. For each exception, ask:</p><ul class="wp-block-list"><li>Has the other company received and recorded the transaction?</li><li>Was it recorded in the same period?</li><li>Was it posted to the correct account and counterparty?</li><li>Does the amount agree with the supporting document?</li><li>Is there a settlement or foreign exchange difference?</li><li>Has the item been outstanding since an earlier period?</li></ul><p class="wp-block-paragraph">Assign ownership of unresolved items and record the action needed.</p><p class="wp-block-paragraph">A reconciliation is more useful when it shows not only the difference, but also who is responsible for resolving it and why it remains open.</p><h3 class="wp-block-heading"><strong>5. Correct or explain the differences</strong></h3><p class="wp-block-paragraph">Once the cause is understood, make the appropriate correction in the relevant company’s books.</p><p class="wp-block-paragraph">This may involve recording a missing invoice, correcting an account code, reversing a duplicate or investigating a payment.</p><p class="wp-block-paragraph">Some items, such as genuine timing differences, may remain outstanding at the reporting date but should be clearly explained and followed through in the next period.</p><p class="wp-block-paragraph">Avoid posting an unexplained <strong>“plug”</strong> simply to make balances agree. That can conceal the underlying issue and create further problems later.</p><h3 class="wp-block-heading"><strong>6. Document and review the reconciliation</strong></h3><p class="wp-block-paragraph">Retain evidence of the balances compared, transactions matched, outstanding differences, explanations and supporting documents, corrections made, and the person responsible for preparing and reviewing the reconciliation.</p><p class="wp-block-paragraph">The level of review and sign-off should reflect the group’s own controls and reporting requirements.</p><h3 class="wp-block-heading"><strong>7. Validate the result against consolidation</strong></h3><p class="wp-block-paragraph">Once intercompany positions have been reconciled, compare the results with the balances and transactions included in the consolidation working papers.</p><p class="wp-block-paragraph">&nbsp;This helps the finance team confirm that the intercompany positions being eliminated in group reporting are consistent with the underlying reconciliation and investigate any residual differences before the accounts are signed off.</p><h2 id="intercompany-reconciliation-example" class="wp-block-heading"><strong>Intercompany reconciliation example</strong></h2><p class="wp-block-paragraph">Suppose two UK companies in the same group share central IT costs.</p><p class="wp-block-paragraph">During September, Company A pays for a software subscription and recharges £10,000 to Company B.</p><p class="wp-block-paragraph">For simplicity, this example excludes VAT and assumes both companies use sterling as their functional currency.</p><p class="wp-block-paragraph"><strong>Company A records the recharge:</strong></p> <div class="common-table-wrap"><table class="common-table"><thead><tr><th>Company A</th><th>Debit</th><th>Credit</th></tr></thead><tbody><tr><td>Intercompany receivable from Company B</td><td>£10,000</td><td></td></tr><tr><td>Recharge income or cost recovery</td><td></td><td>£10,000</td></tr></tbody></table></div><p class="wp-block-paragraph">Company B has not yet recorded the corresponding invoice. At the September reporting date:</p> <div class="common-table-wrap"><table class="common-table"><thead><tr><th>Entity</th><th>Intercompany balance</th></tr></thead><tbody><tr><td>Company A: receivable from Company B</td><td>£10,000</td></tr><tr><td>Company B: payable to Company A</td><td>£0</td></tr><tr><td>Difference</td><td>£10,000</td></tr></tbody></table></div><p class="wp-block-paragraph">The finance team compares the underlying transactions and identifies the missing invoice. If the expense belongs in September under Company B’s accounting policy, Company B records:</p> <div class="common-table-wrap"><table class="common-table"><thead><tr><th>Company B</th><th>Debit</th><th>Credit</th></tr></thead><tbody><tr><td>IT expense</td><td>£10,000</td><td></td></tr><tr><td>Intercompany payable to Company A</td><td></td><td>£10,000</td></tr></tbody></table></div><p class="wp-block-paragraph">The reciprocal balances now agree:</p> <div class="common-table-wrap"><table class="common-table"><thead><tr><th>Entity</th><th>Intercompany balance</th></tr></thead><tbody><tr><td>Company A: receivable from Company B</td><td>£10,000</td></tr><tr><td>Company B: payable to Company A</td><td>£10,000</td></tr><tr><td>Unexplained difference</td><td>£0</td></tr></tbody></table></div><p class="wp-block-paragraph">The group can then address the intercompany receivable and payable, and the related income and expense, as part of its consolidation process.</p><p class="wp-block-paragraph">The exact account names and presentation depend on the group’s accounting policies and the nature of the transaction.</p><p class="wp-block-paragraph">The important control is that the underlying transaction is recorded correctly in both companies before the group eliminates the internal activity.</p><h2 id="intercompany-reconciliation-vs-intercompany-elimination" class="wp-block-heading"><strong>How to reconcile intercompany balances in different currencies</strong></h2><p class="wp-block-paragraph">Multi-currency groups need to look beyond the amounts shown in each company’s functional currency.</p><p class="wp-block-paragraph">Consider a US dollar intercompany invoice for $10,000 between two group companies.</p><p class="wp-block-paragraph">The underlying transaction may be correctly recorded as $10,000 by both parties, while their local-currency balances differ because:</p><ul class="wp-block-list"><li>The companies have different functional currencies.</li><li>They recorded the transaction using different applicable exchange rates.</li><li>The transaction and settlement occurred on different dates.</li><li>One or both companies have remeasured the outstanding balance at a reporting date.</li></ul><p class="wp-block-paragraph"><strong>The first question is therefore: </strong>Do the underlying transaction currency, counterparty and transaction details agree? If they do, the finance team can then investigate the currency effects separately from the underlying matching of the transaction.</p><h2 id="how-to-reconcile-intercompany-accounts-in-xero" class="wp-block-heading"><strong>Intercompany reconciliation vs intercompany elimination</strong></h2><p class="wp-block-paragraph">Intercompany reconciliation and elimination are related, but they serve different purposes.</p><div class="common-table-wrap"><table class="common-table"><thead><tr><th></th><th>Intercompany reconciliation</th><th>Intercompany elimination</th></tr></thead><tbody><tr><td>Purpose</td><td>Check that transactions and balances recorded by group companies agree or that differences are understood.</td><td>Remove internal balances and transactions from consolidated financial statements.</td></tr><tr><td>Focus</td><td>Individual company records and counterparties.</td><td>The group accounts.</td></tr><tr><td>Typical activity</td><td>Match transactions, investigate differences and correct errors.</td><td>Eliminate intercompany receivables, payables, income and expenses as appropriate.</td></tr><tr><td>When</td><td>Throughout the month and as part of the close.</td><td>When preparing consolidated accounts.</td></tr></tbody></table></div><p class="wp-block-paragraph">An elimination does not, on its own, establish that the underlying company records are correct.</p><p class="wp-block-paragraph">If reciprocal balances do not agree, an elimination may leave an unexplained residual in the consolidated accounts.</p><p class="wp-block-paragraph"><strong>A more controlled sequence is:</strong> Record → reconcile → investigate → correct or explain → eliminate → review.</p><p class="wp-block-paragraph">For transactions such as intercompany sales of inventory or fixed assets, consolidation may also require further consideration of unrealised profits or other adjustments.</p><p class="wp-block-paragraph">Those matters go beyond matching the reciprocal balance alone.</p><h2 id="how-to-reconcile-intercompany-accounts-in-quickbooks-online" class="wp-block-heading"><strong>How often should intercompany accounts be reconciled?</strong></h2><p class="wp-block-paragraph">For active multi-entity groups, intercompany accounts should be monitored regularly rather than left entirely until month end.</p><p class="wp-block-paragraph">The right frequency depends on the volume and complexity of transactions:</p><ul class="wp-block-list"><li>Monthly may be appropriate for a smaller group with limited intercompany activity.</li><li>Weekly can help groups with regular recharges, funding movements or trading between entities identify issues earlier.</li><li>During the month can be particularly valuable for groups with high transaction volumes, multiple currencies or tight reporting deadlines.</li></ul><p class="wp-block-paragraph">The goal is not to add unnecessary process. It is to make differences visible early enough for the relevant people to investigate them before they delay the close.</p><p class="wp-block-paragraph">A practical approach is to monitor activity throughout the month, resolve straightforward exceptions as they arise and complete a formal review at the reporting date.</p><h2 id="how-to-reconcile-intercompany-accounts-in-xero" class="wp-block-heading"><strong>How to reconcile intercompany accounts in Xero</strong></h2><p class="wp-block-paragraph">Groups using Xero typically maintain a separate Xero organisation for each legal entity.</p><p class="wp-block-paragraph">When transactions occur between those entities, the relevant entries need to be reflected correctly in both sets of books.</p><p class="wp-block-paragraph">A manual process may involve exporting account activity from each Xero organisation, comparing the data in spreadsheets and then returning to the individual organisations to investigate or correct differences.</p><p class="wp-block-paragraph">This can work for a small number of entities and transactions. As the group grows, however, the process becomes harder to maintain, particularly when it involves multiple counterparties, currencies and recurring recharges.</p><p class="wp-block-paragraph">A connected intercompany platform can bring information from the relevant Xero organisations into a central workflow, helping finance teams compare positions, match transactions and identify exceptions without moving repeatedly between ledgers and spreadsheets.</p><h2 id="how-to-reconcile-intercompany-accounts-in-quickbooks-online" class="wp-block-heading"><strong>How to reconcile intercompany accounts in QuickBooks Online</strong></h2><p class="wp-block-paragraph"><strong>Groups using separate QuickBooks Online companies face a similar challenge:</strong> each company needs a complete and accurate record of its side of an intercompany transaction.</p><p class="wp-block-paragraph">A spreadsheet-based approach generally requires the finance team to extract information from the relevant companies, compare balances and transactions, and investigate differences in the source records.</p><p class="wp-block-paragraph">Specialist intercompany software can provide a central view across connected QuickBooks Online companies and support the matching and investigation process.</p><p class="wp-block-paragraph">QuickBooks products and subscriptions differ, so groups should assess the multi-entity functionality available in their specific setup alongside any additional intercompany and consolidation requirements.</p><h2 id="when-should-a-group-move-beyond-spreadsheets" class="wp-block-heading"><strong>When should a group move beyond spreadsheets?</strong></h2><p class="wp-block-paragraph">There is no fixed number of entities at which spreadsheets stop working.</p><p class="wp-block-paragraph">&nbsp;The more useful question is whether the process remains reliable, visible and proportionate to the effort required.</p><p class="wp-block-paragraph">Common signs that a group may benefit from a more connected approach include:</p><ul class="wp-block-list"><li>Finance teams spend significant time exporting and combining data.</li><li>Differences are discovered late in the close.</li><li>The same intercompany issues recur each month.</li><li>Recharges require repeated manual calculations and postings.</li><li>Teams struggle to identify which entity or transaction caused a difference.</li><li>Multiple currencies make comparisons difficult.</li><li>Reconciliation evidence is spread across files and email chains.</li><li>Consolidation working papers do not clearly align with the intercompany reconciliation.</li></ul><p class="wp-block-paragraph">The cost is not just the time spent preparing spreadsheets. It is also the delay in obtaining a dependable view of group performance – and the risk that an unresolved issue is carried into reporting.</p><h2 id="how-gather-nexus-supports-intercompany-reconciliation" class="wp-block-heading"><strong>How GATHER.nexus supports intercompany reconciliation</strong></h2><p class="wp-block-paragraph">GATHER.nexus provides an integrated intercompany control workflow for multi-entity groups using Xero and QuickBooks Online.</p><p class="wp-block-paragraph">Instead of treating recharges, reconciliation and consolidation as separate exercises, GATHER brings the stages together:</p><ul class="wp-block-list"><li>Intercompany recharges: calculate and manage charges between group companies.</li><li>Counterparty visibility: view intercompany positions across the group during the month.</li><li>Automatched reconciliation: match intercompany transactions and identify differences for investigation.</li><li>Transaction-level investigation: review the underlying activity to understand exceptions.</li><li>Consolidation validation: compare reconciliation results with consolidation working papers before sign-off.</li></ul><p class="wp-block-paragraph">This gives finance teams a clearer view of intercompany activity from the initial recharge through to group reporting.</p><p class="wp-block-paragraph">For groups with recurring transactions, multiple entities or foreign currencies, the result is a more structured process, with less reliance on spreadsheets to identify and investigate differences.</p><p class="wp-block-paragraph">Explore GATHER.nexus Intercompany Control:<a href="/intercompany-control/"> https://gather.nexus/intercompany-control/</a></p><h2 id="frequently-asked-questions" class="wp-block-heading"><strong>Frequently asked questions</strong></h2>  <li class="faq-item"> <button class="faq-question" aria-expanded="false" aria-controls="answer-30"><h3 class="faq-text">What is the purpose of intercompany reconciliation?</h3> <span class="faq-toggle" aria-hidden="true"><svg viewBox="0 0 13 13"><line class="plus-line-h" x1="2" y1="6.5" x2="11" y2="6.5"></line><line class="plus-line-v" x1="6.5" y1="2" x2="6.5" y2="11"></line></svg></span> </button><div class="faq-answer" id="answer-30" role="region"><div class="faq-answer-inner"><p class="faq-answer-text">The purpose is to compare the transactions and balances recorded by companies in the same group, identify differences and ensure those differences are corrected or understood before consolidation.</p></div></div></li><li class="faq-item"> <button class="faq-question" aria-expanded="false" aria-controls="answer-31"><h3 class="faq-text">Should intercompany balances always agree?</h3> <span class="faq-toggle" aria-hidden="true"><svg viewBox="0 0 13 13"><line class="plus-line-h" x1="2" y1="6.5" x2="11" y2="6.5"></line><line class="plus-line-v" x1="6.5" y1="2" x2="6.5" y2="11"></line></svg></span> </button><div class="faq-answer" id="answer-31" role="region"><div class="faq-answer-inner"><p class="faq-answer-text">Reciprocal balances should be capable of being reconciled, but the amounts shown in each company’s functional currency may differ for legitimate reasons, including foreign exchange or timing. The finance team should identify and document the reasons rather than assume every difference is an error.</p></div></div></li><li class="faq-item"> <button class="faq-question" aria-expanded="false" aria-controls="answer-32"><h3 class="faq-text">Can intercompany balances agree even if transactions are wrong?</h3> <span class="faq-toggle" aria-hidden="true"><svg viewBox="0 0 13 13"><line class="plus-line-h" x1="2" y1="6.5" x2="11" y2="6.5"></line><line class="plus-line-v" x1="6.5" y1="2" x2="6.5" y2="11"></line></svg></span> </button><div class="faq-answer" id="answer-32" role="region"><div class="faq-answer-inner"><p class="faq-answer-text">Yes. Two incorrect or unrelated transactions can offset one another, leaving matching closing balances. Comparing the underlying transactions as well as the totals helps identify these issues.</p></div></div></li><li class="faq-item"> <button class="faq-question" aria-expanded="false" aria-controls="answer-33"><h3 class="faq-text">What happens if intercompany balances do not reconcile before consolidation?</h3> <span class="faq-toggle" aria-hidden="true"><svg viewBox="0 0 13 13"><line class="plus-line-h" x1="2" y1="6.5" x2="11" y2="6.5"></line><line class="plus-line-v" x1="6.5" y1="2" x2="6.5" y2="11"></line></svg></span> </button><div class="faq-answer" id="answer-33" role="region"><div class="faq-answer-inner"><p class="faq-answer-text">Unreconciled differences can leave residual amounts in the consolidated accounts or conceal errors in individual company records. The group should investigate and explain the differences before completing its consolidation review.</p></div></div></li><li class="faq-item"> <button class="faq-question" aria-expanded="false" aria-controls="answer-34"><h3 class="faq-text">What is the difference between intercompany reconciliation and elimination?</h3> <span class="faq-toggle" aria-hidden="true"><svg viewBox="0 0 13 13"><line class="plus-line-h" x1="2" y1="6.5" x2="11" y2="6.5"></line><line class="plus-line-v" x1="6.5" y1="2" x2="6.5" y2="11"></line></svg></span> </button><div class="faq-answer" id="answer-34" role="region"><div class="faq-answer-inner"><p class="faq-answer-text">Reconciliation checks and explains the positions recorded by the group companies. Elimination removes appropriate internal balances and transactions when preparing consolidated financial statements.</p></div></div></li> <section class="collection-section"><div class="collection-container"><h3 class="collection-title">ALSO IN THIS COLLECTION</h3> <!-- Card 1 --> <a href="/knowledge-centre/intercompany-reconciliation-recharges-faq/" class="collection-card"><div><p class="resource-card__type">FAQ</p></div><div class="collection-content"><h3>Intercompany Reconciliations &amp; Recharges</h3><p> Thirty questions across reconciliation, recharges, Xero,
+ QuickBooks Online, FX and software.</p></div> <span class="collection-arrow" aria-hidden="true"><img decoding="async" src="https://gather.nexus/wp-content/uploads/2026/09/read-arrow-hover.webp" data-src="https://gather.nexus/wp-content/uploads/2026/09/read-arrow-hover.webp" class="lazyload" alt="arrow" width="16px" height="16px"> </span> </a> <!-- Card 2 --> <a href="/knowledge-centre/manual-vs-automated-intercompany-accounting/" class="collection-card"><div><p class="resource-card__type">COMPARISON</p></div><div class="collection-content"><h3>Manual vs automated intercompany accounting</h3><p> Process tables for recharges, reconciliation, multi-entry
+ posting and Group workflow.</p></div> <span class="collection-arrow" aria-hidden="true"><img decoding="async" src="https://gather.nexus/wp-content/uploads/2026/09/read-arrow-hover.webp" data-src="https://gather.nexus/wp-content/uploads/2026/09/read-arrow-hover.webp" class="lazyload" alt="arrow" width="16px" height="16px"></span> </a></div></section></div></div></div></div></div></div><p class="wp-block-paragraph"></p></div></div></article></div>
+  </div>
+</main>
+<footer class="gn-footer">
+  <div class="gn-container gn-container--wide">
+    <div class="gn-footer-top">
+      <div class="gn-footer-brand">
+        <img src="/assets/images/gather-logo.webp" srcset="/assets/images/gather-logo@2x.webp 2x" alt="GATHER.nexus" width="205" height="56" loading="lazy" decoding="async"/>
+        <p>One Powerful Platform Unifying All Your Multi-Entity Workflows. Built for Fractional CFOs and Finance Teams using Xero and QuickBooks.</p>
+        <div class="gn-footer-social">
+          <a href="https://www.linkedin.com/company/gather-nexus/" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></a>
+          <a href="https://youtube.com/@gather-nexus" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on YouTube (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+          <a href="https://www.facebook.com/people/GATHERnexus/61582393529276/" target="_blank" rel="noopener noreferrer" aria-label="GATHER.nexus on Facebook (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></a>
+        </div>
+        <div class="gn-footer-news">
+          <label for="footer-newsletter">Stay up to date with our newsletter</label>
+          <div class="gn-footer-news-row">
+            <input class="gn-field" type="email" id="footer-newsletter" placeholder="Your email address" autocomplete="email"/>
+            <button class="gn-btn gn-btn--primary" type="button">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="gn-footer-cols">
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_a4ddb81b97">Product</h2>
+          <ul>
+            <li><a href="/group-financial-reporting/">Group Financial Reporting</a></li>
+            <li><a href="/complex-consolidations/">Complex Consolidations</a></li>
+            <li><a href="/intercompany-control/">Intercompany Control</a></li>
+            <li><a href="/group-financial-planning/">Group Financial Planning</a></li>
+            <li><a href="/ai/">GATHER AI</a></li>
+            <li><a href="/mcp-beta.html">MCP Beta Waitlist</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_f53b69cefe">Solutions</h2>
+          <ul>
+            <li><a href="/for-finance-teams/">For Finance Teams</a></li>
+            <li><a href="/for-fractional-cfos/">For Fractional CFOs</a></li>
+            <li><a href="/integrations/xero/">Xero Integration</a></li>
+            <li><a href="/integrations/quickbooks/">QuickBooks Integration</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_26769fe8ab">Resources</h2>
+          <ul>
+            <li><a href="/knowledge-centre.html">Knowledge Centre</a></li>
+            <li><a href="/blog/">Expert Insights</a></li>
+            <li><a href="/product-updates/">Product Updates</a></li>
+            <li><a href="/video/">Video Tutorials</a></li>
+            <li><a href="https://help.gather.nexus/en">User Guides</a></li>
+          </ul>
+        </div>
+        <div class="gn-footer-col">
+          <h2 data-rv-anchor="rv_7cb1eb68e3">Company</h2>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/news-latest/">News</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="https://app.gather.nexus/auth/user/signup">Start Free Trial</a></li>
+            <li><a href="https://calendly.com/gather-support-" target="_blank" rel="noopener noreferrer">Book a Demo</a></li>
+            <li><a href="https://app.gather.nexus">Log in</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="gn-footer-bottom">
+      <p>&copy; 2026 GATHER.nexus. All rights reserved. Supported platforms: Xero and QuickBooks.</p>
+      <div class="gn-footer-legal">
+        <a href="/privacy-policy/">Privacy Policy</a>
+        <a href="/cookie-policy/">Cookie Policy</a>
+        <a href="/website-terms-of-use/">Website Terms of Use</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="/assets/page-extensions.js?v=20261125b" defer></script>
+<script>
+document.querySelectorAll('form[data-unwired]').forEach(function (form) {
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+});
+</script>
+</body>
+</html>
